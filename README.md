@@ -82,6 +82,10 @@ Now you're logging! You can use the `debug`, `info`, `notice`, `warning`, `error
 
 You can add and configure more Endpoints later, such as the included File and HTTP Service Endpoints. See the [Endpoints documentation][endpoints] for more details.
 
+## Contributing
+
+LogKit welcomes contributions! Please see [CONTRIBUTING.md][contrib] for more info.
+
 ## License
 
 LogKit is licensed under the permissive [ISC License][license].
@@ -93,4 +97,5 @@ LogKit is licensed under the permissive [ISC License][license].
 [carthage]: https://github.com/Carthage/Carthage
 [usage]: http://www.logkit.info/docs/1.0/usage/
 [endpoints]: http://www.logkit.info/docs/1.0/endpoints/
+[contrib]: https://github.com/logkit/logkit/blob/master/CONTRIBUTING.md
 [license]: https://github.com/logkit/logkit/blob/master/LICENSE.txt
