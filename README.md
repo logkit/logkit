@@ -23,6 +23,7 @@ There are a few ways to install LogKit. Below are some tips, but for full detail
 Include LogKit in your Podfile:
 
 ```ruby
+use_frameworks!
 pod 'LogKit', '~> 1.0'
 ```
 
