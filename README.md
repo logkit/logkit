@@ -87,10 +87,10 @@ You can add and configure more Endpoints later, such as the included File and HT
 LogKit is licensed under the permissive [ISC License][license].
 
 
-[website]: "http://www.logkit.info/"
-[install]: "http://www.logkit.info/docs/1.0/installation/"
-[cocoapods]: "https://guides.cocoapods.org/using/using-cocoapods.html"
-[carthage]: "https://github.com/Carthage/Carthage"
-[usage]: "http://www.logkit.info/docs/1.0/usage/"
-[endpoints]: "http://www.logkit.info/docs/1.0/endpoints/"
-[license]: "https://github.com/logkit/logkit/blob/master/LICENSE.txt"
+[website]: http://www.logkit.info/
+[install]: http://www.logkit.info/docs/1.0/installation/
+[cocoapods]: https://guides.cocoapods.org/using/using-cocoapods.html
+[carthage]: https://github.com/Carthage/Carthage
+[usage]: http://www.logkit.info/docs/1.0/usage/
+[endpoints]: http://www.logkit.info/docs/1.0/endpoints/
+[license]: https://github.com/logkit/logkit/blob/master/LICENSE.txt
