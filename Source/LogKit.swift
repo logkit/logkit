@@ -41,7 +41,7 @@ public protocol LXLogEndpoint {
     /**
     Write the formatted log entry to the endpoint.
 
-    :param: entry The log entry, after being formatted by the `entryFormatter`.
+    :param: entryString The log entry, after being formatted by the `entryFormatter`.
     */
     func write(entryString: String) -> Void
 
@@ -52,7 +52,7 @@ The details of a log entry.
 
 :param: message The message provided.
 :param: userInfo A dictionary of additional values to be provided to the entry formatter.
-:param: logLevel The name of the log's level.
+:param: logLevel The name of the entry's log level.
 :param: timestamp The number of seconds since the Unix epoch (midnight 1970-01-01 UTC).
 :param: dateTime The entry's timestamp as a string formatted by an endpoint's `dateFormatter`.
 :param: functionName The function from which the log entry was created.
@@ -67,20 +67,34 @@ The details of a log entry.
 */
 public struct LXLogEntry {
 
+    /// The message provided.
     public let message: String
+    /// A dictionary of additional values to be provided to the entry formatter.
     public let userInfo: [String: AnyObject]
+    /// The name of the entry's log level.
     public let logLevel: String
+    /// The number of seconds since the Unix epoch (midnight 1970-01-01 UTC).
     public let timestamp: Double
+    /// The entry's timestamp as a string formatted by an endpoint's `dateFormatter`.
     public let dateTime: String
+    /// The function from which the log entry was created.
     public let functionName: String
+    /// The absolute path of the source file from which the log entry was created.
     public let filePath: String
+    /// The line number in the file from which the log entry was created.
     public let lineNumber: Int
+    /// The column number in the file from which the log entry was created.
     public let columnNumber: Int
+    /// The ID of the thread from which the log entry was created.
     public let threadID: String
+    /// The name of the thread from which the log entry was created.
     public let threadName: String
+    /// Indicates whether the log entry was created on the main thread.
     public let isMainThread: Bool
+    /// The version of the LogKit framework that generated this entry.
     public let logKitVersion: String
 
+    /// The name of the source file from which the log entry was created.
     public var fileName: String { return self.filePath.lastPathComponent }
 
 }
@@ -126,6 +140,7 @@ Logging levels are described below, in order of lowest-to-highest value:
 public enum LXLogLevel: Int, Comparable, Printable {
     // These levels are designed to match ASL levels
     // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
+    /// Special value that includes all log levels.
     case All      =  100
     case Debug    =    7
     case Info     =    6
@@ -133,8 +148,12 @@ public enum LXLogLevel: Int, Comparable, Printable {
     case Warning  =    4
     case Error    =    3
     case Critical =    2
+    /// Special value that excludes all log levels.
     case None     = -100
 
+    /**
+    :returns: A string representation of the log level.
+    */
     public var description: String {
         switch self {
         case .All:
@@ -158,10 +177,12 @@ public enum LXLogLevel: Int, Comparable, Printable {
 
 }
 
+/// Determines if two log levels are equal.
 public func ==(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
     return lhs.rawValue == rhs.rawValue
 }
 
+/// Performs a comparison between two log levels.
 public func <(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
     return lhs.rawValue > rhs.rawValue // Yes, this is reversed
 }
@@ -232,7 +253,7 @@ Log enties from various threads will be printed in first-in-first-out order with
 However, entry output may be slightly delayed due to the asynchronous nature of this endpoint.
 */
 public class LXLogSerialConsoleEndpoint: LXLogConsoleEndpoint {
-    /// Writes an entry to standard out.
+    /// Writes an entry to the console (stdout).
     public override func write(entryString: String) {
         if let data = (entryString + "\n").dispatchDataUsingEncoding(NSUTF8StringEncoding) {
             dispatch_write(STDOUT_FILENO, data, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), { data, errno in })
@@ -504,7 +525,7 @@ public final class LXLogger {
 
     :param: endpoints An array of log endpoints to output entries to.
 
-    :returns: An initialized logger.
+    :returns: An initialized logger populated with each of the provided endpoints. Any endpoints that fail initialization are discarded.
     */
     public init(endpoints: [LXLogEndpoint?]) {
         self.endpoints = endpoints.filter({ $0 != nil }).map({ $0! })
@@ -564,7 +585,11 @@ public final class LXLogger {
         }
     }
 
-    /// Log a `Debug` entry.
+    /**
+    Log a `Debug` entry. Exclude all arguments except `message`.
+    
+    :param: message The message to log.
+    */
     public func debug(
         @autoclosure(escaping) message: () -> String,
         functionName: String = __FUNCTION__,
@@ -575,7 +600,12 @@ public final class LXLogger {
         self.debug(message, userInfo: [:], functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log a `Debug` entry with user info.
+    /**
+    Log a `Debug` entry. Exclude all arguments except `message` and `userInfo`.
+
+    :param: message The message to log.
+    :param: userInfo A dictionary of additional values for endpoints to consider.
+    */
     public func debug(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject],
@@ -587,7 +617,11 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Debug, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log an `Info` entry.
+    /**
+    Log an `Info` entry. Exclude all arguments except `message`.
+
+    :param: message The message to log.
+    */
     public func info(
         @autoclosure(escaping) message: () -> String,
         functionName: String = __FUNCTION__,
@@ -598,7 +632,12 @@ public final class LXLogger {
         self.info(message, userInfo: [:], functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log an `Info` entry with user info.
+    /**
+    Log an `Info` entry. Exclude all arguments except `message` and `userInfo`.
+
+    :param: message The message to log.
+    :param: userInfo A dictionary of additional values for endpoints to consider.
+    */
     public func info(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject],
@@ -610,7 +649,11 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Info, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log a `Notice` entry.
+    /**
+    Log a `Notice` entry. Exclude all arguments except `message`.
+
+    :param: message The message to log.
+    */
     public func notice(
         @autoclosure(escaping) message: () -> String,
         functionName: String = __FUNCTION__,
@@ -621,7 +664,12 @@ public final class LXLogger {
         self.notice(message, userInfo: [:], functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log a `Notice` entry with user info.
+    /**
+    Log a `Notice` entry. Exclude all arguments except `message` and `userInfo`.
+
+    :param: message The message to log.
+    :param: userInfo A dictionary of additional values for endpoints to consider.
+    */
     public func notice(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject],
@@ -633,7 +681,11 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Notice, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log a `Warning` entry.
+    /**
+    Log a `Warning` entry. Exclude all arguments except `message`.
+
+    :param: message The message to log.
+    */
     public func warning(
         @autoclosure(escaping) message: () -> String,
         functionName: String = __FUNCTION__,
@@ -644,7 +696,12 @@ public final class LXLogger {
         self.warning(message, userInfo: [:], functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log a `Warning` entry with user info.
+    /**
+    Log a `Warning` entry. Exclude all arguments except `message` and `userInfo`.
+
+    :param: message The message to log.
+    :param: userInfo A dictionary of additional values for endpoints to consider.
+    */
     public func warning(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject],
@@ -656,7 +713,11 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Warning, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log an `Error` entry.
+    /**
+    Log an `Error` entry. Exclude all arguments except `message`.
+
+    :param: message The message to log.
+    */
     public func error(
         @autoclosure(escaping) message: () -> String,
         functionName: String = __FUNCTION__,
@@ -667,7 +728,12 @@ public final class LXLogger {
         self.error(message, userInfo: [:], functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log an `Error` entry with user info.
+    /**
+    Log an `Error` entry. Exclude all arguments except `message` and `userInfo`.
+
+    :param: message The message to log.
+    :param: userInfo A dictionary of additional values for endpoints to consider.
+    */
     public func error(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject],
@@ -679,7 +745,11 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Error, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log a `Critical` entry.
+    /**
+    Log a `Critical` entry. Exclude all arguments except `message`.
+
+    :param: message The message to log.
+    */
     public func critical(
         @autoclosure(escaping) message: () -> String,
         functionName: String = __FUNCTION__,
@@ -690,7 +760,12 @@ public final class LXLogger {
         self.critical(message, userInfo: [:], functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /// Log a `Critical` entry with user info.
+    /**
+    Log a `Critical` entry. Exclude all arguments except `message` and `userInfo`.
+
+    :param: message The message to log.
+    :param: userInfo A dictionary of additional values for endpoints to consider.
+    */
     public func critical(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject],
