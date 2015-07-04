@@ -143,7 +143,34 @@ You can add and configure as many [Endpoints][endpoints] as desired, such as the
 
 Each Endpoint has a property named `dateFormatter` that controls how an entry's `dateTime` property will be formatted. It accepts an `NSDateFormatter` instance and is usually set at initialization time.
 
+```swift
+let log = LXLogger(endpoints: [
+
+    LXLogConsoleEndpoint(
+        dateFormatter = {
+            let formatter = NSDateFormatter()
+            formatter.dateFormat = "HH':'mm':'ss'.'SSS"
+            formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+            return formatter
+        }()
+    ),
+
+])
+```
+
 Each Endpoint also has a property named `entryFormatter` that controls how an entry will be converted to a string for output. It accepts an `LXLogEntryFormatter` object and is also usually set at initialization time.
+
+```swift
+let log = LXLogger(endpoints: [
+
+    LXLogConsoleEndpoint(
+        entryFormatter = { entry in
+            return "\(entry.dateTime) [\(entry.logLevel.uppercaseString)] \(entry.message)"
+        }
+    ),
+
+])
+```
 
 See the [Entry Formatting documentation][formatting] for more details on formatting, available log entry properties, and `LXLogEntryFormatter`.
 
