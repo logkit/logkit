@@ -47,7 +47,7 @@ class ConsoleEndpointTests: XCTestCase {
 
     let endpoint = LXLogConsoleEndpoint()
 
-    func testLog() {
+    func testWrite() {
         self.endpoint.write("Hello from the Console Endpoint!")
     }
 
@@ -57,8 +57,52 @@ class SerialConsoleEndpointTests: XCTestCase {
 
     let endpoint = LXLogSerialConsoleEndpoint()
 
-    func testLog() {
+    func testWrite() {
         self.endpoint.write("Hello from the Serial Console Endpoint!")
+    }
+
+}
+
+class FileEndpointTests: XCTestCase {
+
+    let endpoint = LXLogFileEndpoint(
+        fileURL: (NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask) as? [NSURL])?.first?.URLByAppendingPathComponent("info.logkit.test", isDirectory: true).URLByAppendingPathComponent("file_log.txt")
+    )
+
+    func testWrite() {
+        self.endpoint?.write("Hello from the File Endpoint!")
+    }
+
+}
+
+class DatedFileEndpointTests: XCTestCase {
+
+    let endpoint = LXLogDatedFileEndpoint(
+        fileURL: (NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask) as? [NSURL])?.first?.URLByAppendingPathComponent("info.logkit.test", isDirectory: true).URLByAppendingPathComponent("dated_file_log.txt")
+    )
+
+    func testWrite() {
+        self.endpoint?.write("Hello from the Dated File Endpoint!")
+    }
+
+}
+
+class HTTPEndpointTests: XCTestCase {
+
+    let endpoint = LXLogHTTPEndpoint(URL: NSURL(string: "https://httpbin.org/post/")!, HTTPMethod: "POST")
+
+    func testWrite() {
+        self.endpoint.write("Hello from the HTTP Endpoint!")
+    }
+
+}
+
+class HTTPJSONEndpointTests: XCTestCase {
+
+    let endpoint = LXLogHTTPJSONEndpoint(URL: NSURL(string: "https://httpbin.org/post/")!, HTTPMethod: "POST")
+
+    func testWrite() {
+        self.endpoint.write("Hello from the HTTP JSON Endpoint!")
     }
 
 }
