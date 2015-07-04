@@ -140,7 +140,6 @@ Logging levels are described below, in order of lowest-to-highest value:
 public enum LXLogLevel: Int, Comparable, Printable {
     // These levels are designed to match ASL levels
     // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
-    /// Special value that includes all log levels.
     case All      =  100
     case Debug    =    7
     case Info     =    6
@@ -148,7 +147,6 @@ public enum LXLogLevel: Int, Comparable, Printable {
     case Warning  =    4
     case Error    =    3
     case Critical =    2
-    /// Special value that excludes all log levels.
     case None     = -100
 
     /**
