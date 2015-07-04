@@ -17,7 +17,7 @@
 import Foundation
 
 /// The version of the LogKit framework currently in use.
-private let logKitVersion = "1.0.0"
+private let logKitVersion = "1.0.1"
 
 //MARK: Definitions
 
