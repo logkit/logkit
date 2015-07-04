@@ -1,2 +1,3 @@
 language: objective-c
 xcode_project: LogKit.xcodeproj
+xcode_scheme: "LogKit OSX"
