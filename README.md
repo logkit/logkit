@@ -155,7 +155,7 @@ LogKit welcomes contributions! Please see [CONTRIBUTING.md][contrib] for more in
 
 ## License
 
-LogKit is licensed under the permissive [ISC License][license] (a member of the BSD License family).
+LogKit is licensed under the permissive [ISC License][license] (a member of the [BSD License family][bsd]).
 
 
 [website]: http://www.logkit.info/
@@ -168,3 +168,4 @@ LogKit is licensed under the permissive [ISC License][license] (a member of the 
 [formatting]: http://www.logkit.info/docs/1.0/formatting/
 [contrib]: https://github.com/logkit/logkit/blob/master/CONTRIBUTING.md
 [license]: https://github.com/logkit/logkit/blob/master/LICENSE.txt
+[bsd]: http://choosealicense.com/licenses/#isc
