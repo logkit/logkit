@@ -17,7 +17,7 @@
 import Foundation
 
 /// The version of the LogKit framework currently in use.
-private let logKitVersion = "1.0.1"
+private let logKitVersion = "1.0.2"
 
 //MARK: Definitions
 
@@ -585,7 +585,7 @@ public final class LXLogger {
 
     /**
     Log a `Debug` entry. Exclude all arguments except `message`.
-    
+
     :param: message The message to log.
     */
     public func debug(
