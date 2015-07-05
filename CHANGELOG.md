@@ -1,6 +1,15 @@
 # Change Log
 
 
+### [1.0.3](https://github.com/logkit/logkit/releases/tag/1.0.3)
+
+Updated Project settings
+
+#### Updated
+
+* Changed Org and bundle ID to LogKit
+
+
 ### [1.0.2](https://github.com/logkit/logkit/releases/tag/1.0.2)
 
 Enhanced README
