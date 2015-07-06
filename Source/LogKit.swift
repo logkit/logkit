@@ -254,7 +254,7 @@ public class LXLogSerialConsoleEndpoint: LXLogConsoleEndpoint {
     /// Writes an entry to the console (stdout).
     public override func write(entryString: String) {
         if let data = (entryString + "\n").dispatchDataUsingEncoding(NSUTF8StringEncoding) {
-            dispatch_write(STDOUT_FILENO, data, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), { data, errno in })
+            dispatch_write(STDOUT_FILENO, data, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { data, errno in })
         } else {
             assertionFailure("Failure to create dispatch_data_t from entry string")
         }
@@ -294,7 +294,7 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
                 path,
                 O_WRONLY | O_NONBLOCK | O_APPEND | O_CREAT,
                 S_IRUSR | S_IWUSR | S_IRGRP,
-                dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0),
+                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
                 { errno in }
             ) as dispatch_io_t?
         } else {
@@ -342,7 +342,7 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
     /// Writes an entry to the log file.
     public override func write(entryString: String) {
         if let chnl = self.channel, data = (entryString + "\n").dispatchDataUsingEncoding(NSUTF8StringEncoding) {
-            dispatch_io_write(chnl, 0, data, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), { done, data, errno in })
+            dispatch_io_write(chnl, 0, data, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { done, data, errno in })
         } else {
             assertionFailure("Failure to create dispatch_data_t from entry string")
         }
@@ -376,7 +376,7 @@ public class LXLogHTTPEndpoint: LXLogAbstractEndpoint {
     private let session: NSURLSession
     private let request: NSURLRequest
     private let successCodes: Set<Int>
-    private let timer: dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0))
+    private let timer: dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
     private let lockQueue: dispatch_queue_t = dispatch_queue_create("lx-HTTPEndpoint-lockQueue", DISPATCH_QUEUE_SERIAL)
     private var pendingUploads: [NSData] = []
 
@@ -440,7 +440,7 @@ public class LXLogHTTPEndpoint: LXLogAbstractEndpoint {
     code (as defined by `self.successCodes`), the entry will be returned to the pending queue to be tried again later.
     */
     private func uploadPending() {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
             dispatch_sync(self.lockQueue, {
                 for data in self.pendingUploads {
                     let task = self.session.uploadTaskWithRequest(self.request, fromData: data, completionHandler: { body, response, error in
