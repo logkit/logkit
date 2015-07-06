@@ -3,11 +3,11 @@
 
 ### [1.0.4](https://github.com/logkit/logkit/releases/tag/1.0.4)
 
-10.9 and iOS 7 GCD Fixes
+10.9 GCD Fix
 
 #### Fixed
 
-* 10.9 and iOS 7 do not support QOS classes; now using global queue priorities
+* 10.9 does not support QOS classes; now using global queue priorities (#1)
 
 
 ### [1.0.3](https://github.com/logkit/logkit/releases/tag/1.0.3)
