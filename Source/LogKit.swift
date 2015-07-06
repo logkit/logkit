@@ -17,7 +17,15 @@
 import Foundation
 
 /// The version of the LogKit framework currently in use.
-private let logKitVersion = "1.0.3"
+private let logKitVersion = "2.0.0"
+
+private let defaultQueue: dispatch_queue_t = {
+    if #available(OSXApplicationExtension 10.10, iOSApplicationExtension 8.0, *) {
+        return dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
+    } else {
+        return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+    }
+}()
 
 //MARK: Definitions
 
@@ -137,7 +145,7 @@ Logging levels are described below, in order of lowest-to-highest value:
 - `Critical`: Event may crash application
 - `None`: Special value that excludes all log levels
 */
-public enum LXLogLevel: Int, Comparable, Printable {
+public enum LXLogLevel: Int, Comparable, CustomStringConvertible {
     // These levels are designed to match ASL levels
     // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
     case All      =  100
@@ -239,7 +247,7 @@ public class LXLogAbstractEndpoint: LXLogEndpoint {
 public class LXLogConsoleEndpoint: LXLogAbstractEndpoint {
     /// Writes an entry to the console (stdout).
     public override func write(entryString: String) {
-        println(entryString)
+        print(entryString, appendNewline: true)
     }
 
 }
@@ -254,7 +262,7 @@ public class LXLogSerialConsoleEndpoint: LXLogConsoleEndpoint {
     /// Writes an entry to the console (stdout).
     public override func write(entryString: String) {
         if let data = (entryString + "\n").dispatchDataUsingEncoding(NSUTF8StringEncoding) {
-            dispatch_write(STDOUT_FILENO, data, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), { data, errno in })
+            dispatch_write(STDOUT_FILENO, data, defaultQueue, { data, errno in })
         } else {
             assertionFailure("Failure to create dispatch_data_t from entry string")
         }
@@ -265,7 +273,7 @@ public class LXLogSerialConsoleEndpoint: LXLogConsoleEndpoint {
 /// An endpoint that writes log entries to a given log file asynchronously.
 public class LXLogFileEndpoint: LXLogAbstractEndpoint {
     /// An opportunity for subclasses to modify the file name that will be used. Base method simply returns it's input.
-    private class func makeName(#baseName: String) -> String {
+    private class func makeName(baseName baseName: String) -> String {
         return baseName
     }
 
@@ -282,19 +290,28 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
     :returns: An initialized endpoint, or `nil` if the designated file could not be opened.
     */
     public init?(fileURL: NSURL?, minimumLogLevel: LXLogLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: LXLogEntryFormatter = defaultEntryFormatter) {
+        /// Hack to enable Swift 1.2-like behaviour for now
+        func didCreateDirectoryAtURL(URL: NSURL) -> Bool {
+            do {
+                try NSFileManager.defaultManager().createDirectoryAtURL(URL, withIntermediateDirectories: true, attributes: nil)
+                return true
+            } catch {
+                return false
+            }
+        }
+
         if let
             dirURL = fileURL?.URLByDeletingLastPathComponent,
             fileName = fileURL?.lastPathComponent,
             path = dirURL.URLByAppendingPathComponent(self.dynamicType.makeName(baseName: fileName), isDirectory: false).path
-        where
-            NSFileManager.defaultManager().createDirectoryAtURL(dirURL, withIntermediateDirectories: true, attributes: nil, error: nil)
+        where didCreateDirectoryAtURL(dirURL)
         {
             self.channel = dispatch_io_create_with_path(
                 DISPATCH_IO_STREAM,
                 path,
                 O_WRONLY | O_NONBLOCK | O_APPEND | O_CREAT,
                 S_IRUSR | S_IWUSR | S_IRGRP,
-                dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0),
+                defaultQueue,
                 { errno in }
             ) as dispatch_io_t?
         } else {
@@ -320,7 +337,7 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
         let fileURL: NSURL?
         if let
             bundleID = NSBundle.mainBundle().bundleIdentifier,
-            appSupportURL = (NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask) as? [NSURL])?.first
+            appSupportURL = NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask).first
         {
             fileURL = appSupportURL
                 .URLByAppendingPathComponent(bundleID, isDirectory: true)
@@ -342,7 +359,7 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
     /// Writes an entry to the log file.
     public override func write(entryString: String) {
         if let chnl = self.channel, data = (entryString + "\n").dispatchDataUsingEncoding(NSUTF8StringEncoding) {
-            dispatch_io_write(chnl, 0, data, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), { done, data, errno in })
+            dispatch_io_write(chnl, 0, data, defaultQueue, { done, data, errno in })
         } else {
             assertionFailure("Failure to create dispatch_data_t from entry string")
         }
@@ -354,7 +371,7 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
 public class LXLogDatedFileEndpoint: LXLogFileEndpoint {
 
     /// Prepends a datestamp to the base file name in the format `yyyy-MM-dd_{fileName}`.
-    override private class func makeName(#baseName: String) -> String {
+    override private class func makeName(baseName baseName: String) -> String {
         let fileNameDateFormatter = NSDateFormatter()
         fileNameDateFormatter.dateFormat = "yyyy'-'MM'-'dd"
         fileNameDateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
@@ -376,7 +393,7 @@ public class LXLogHTTPEndpoint: LXLogAbstractEndpoint {
     private let session: NSURLSession
     private let request: NSURLRequest
     private let successCodes: Set<Int>
-    private let timer: dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0))
+    private let timer: dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, defaultQueue)
     private let lockQueue: dispatch_queue_t = dispatch_queue_create("lx-HTTPEndpoint-lockQueue", DISPATCH_QUEUE_SERIAL)
     private var pendingUploads: [NSData] = []
 
@@ -440,7 +457,7 @@ public class LXLogHTTPEndpoint: LXLogAbstractEndpoint {
     code (as defined by `self.successCodes`), the entry will be returned to the pending queue to be tried again later.
     */
     private func uploadPending() {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), {
+        dispatch_async(defaultQueue, {
             dispatch_sync(self.lockQueue, {
                 for data in self.pendingUploads {
                     let task = self.session.uploadTaskWithRequest(self.request, fromData: data, completionHandler: { body, response, error in
@@ -448,7 +465,7 @@ public class LXLogHTTPEndpoint: LXLogAbstractEndpoint {
                             dispatch_async(self.lockQueue, { self.pendingUploads.append(data) })
                         }
                     })
-                    task.resume()
+                    task?.resume()
                 }
                 self.pendingUploads.removeAll(keepCapacity: false)
             })
@@ -494,12 +511,15 @@ public class LXLogHTTPJSONEndpoint: LXLogHTTPEndpoint {
             minimumLogLevel: minimumLogLevel,
             dateFormatter: dateFormatter,
             entryFormatter: { entry in
-                if let
-                    data = NSJSONSerialization.dataWithJSONObject(entry.asMap(), options: nil, error: nil),
-                    json = NSString(data: data, encoding: NSUTF8StringEncoding)
-                {
-                    return json as String
-                } else {
+                do {
+                    let data = try NSJSONSerialization.dataWithJSONObject(entry.asMap(), options: [])
+                    if let json = NSString(data: data, encoding: NSUTF8StringEncoding) {
+                        return json as String
+                    } else {
+                        assertionFailure("Log entry could not be serialized to JSON")
+                        return ""
+                    }
+                } catch {
                     assertionFailure("Log entry could not be serialized to JSON")
                     return ""
                 }

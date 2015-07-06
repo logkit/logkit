@@ -66,7 +66,7 @@ class SerialConsoleEndpointTests: XCTestCase {
 class FileEndpointTests: XCTestCase {
 
     let endpoint = LXLogFileEndpoint(
-        fileURL: (NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask) as? [NSURL])?.first?.URLByAppendingPathComponent("info.logkit.test", isDirectory: true).URLByAppendingPathComponent("file_log.txt")
+        fileURL: NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask).first?.URLByAppendingPathComponent("info.logkit.test", isDirectory: true).URLByAppendingPathComponent("file_log.txt")
     )
 
     func testWrite() {
@@ -78,7 +78,7 @@ class FileEndpointTests: XCTestCase {
 class DatedFileEndpointTests: XCTestCase {
 
     let endpoint = LXLogDatedFileEndpoint(
-        fileURL: (NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask) as? [NSURL])?.first?.URLByAppendingPathComponent("info.logkit.test", isDirectory: true).URLByAppendingPathComponent("dated_file_log.txt")
+        fileURL: NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask).first?.URLByAppendingPathComponent("info.logkit.test", isDirectory: true).URLByAppendingPathComponent("dated_file_log.txt")
     )
 
     func testWrite() {
