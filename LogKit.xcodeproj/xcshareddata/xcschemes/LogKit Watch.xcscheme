@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D0F8DD281B4B1ADC00D0865A"
-               BuildableName = "LogKit Watch.framework"
+               BuildableName = "LogKit.framework"
                BlueprintName = "LogKit Watch"
                ReferencedContainer = "container:LogKit.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D0F8DD281B4B1ADC00D0865A"
-            BuildableName = "LogKit Watch.framework"
+            BuildableName = "LogKit.framework"
             BlueprintName = "LogKit Watch"
             ReferencedContainer = "container:LogKit.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D0F8DD281B4B1ADC00D0865A"
-            BuildableName = "LogKit Watch.framework"
+            BuildableName = "LogKit.framework"
             BlueprintName = "LogKit Watch"
             ReferencedContainer = "container:LogKit.xcodeproj">
          </BuildableReference>
