@@ -465,7 +465,7 @@ public class LXLogHTTPEndpoint: LXLogAbstractEndpoint {
                             dispatch_async(self.lockQueue, { self.pendingUploads.append(data) })
                         }
                     })
-                    task?.resume()
+                    task.resume()
                 }
                 self.pendingUploads.removeAll(keepCapacity: false)
             })
