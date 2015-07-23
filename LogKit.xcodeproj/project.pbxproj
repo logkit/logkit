@@ -15,8 +15,29 @@
 		D00B8CDD1B2E9126003E5FED /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D00B8CE31B2E9457003E5FED /* LogKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CE21B2E9457003E5FED /* LogKitTests.swift */; };
 		D00B8CE41B2E9457003E5FED /* LogKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CE21B2E9457003E5FED /* LogKitTests.swift */; };
+		D0449EA31B4C606900D7E1D3 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA21B4C606900D7E1D3 /* Entries.swift */; };
+		D0449EA41B4C606900D7E1D3 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA21B4C606900D7E1D3 /* Entries.swift */; };
+		D0449EA51B4C606900D7E1D3 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA21B4C606900D7E1D3 /* Entries.swift */; };
+		D0449EA71B4C62B100D7E1D3 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA61B4C62B100D7E1D3 /* Levels.swift */; };
+		D0449EA81B4C62B100D7E1D3 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA61B4C62B100D7E1D3 /* Levels.swift */; };
+		D0449EA91B4C62B100D7E1D3 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA61B4C62B100D7E1D3 /* Levels.swift */; };
+		D0449EAB1B4C65B200D7E1D3 /* Loggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */; };
+		D0449EAC1B4C65B200D7E1D3 /* Loggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */; };
+		D0449EAD1B4C65B200D7E1D3 /* Loggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */; };
+		D0449EAF1B4C66BC00D7E1D3 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */; };
+		D0449EB01B4C66BC00D7E1D3 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */; };
+		D0449EB11B4C66BC00D7E1D3 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */; };
+		D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
+		D0449EB51B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
+		D0449EB61B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
+		D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
+		D0449EB91B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
+		D0449EBA1B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
 		D0F8DD311B4B1B9100D0865A /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D0F8DD321B4B1B9600D0865A /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
+		D0F8DD351B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
+		D0F8DD361B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +67,14 @@
 		D00B8CDB1B2E9126003E5FED /* LogKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogKit.h; sourceTree = "<group>"; };
 		D00B8CDF1B2E9367003E5FED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D00B8CE21B2E9457003E5FED /* LogKitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogKitTests.swift; sourceTree = "<group>"; };
+		D0449EA21B4C606900D7E1D3 /* Entries.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entries.swift; sourceTree = "<group>"; };
+		D0449EA61B4C62B100D7E1D3 /* Levels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Levels.swift; sourceTree = "<group>"; };
+		D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loggers.swift; sourceTree = "<group>"; };
+		D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Endpoints.swift; sourceTree = "<group>"; };
+		D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleEndpoints.swift; sourceTree = "<group>"; };
+		D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEndpoints.swift; sourceTree = "<group>"; };
 		D0F8DD291B4B1ADC00D0865A /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0F8DD331B4B253700D0865A /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +143,12 @@
 			isa = PBXGroup;
 			children = (
 				D00B8CD41B2E400E003E5FED /* LogKit.swift */,
+				D0449EA21B4C606900D7E1D3 /* Entries.swift */,
+				D0F8DD331B4B253700D0865A /* Formatters.swift */,
+				D0449EA61B4C62B100D7E1D3 /* Levels.swift */,
+				D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */,
+				D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */,
+				D0449EB21B4DB79B00D7E1D3 /* Endpoints */,
 				D00B8CDA1B2E78AD003E5FED /* Supporting Files */,
 			);
 			path = Source;
@@ -144,6 +178,15 @@
 				D00B8CDF1B2E9367003E5FED /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D0449EB21B4DB79B00D7E1D3 /* Endpoints */ = {
+			isa = PBXGroup;
+			children = (
+				D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */,
+				D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */,
+			);
+			name = Endpoints;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -357,6 +400,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0449EA31B4C606900D7E1D3 /* Entries.swift in Sources */,
+				D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
+				D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
+				D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */,
+				D0449EAB1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
+				D0449EA71B4C62B100D7E1D3 /* Levels.swift in Sources */,
+				D0449EAF1B4C66BC00D7E1D3 /* Endpoints.swift in Sources */,
 				D00B8CD51B2E400E003E5FED /* LogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -373,6 +423,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0449EA41B4C606900D7E1D3 /* Entries.swift in Sources */,
+				D0449EB51B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
+				D0449EB91B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
+				D0F8DD351B4B253700D0865A /* Formatters.swift in Sources */,
+				D0449EAC1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
+				D0449EA81B4C62B100D7E1D3 /* Levels.swift in Sources */,
+				D0449EB01B4C66BC00D7E1D3 /* Endpoints.swift in Sources */,
 				D00B8CD61B2E400E003E5FED /* LogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -389,6 +446,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0449EA51B4C606900D7E1D3 /* Entries.swift in Sources */,
+				D0449EB61B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
+				D0449EBA1B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
+				D0F8DD361B4B253700D0865A /* Formatters.swift in Sources */,
+				D0449EAD1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
+				D0449EA91B4C62B100D7E1D3 /* Levels.swift in Sources */,
+				D0449EB11B4C66BC00D7E1D3 /* Endpoints.swift in Sources */,
 				D0F8DD311B4B1B9100D0865A /* LogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -756,6 +820,7 @@
 				D0F8DD2F1B4B1ADC00D0865A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

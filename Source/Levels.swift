@@ -1,0 +1,64 @@
+// Levels.swift
+//
+// Copyright (c) 2015, Justin Pawela & The LogKit Project (http://www.logkit.info/)
+//
+// Permission to use, copy, modify, and/or distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+public enum LXLogLevel: Int, Comparable, CustomStringConvertible {
+    // These levels are designed to match ASL levels
+    // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
+    case All      =  100
+    case Debug    =    7
+    case Info     =    6
+    case Notice   =    5
+    case Warning  =    4
+    case Error    =    3
+    case Critical =    2
+    case None     = -100
+
+    /**
+    :returns: A string representation of the log level.
+    */
+    public var description: String {
+        switch self {
+        case .All:
+            return "All"
+        case .Debug:
+            return "Debug"
+        case .Info:
+            return "Info"
+        case .Notice:
+            return "Notice"
+        case .Warning:
+            return "Warning"
+        case .Error:
+            return "Error"
+        case .Critical:
+            return "Critical"
+        case .None:
+            return "None"
+        }
+    }
+    
+}
+
+/// Determines if two log levels are equal.
+public func ==(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
+    return lhs.rawValue == rhs.rawValue
+}
+
+/// Performs a comparison between two log levels.
+public func <(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
+    return lhs.rawValue > rhs.rawValue // Yes, this is reversed
+}

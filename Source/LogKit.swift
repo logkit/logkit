@@ -19,27 +19,27 @@ import Foundation
 /// The version of the LogKit framework currently in use.
 private let logKitVersion = "2.0.0"
 
-private let defaultQueue: dispatch_queue_t = {
-    if #available(OSXApplicationExtension 10.10, iOSApplicationExtension 8.0, *) {
+internal let defaultQueue: dispatch_queue_t = {
+    if #available(OSX 10.10, OSXApplicationExtension 10.10,  iOS 8.0, iOSApplicationExtension 8.0, watchOS 2.0, *) {
         return dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
     } else {
         return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     }
 }()
 
-//MARK: Definitions
+// MARK: Definitions
 
 /**
 A closure that converts a log entry into a string for writing to an endpoint.
 
-:param: entry The log entry to be formatted.
-
-:returns: The entry converted to a string.
+- parameters:
+  - entry: The log entry to be formatted.
+- returns: The entry converted to a string.
 */
-public typealias LXLogEntryFormatter = (entry: LXLogEntry) -> String
+public typealias OLXLogEntryFormatter = (entry: LXLogEntry) -> String
 
 /// Objects that conform to the `LXLogEndpoint` protocol may be used by an `LXLogger` as log entry destinations.
-public protocol LXLogEndpoint {
+public protocol OLXLogEndpoint {
     /// Only log entries of this level or above will be written to this endpoint.
     var minimumLogLevel: LXLogLevel { get }
     /// The date formatter that this endpoint will use to convert an entry's `dateTime` to a string.
@@ -73,7 +73,7 @@ The details of a log entry.
 :param: isMainThread Indicates whether the log entry was created on the main thread.
 :param: logKitVersion The version of the LogKit framework that generated this entry.
 */
-public struct LXLogEntry {
+public struct OLXLogEntry {
 
     /// The message provided.
     public let message: String
@@ -108,7 +108,7 @@ public struct LXLogEntry {
 }
 
 /// Private extension to facilitate JSON serialization.
-private extension LXLogEntry {
+private extension OLXLogEntry {
     /// Returns log entry as a dictionary. Will replace any top-level `userInfo` items that use one of the reserved names.
     private func asMap() -> [String: AnyObject] {
         var result = self.userInfo
@@ -145,7 +145,7 @@ Logging levels are described below, in order of lowest-to-highest value:
 - `Critical`: Event may crash application
 - `None`: Special value that excludes all log levels
 */
-public enum LXLogLevel: Int, Comparable, CustomStringConvertible {
+public enum OLXLogLevel: Int, Comparable, CustomStringConvertible {
     // These levels are designed to match ASL levels
     // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
     case All      =  100
@@ -184,12 +184,12 @@ public enum LXLogLevel: Int, Comparable, CustomStringConvertible {
 }
 
 /// Determines if two log levels are equal.
-public func ==(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
+public func ==(lhs: OLXLogLevel, rhs: OLXLogLevel) -> Bool {
     return lhs.rawValue == rhs.rawValue
 }
 
 /// Performs a comparison between two log levels.
-public func <(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
+public func <(lhs: OLXLogLevel, rhs: OLXLogLevel) -> Bool {
     return lhs.rawValue > rhs.rawValue // Yes, this is reversed
 }
 
@@ -289,7 +289,7 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
 
     :returns: An initialized endpoint, or `nil` if the designated file could not be opened.
     */
-    public init?(fileURL: NSURL?, minimumLogLevel: LXLogLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: LXLogEntryFormatter = defaultEntryFormatter) {
+    public init?(fileURL: NSURL?, minimumLogLevel: LXLogLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: OLXLogEntryFormatter = defaultEntryFormatter) {
         /// Hack to enable Swift 1.2-like behaviour for now
         func didCreateDirectoryAtURL(URL: NSURL) -> Bool {
             do {
@@ -347,6 +347,15 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
             fileURL = nil
         }
         self.init(fileURL: fileURL, minimumLogLevel: minLogLevel, dateFormatter: dateFormatter, entryFormatter: entryFormatter)
+    }
+
+    public convenience init?(fileURL: NSURL?, resetFile: Bool, minimumLogLevel: LXLogLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: OLXLogEntryFormatter = defaultEntryFormatter) {
+        if let URL = fileURL where resetFile {
+            do {
+                try NSFileManager.defaultManager().removeItemAtURL(URL)
+            } catch {}
+        }
+        self.init(fileURL: fileURL, minimumLogLevel: minimumLogLevel, dateFormatter: dateFormatter, entryFormatter: entryFormatter)
     }
 
     /// Closes the log file, if it is open.
@@ -534,7 +543,7 @@ public class LXLogHTTPJSONEndpoint: LXLogHTTPEndpoint {
 
 
 /// The main logging API for application code. An instance of this class dispatches log entries to logging endpoints.
-public final class LXLogger {
+public final class OLXLogger {
     /// The collection of log endpoints that successfully initialized.
     private let endpoints: [LXLogEndpoint]
 
