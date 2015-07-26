@@ -66,7 +66,7 @@ public final class LXLogger {
             let message = messageBlock()
             let now = NSDate(timeIntervalSinceReferenceDate: timestamp)
             for endpoint in targetEndpoints {
-                let entryString = endpoint.entryFormatter(entry: LXLogEntry(
+                let entryString = endpoint.entryFormatter.stringFromEntry(LXLogEntry(
                     message: message,
                     userInfo: userInfo,
                     logLevel: level.description,
@@ -80,7 +80,7 @@ public final class LXLogger {
                     threadName: threadName,
                     isMainThread: isMainThread,
                     logKitVersion: logKitVersion
-                ))
+                ), appendNewline: endpoint.requiresNewlines)
                 endpoint.write(entryString)
             }
         }

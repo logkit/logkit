@@ -17,7 +17,7 @@
 import Foundation
 
 /// The version of the LogKit framework currently in use.
-private let logKitVersion = "2.0.0"
+internal let logKitVersion = "2.0.0"
 
 internal let defaultQueue: dispatch_queue_t = {
     if #available(OSX 10.10, OSXApplicationExtension 10.10,  iOS 8.0, iOSApplicationExtension 8.0, watchOS 2.0, *) {
