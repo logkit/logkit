@@ -17,50 +17,61 @@
 import Foundation
 
 
-public enum LXConsoleEndpointType {
-    case Standard
-    case Serialized(async: Bool)
-}
-
-
 public class LXConsoleEndpoint: LXEndpoint {
     public var minimumLogLevel: LXLogLevel
     public var dateFormatter: LXDateFormatter
     public var entryFormatter: LXEntryFormatter
     public let requiresNewlines: Bool = true
 
-    private let consoleType: LXConsoleEndpointType
-
     public init(
-        type: LXConsoleEndpointType = .Standard,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
-        self.consoleType = type
         self.minimumLogLevel = minimumLogLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
     }
 
     public func write(entryString: String) {
-        switch self.consoleType {
-        case .Standard:
-            print(entryString, appendNewline: false)
-        case .Serialized(let async):
-            if async {
-                guard let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
-                    assertionFailure("Failure to create dispatch_data_t from entry string")
-                    return
-                }
-                dispatch_write(STDOUT_FILENO, data, defaultQueue, { data, errno in })
-            } else {
-                guard let data = entryString.dataUsingEncoding(NSUTF8StringEncoding) else {
-                    assertionFailure("Failure to create data from entry string")
-                    return
-                }
-                NSFileHandle.fileHandleWithStandardOutput().writeData(data)
+        print(entryString, appendNewline: false)
+    }
+
+}
+
+
+public class LXSerialConsoleEndpoint: LXConsoleEndpoint {
+    private let async: Bool
+    private lazy var stdoutHandle: NSFileHandle? = { return self.async ? nil : NSFileHandle.fileHandleWithStandardOutput() }()
+
+    public init(
+        asynchronousWriting: Bool = false,
+        minimumLogLevel: LXLogLevel = .All,
+        dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
+        entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
+    ) {
+        self.async = asynchronousWriting
+        super.init(minimumLogLevel: minimumLogLevel, dateFormatter: dateFormatter, entryFormatter: entryFormatter)
+    }
+
+    deinit {
+        self.stdoutHandle?.closeFile()
+    }
+
+    public override func write(entryString: String) {
+        switch self.async {
+        case true:
+            guard let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
+                assertionFailure("Failure to create data from entry string")
+                return
             }
+            dispatch_write(STDOUT_FILENO, data, defaultQueue, { _, _ in })
+        case false: //TODO: test if this is really synchronous
+            guard let data = entryString.dataUsingEncoding(NSUTF8StringEncoding) else {
+                assertionFailure("Failure to create data from entry string")
+                return
+            }
+            self.stdoutHandle?.writeData(data)
         }
     }
 
