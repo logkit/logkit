@@ -34,3 +34,15 @@ public protocol LXEndpoint {
     func write(entryString: String) -> Void
     
 }
+
+
+internal enum LXEndpointError: ErrorType, CustomStringConvertible {
+    case CustomError(message: String)
+
+    var description: String {
+        switch self {
+        case .CustomError(let message): return message
+        }
+    }
+
+}
