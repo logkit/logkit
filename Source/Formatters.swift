@@ -38,7 +38,6 @@ public class LXDateFormatter {
 
 
 public class LXEntryFormatter {
-    private enum EntryFormattingError: ErrorType { case DecodingError }
 
     public class func standardFormatter() -> Self { return self.init(closure: { entry in
         return "\(entry.dateTime) [\(entry.logLevel.uppercaseString)] \(entry.functionName) <\(entry.fileName):\(entry.lineNumber)> \(entry.message)"
@@ -48,18 +47,6 @@ public class LXEntryFormatter {
     })}
     public class func longFormatter() -> Self { return self.init(closure: { entry in
         return "\(entry.dateTime) (\(entry.timestamp)) [\(entry.logLevel.uppercaseString)] {thread: \(entry.threadID) '\(entry.threadName)' main: \(entry.isMainThread)} \(entry.functionName) <\(entry.fileName):\(entry.lineNumber).\(entry.columnNumber)> \(entry.message)"
-    })}
-    public class func jsonFormatter() -> Self { return self.init(closure: { entry in
-        do {
-            let data = try NSJSONSerialization.dataWithJSONObject(entry.asMap(), options: [])
-            guard let json = NSString(data: data, encoding: NSUTF8StringEncoding) else {
-                throw EntryFormattingError.DecodingError
-            }
-            return json as String
-        } catch {
-            assertionFailure("Log entry could not be serialized to JSON")
-            return "{\"error\": \"serialization_error\"}"
-        }
     })}
 
     private let entryFormatter: (entry: LXLogEntry) -> String

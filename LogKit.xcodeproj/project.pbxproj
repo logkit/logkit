@@ -33,6 +33,9 @@
 		D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
 		D0449EB91B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
 		D0449EBA1B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
+		D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
+		D0C6C8E71B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
+		D0C6C8E81B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
 		D0F8DD311B4B1B9100D0865A /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D0F8DD321B4B1B9600D0865A /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
@@ -73,6 +76,7 @@
 		D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Endpoints.swift; sourceTree = "<group>"; };
 		D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleEndpoints.swift; sourceTree = "<group>"; };
 		D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEndpoints.swift; sourceTree = "<group>"; };
+		D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPEndpoints.swift; sourceTree = "<group>"; };
 		D0F8DD291B4B1ADC00D0865A /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0F8DD331B4B253700D0865A /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -185,6 +189,7 @@
 			children = (
 				D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */,
 				D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */,
+				D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */,
 			);
 			name = Endpoints;
 			sourceTree = "<group>";
@@ -402,6 +407,7 @@
 			files = (
 				D0449EA31B4C606900D7E1D3 /* Entries.swift in Sources */,
 				D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
+				D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */,
 				D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
 				D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */,
 				D0449EAB1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
@@ -425,6 +431,7 @@
 			files = (
 				D0449EA41B4C606900D7E1D3 /* Entries.swift in Sources */,
 				D0449EB51B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
+				D0C6C8E71B64610100BD87B5 /* HTTPEndpoints.swift in Sources */,
 				D0449EB91B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
 				D0F8DD351B4B253700D0865A /* Formatters.swift in Sources */,
 				D0449EAC1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
@@ -448,6 +455,7 @@
 			files = (
 				D0449EA51B4C606900D7E1D3 /* Entries.swift in Sources */,
 				D0449EB61B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
+				D0C6C8E81B64610100BD87B5 /* HTTPEndpoints.swift in Sources */,
 				D0449EBA1B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
 				D0F8DD361B4B253700D0865A /* Formatters.swift in Sources */,
 				D0449EAD1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
