@@ -18,8 +18,9 @@ import Foundation
 
 
 public class LXDateFormatter {
-    public class func timeOnlyFormatter() -> Self { return self.init(formatString: "HH:mm:ss.SSS") }
     public class func standardFormatter() -> Self { return self.init(formatString: "yyyy-MM-dd HH:mm:ss.SSS") }
+    public class func timeOnlyFormatter() -> Self { return self.init(formatString: "HH:mm:ss.SSS") }
+    public class func dateOnlyFormatter() -> Self { return self.init(formatString: "yyyy-MM-dd") }
 
     private let dateFormatter: NSDateFormatter
 
