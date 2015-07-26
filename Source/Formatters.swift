@@ -29,7 +29,7 @@ public class LXDateFormatter {
         self.dateFormatter.dateFormat = formatString
     }
 
-    public func stringFromDate(date: NSDate) -> String {
+    internal func stringFromDate(date: NSDate) -> String {
         return self.dateFormatter.stringFromDate(date)
     }
 
@@ -67,8 +67,8 @@ public class LXEntryFormatter {
         self.entryFormatter = closure
     }
 
-    public func stringFromEntry(entry: LXLogEntry) -> String {
-        return entryFormatter(entry: entry)
+    internal func stringFromEntry(entry: LXLogEntry, appendNewline: Bool) -> String {
+        return appendNewline ? entryFormatter(entry: entry) + "\n" : entryFormatter(entry: entry)
     }
 
 }
