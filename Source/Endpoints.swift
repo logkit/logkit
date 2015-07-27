@@ -38,10 +38,12 @@ public protocol LXEndpoint {
 
 internal enum LXEndpointError: ErrorType, CustomStringConvertible {
     case CustomError(message: String)
+    case EntryEncodingError
 
     var description: String {
         switch self {
         case .CustomError(let message): return message
+        case .EntryEncodingError: return "Failure to create data from entry string"
         }
     }
 
