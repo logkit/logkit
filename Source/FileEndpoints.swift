@@ -17,66 +17,6 @@
 import Foundation
 
 
-internal extension NSCalendar {
-
-    internal func isDateNotToday(date: NSDate) -> Bool {
-        if #available(iOS 8.0, iOSApplicationExtension 8.0, watchOS 2.0, *) {
-            return !self.isDate(date, inSameDayAsDate: NSDate())
-        } else {
-            let now = NSDate()
-            let todayDay = self.ordinalityOfUnit(.Day, inUnit: .Year, forDate: now)
-            let todayYear = self.ordinalityOfUnit(.Year, inUnit: .Era, forDate: now)
-            let dateDay = self.ordinalityOfUnit(.Day, inUnit: .Year, forDate: date)
-            let dateYear = self.ordinalityOfUnit(.Year, inUnit: .Era, forDate: date)
-            return todayDay != dateDay || todayYear != dateYear
-        }
-    }
-
-}
-
-
-extension NSDate: Comparable {}
-
-public func <(lhs: NSDate, rhs: NSDate) -> Bool {
-    switch lhs.compare(rhs) {
-    case .OrderedSame, .OrderedDescending:
-        return false
-    case .OrderedAscending:
-        return true
-    }
-}
-
-
-private func defaultLogFileURL() -> NSURL? {
-    guard let
-        bundleID = NSBundle.mainBundle().bundleIdentifier,
-        appSupportURL = NSFileManager.defaultManager()
-            .URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask).first
-    else {
-        // TODO: assertion
-        return nil
-    }
-    return appSupportURL
-        .URLByAppendingPathComponent(bundleID, isDirectory: true)
-        .URLByAppendingPathComponent("logs", isDirectory: true)
-        .URLByAppendingPathComponent("log.txt", isDirectory: false)
-}
-
-
-internal func dispatchRepeatingTimer(delay delay: NSTimeInterval, interval: NSTimeInterval, tolerance: NSTimeInterval, handler: () -> Void) -> dispatch_source_t {
-    let DOUBLE_NANO_PER_SEC = Double(NSEC_PER_SEC)
-    let timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, defaultQueue)
-    dispatch_source_set_event_handler(timer, handler)
-    dispatch_source_set_timer(
-        timer,
-        dispatch_time(DISPATCH_TIME_NOW, Int64(delay * DOUBLE_NANO_PER_SEC)),
-        UInt64(interval * DOUBLE_NANO_PER_SEC),
-        UInt64(tolerance * DOUBLE_NANO_PER_SEC)
-    )
-    return timer
-}
-
-
 public class LXRotatingFileEndpoint: LXEndpoint {
     public var minimumLogLevel: LXLogLevel
     public var dateFormatter: LXDateFormatter
@@ -133,7 +73,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     }()
 
     public init?(
-        baseURL: NSURL? = defaultLogFileURL(),
+        baseURL: NSURL? = defaultLogFileURL,
         numberOfFiles: Int = 5,
         maxFileSizeKiB: Int = 1024,
         minimumLogLevel: LXLogLevel = .All,
@@ -184,6 +124,19 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         dispatch_async(defaultQueue, { self.rotateIfNeeded() })
     }
 
+    public func resetCurrentFile() throws { //TODO: what happens when you open existing (and in use) file with truncate??
+        guard let openedChannel = self.openChannelAtURL(self.currentURL, forAppending: false) else {
+            throw LXEndpointError.CustomError(message: "")
+        }
+        self.swapCurrentChannelForChannel(openedChannel)
+    }
+
+    private func swapCurrentChannelForChannel(newChannel: dispatch_io_t) {
+        let oldChannel = self.channel
+        self.channel = newChannel
+        dispatch_io_close(oldChannel, 0)
+    }
+
     private func openChannelAtURL(URL: NSURL, forAppending shouldAppend: Bool) -> dispatch_io_t? {
         guard let path = URL.path else { return nil }
         let appendOption = shouldAppend ? O_APPEND : O_TRUNC
@@ -232,9 +185,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         let nextURL = self.URLWithIndex(self.nextIndex)
         if let newChannel = self.openChannelAtURL(nextURL, forAppending: false) {
             self.currentIndex = self.nextIndex
-            let oldChannel = self.channel
-            self.channel = newChannel
-            dispatch_io_close(oldChannel, 0)
+            self.swapCurrentChannelForChannel(newChannel)
         } else {
             assertionFailure("Failed to open next log file at '\(nextURL.absoluteString)'")
         }
@@ -257,7 +208,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
     }
 
     public init?(
-        fileURL: NSURL? = defaultLogFileURL(),
+        fileURL: NSURL? = defaultLogFileURL,
         shouldAppend: Bool = true,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
@@ -301,7 +252,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
     }
 
     public init?(
-        baseURL: NSURL? = defaultLogFileURL(),
+        baseURL: NSURL? = defaultLogFileURL,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
