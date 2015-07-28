@@ -59,19 +59,21 @@ public class LXSerialConsoleEndpoint: LXConsoleEndpoint {
     }
 
     public override func write(entryString: String) {
-        switch self.async {
-        case true:
-            guard let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
-                assertionFailure("Failure to create data from entry string")
-                return
+        do {
+            switch self.async {
+            case true:
+                guard let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
+                    throw LXEndpointError.EntryEncodingError
+                }
+                dispatch_write(STDOUT_FILENO, data, defaultQueue, { _, _ in })
+            case false: //TODO: test if this is really synchronous
+                guard let data = entryString.dataUsingEncoding(NSUTF8StringEncoding) else {
+                    throw LXEndpointError.EntryEncodingError
+                }
+                self.stdoutHandle?.writeData(data)
             }
-            dispatch_write(STDOUT_FILENO, data, defaultQueue, { _, _ in })
-        case false: //TODO: test if this is really synchronous
-            guard let data = entryString.dataUsingEncoding(NSUTF8StringEncoding) else {
-                assertionFailure("Failure to create data from entry string")
-                return
-            }
-            self.stdoutHandle?.writeData(data)
+        } catch {
+            assertionFailure("Failure to create data from entry string")
         }
     }
 
