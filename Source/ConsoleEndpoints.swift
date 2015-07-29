@@ -14,7 +14,10 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-import Foundation
+
+private protocol LXConsoleWriter {
+    func write(entryString: String) throws -> Void
+}
 
 
 public class LXConsoleEndpoint: LXEndpoint {
@@ -23,7 +26,10 @@ public class LXConsoleEndpoint: LXEndpoint {
     public var entryFormatter: LXEntryFormatter
     public let requiresNewlines: Bool = true
 
+    private let writer: LXConsoleWriter
+
     public init(
+        asynchronous: Bool = false,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
@@ -31,50 +37,45 @@ public class LXConsoleEndpoint: LXEndpoint {
         self.minimumLogLevel = minimumLogLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
+
+        switch asynchronous {
+        case false:
+            self.writer = LXSynchronousConsoleWriter()
+        case true:
+            self.writer = LXAsynchronousConsoleWriter()
+        }
     }
 
     public func write(entryString: String) {
-        print(entryString, appendNewline: false)
-    }
-
-}
-
-
-public class LXSerialConsoleEndpoint: LXConsoleEndpoint {
-    private let async: Bool
-    private lazy var stdoutHandle: NSFileHandle? = { return self.async ? nil : NSFileHandle.fileHandleWithStandardOutput() }()
-
-    public init(
-        asynchronousWriting: Bool = false,
-        minimumLogLevel: LXLogLevel = .All,
-        dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
-        entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
-    ) {
-        self.async = asynchronousWriting
-        super.init(minimumLogLevel: minimumLogLevel, dateFormatter: dateFormatter, entryFormatter: entryFormatter)
-    }
-
-    deinit {
-        self.stdoutHandle?.closeFile()
-    }
-
-    public override func write(entryString: String) {
         do {
-            switch self.async {
-            case true:
-                guard let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
-                    throw LXEndpointError.EntryEncodingError
-                }
-                dispatch_write(STDOUT_FILENO, data, defaultQueue, { _, _ in })
-            case false: //TODO: test if this is really synchronous
-                guard let data = entryString.dataUsingEncoding(NSUTF8StringEncoding) else {
-                    throw LXEndpointError.EntryEncodingError
-                }
-                self.stdoutHandle?.writeData(data)
-            }
+            try self.writer.write(entryString)
         } catch {
             assertionFailure("Failure to create data from entry string")
         }
     }
 
+}
+
+
+private class LXSynchronousConsoleWriter: LXConsoleWriter {
+    private let stdoutHandle = NSFileHandle.fileHandleWithStandardOutput()
+
+    deinit { self.stdoutHandle.closeFile() }
+
+    private func write(entryString: String) throws {
+        guard let data = entryString.dataUsingEncoding(NSUTF8StringEncoding) else {
+            throw LXEndpointError.EntryEncodingError
+        }
+        self.stdoutHandle.writeData(data)
+    }
+}
+
+
+private class LXAsynchronousConsoleWriter: LXConsoleWriter {
+    private func write(entryString: String) throws {
+        guard let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
+            throw LXEndpointError.EntryEncodingError
+        }
+        dispatch_write(STDOUT_FILENO, data, defaultQueue, { _, _ in })
+    }
 }
