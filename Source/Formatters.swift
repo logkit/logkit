@@ -48,6 +48,7 @@ public class LXEntryFormatter {
     public class func longFormatter() -> Self { return self.init(closure: { entry in
         return "\(entry.dateTime) (\(entry.timestamp)) [\(entry.logLevel.uppercaseString)] {thread: \(entry.threadID) '\(entry.threadName)' main: \(entry.isMainThread)} \(entry.functionName) <\(entry.fileName):\(entry.lineNumber).\(entry.columnNumber)> \(entry.message)"
     })}
+    public class func messageOnlyFormatter() -> Self { return self.init(closure: { entry in return entry.message }) }
 
     private let entryFormatter: (entry: LXLogEntry) -> String
 
