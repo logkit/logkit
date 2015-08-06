@@ -103,7 +103,7 @@ public struct LXLogEntry {
     public let logKitVersion: String
 
     /// The name of the source file from which the log entry was created.
-    public var fileName: String { return self.filePath.lastPathComponent }
+    public var fileName: String { return (self.filePath as NSString).lastPathComponent }
 
 }
 
