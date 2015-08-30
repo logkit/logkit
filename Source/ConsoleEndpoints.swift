@@ -76,6 +76,6 @@ private class LXAsynchronousConsoleWriter: LXConsoleWriter {
         guard let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
             throw LXEndpointError.EntryEncodingError
         }
-        dispatch_write(STDOUT_FILENO, data, defaultQueue, { _, _ in })
+        dispatch_write(STDOUT_FILENO, data, LOGKIT_QUEUE, { _, _ in })
     }
 }

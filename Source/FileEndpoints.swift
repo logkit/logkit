@@ -64,7 +64,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
             assertionFailure("Could not open file at URL '\(self.currentURL.absoluteString)'")
             let nullHandle = NSFileHandle.fileHandleWithNullDevice()
             defer { nullHandle.closeFile() }
-            return dispatch_io_create(DISPATCH_IO_STREAM, nullHandle.fileDescriptor, defaultQueue, { _ in })
+            return dispatch_io_create(DISPATCH_IO_STREAM, nullHandle.fileDescriptor, LOGKIT_QUEUE, { _ in })
         }
         return openedChannel
     }()
@@ -73,7 +73,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     }()
 
     public init?(
-        baseURL: NSURL? = defaultLogFileURL,
+        baseURL: NSURL? = LOGKIT_LOG_FILE_URL,
         numberOfFiles: Int = 5,
         maxFileSizeKiB: Int = 1024,
         minimumLogLevel: LXLogLevel = .All,
@@ -117,7 +117,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
 
     public func write(entryString: String) {
         if let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) {
-            dispatch_io_write(self.channel, 0, data, defaultQueue, { _, _, _ in })
+            dispatch_io_write(self.channel, 0, data, LOGKIT_QUEUE, { _, _, _ in })
         } else {
             assertionFailure("Failure to create data from entry string")
         }
@@ -145,7 +145,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
             path,
             O_WRONLY | O_NONBLOCK | appendOption | O_CREAT,
             S_IRUSR | S_IWUSR | S_IRGRP,
-            defaultQueue,
+            LOGKIT_QUEUE,
             { _ in }
         ) as dispatch_io_t?
     }
@@ -208,7 +208,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
     }
 
     public init?(
-        fileURL: NSURL? = defaultLogFileURL,
+        fileURL: NSURL? = LOGKIT_LOG_FILE_URL,
         shouldAppend: Bool = true,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
@@ -227,7 +227,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
 
     public override func write(entryString: String) {
         if let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) {
-            dispatch_io_write(self.channel, 0, data, defaultQueue, { _, _, _ in })
+            dispatch_io_write(self.channel, 0, data, LOGKIT_QUEUE, { _, _, _ in })
         } else {
             assertionFailure("Failure to create data from entry string")
         }
@@ -252,7 +252,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
     }
 
     public init?(
-        baseURL: NSURL? = defaultLogFileURL,
+        baseURL: NSURL? = LOGKIT_LOG_FILE_URL,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()

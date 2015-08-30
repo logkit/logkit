@@ -17,10 +17,10 @@
 import Foundation
 
 /// The version of the LogKit framework currently in use.
-internal let logKitVersion = "2.0.0-beta-1"
+internal let LOGKIT_VERSION = "2.0.0-beta-1"
 
 
-internal let defaultQueue: dispatch_queue_t = {
+internal let LOGKIT_QUEUE: dispatch_queue_t = {
     if #available(OSX 10.10, OSXApplicationExtension 10.10,  iOS 8.0, iOSApplicationExtension 8.0, watchOS 2.0, *) {
         return dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
     } else {
@@ -29,7 +29,7 @@ internal let defaultQueue: dispatch_queue_t = {
 }()
 
 
-internal let defaultLogFileURL: NSURL? = {
+internal let LOGKIT_LOG_FILE_URL: NSURL? = {
     guard let
         bundleID = NSBundle.mainBundle().bundleIdentifier,
         appSupportURL = NSFileManager.defaultManager()
@@ -95,7 +95,7 @@ internal func dispatchRepeatingTimer(
     handler: () -> Void
 ) -> dispatch_source_t {
     let DOUBLE_NANO_PER_SEC = Double(NSEC_PER_SEC)
-    let timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, defaultQueue)
+    let timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, LOGKIT_QUEUE)
     dispatch_source_set_event_handler(timer, handler)
     dispatch_source_set_timer(
         timer,
