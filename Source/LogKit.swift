@@ -76,18 +76,6 @@ internal extension String {
 }
 
 
-extension NSDate: Comparable {}
-
-public func <(lhs: NSDate, rhs: NSDate) -> Bool {
-    switch lhs.compare(rhs) {
-    case .OrderedSame, .OrderedDescending:
-        return false
-    case .OrderedAscending:
-        return true
-    }
-}
-
-
 internal func dispatchRepeatingTimer(
     delay delay: NSTimeInterval,
     interval: NSTimeInterval,
