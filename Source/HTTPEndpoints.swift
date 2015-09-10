@@ -81,8 +81,8 @@ public class LXHTTPEndpoint: LXEndpoint {
         self.session.finishTasksAndInvalidate()
     }
 
-    public func write(entryString: String) {
-        guard let data = entryString.dataUsingEncoding(NSUTF8StringEncoding) else {
+    public func write(string: String) {
+        guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
             assertionFailure("Failure to create data from entry string")
             return
         }

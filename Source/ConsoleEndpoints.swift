@@ -46,9 +46,9 @@ public class LXConsoleEndpoint: LXEndpoint {
         }
     }
 
-    public func write(entryString: String) {
+    public func write(string: String) {
         do {
-            try self.writer.write(entryString)
+            try self.writer.write(string)
         } catch {
             assertionFailure("Failure to create data from entry string")
         }
@@ -62,8 +62,8 @@ private class LXSynchronousConsoleWriter: LXConsoleWriter {
 
     deinit { self.stdoutHandle.closeFile() }
 
-    private func write(entryString: String) throws {
-        guard let data = entryString.dataUsingEncoding(NSUTF8StringEncoding) else {
+    private func write(string: String) throws {
+        guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
             throw LXEndpointError.EntryEncodingError
         }
         self.stdoutHandle.writeData(data)
@@ -72,8 +72,8 @@ private class LXSynchronousConsoleWriter: LXConsoleWriter {
 
 
 private class LXAsynchronousConsoleWriter: LXConsoleWriter {
-    private func write(entryString: String) throws {
-        guard let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
+    private func write(string: String) throws {
+        guard let data = string.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
             throw LXEndpointError.EntryEncodingError
         }
         dispatch_write(STDOUT_FILENO, data, LOGKIT_QUEUE, { _, _ in })

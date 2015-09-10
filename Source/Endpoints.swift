@@ -31,8 +31,8 @@ public protocol LXEndpoint {
 
     :param: entryString The log entry, after being formatted by the `entryFormatter`.
     */
-    func write(entryString: String) -> Void
-    
+    func write(string: String) -> Void
+
 }
 
 
