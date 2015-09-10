@@ -17,6 +17,116 @@
 import Foundation
 
 
+private struct LXFileProperties {
+    let size: UIntMax?
+    let modified: NSTimeInterval?
+}
+
+
+private extension NSFileManager {
+
+    private func propertiesOfFileAtPath(path: String) throws -> LXFileProperties {
+        let attributes = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
+        return LXFileProperties(
+            size: (attributes[NSFileSize] as? NSNumber)?.unsignedLongLongValue,
+            modified: (attributes[NSFileModificationDate] as? NSDate)?.timeIntervalSinceReferenceDate
+        )
+    }
+
+    private func ensureFileAtURL(URL: NSURL, withIntermediateDirectories createDirs: Bool) -> Bool {
+        if let dirURL = URL.URLByDeletingLastPathComponent, path = URL.path {
+            do {
+                let manager = NSFileManager.defaultManager()
+                try manager.createDirectoryAtURL(dirURL, withIntermediateDirectories: createDirs, attributes: nil)
+                return manager.fileExistsAtPath(path) ? true : manager.createFileAtPath(path, contents: nil, attributes: nil)
+            } catch {
+                assertionFailure("File system error (maybe access denied) at path: '\(path)'")
+            }
+        }
+        assertionFailure("Invalid log file path '\(URL.absoluteString)'")
+        return false
+    }
+
+}
+
+
+private class LXLogFile {
+
+    private let lockQueue: dispatch_queue_t = dispatch_queue_create("logFile-Lock", DISPATCH_QUEUE_SERIAL)
+    private let handle: NSFileHandle
+    private let path: String
+    private var privateByteCounter: UIntMax?
+    private var privateModificationTracker: NSTimeInterval?
+
+    init?(URL: NSURL, shouldAppend: Bool) {
+        guard NSFileManager.defaultManager().ensureFileAtURL(URL, withIntermediateDirectories: true),
+        let path = URL.path, handle = NSFileHandle(forWritingAtPath: path) else {
+            assertionFailure("Error opening log file at URL '\(URL.absoluteString)'; is URL valid?")
+            self.path = ""
+            self.handle = NSFileHandle.fileHandleWithNullDevice()
+            self.handle.closeFile()
+            return nil
+        }
+        self.path = path
+        self.handle = handle
+        if shouldAppend {
+            self.privateByteCounter = UIntMax(self.handle.seekToEndOfFile())
+        } else {
+            self.handle.truncateFileAtOffset(0)
+            self.privateByteCounter = 0
+        }
+        do {
+            try self.privateModificationTracker = NSFileManager.defaultManager().propertiesOfFileAtPath(path).modified
+        } catch {}
+    }
+
+    deinit {
+        dispatch_sync(self.lockQueue, {
+            self.handle.synchronizeFile()
+            self.handle.closeFile()
+        })
+    }
+
+    var sizeInBytes: UIntMax? {
+        var size: UIntMax?
+        dispatch_sync(self.lockQueue, { size = self.privateByteCounter })
+        return size
+    }
+
+    var modificationDate: NSDate? {
+        var interval: NSTimeInterval?
+        dispatch_sync(self.lockQueue, { interval = self.privateModificationTracker })
+        return interval == nil ? nil : NSDate(timeIntervalSinceReferenceDate: interval!)
+    }
+
+//    private var properties: LXFileProperties? {
+//        var props: LXFileProperties?
+//        dispatch_sync(self.lockQueue, {
+//            do { props = try NSFileManager.defaultManager().propertiesOfFileAtPath(self.path) } catch {}
+//        })
+//        return props
+//    }
+
+    func writeData(data: NSData) {
+        dispatch_async(self.lockQueue, {
+            self.handle.writeData(data)
+            self.privateByteCounter = (self.privateByteCounter ?? 0) + UIntMax(data.length)
+            self.privateModificationTracker = CFAbsoluteTimeGetCurrent()
+        })
+    }
+
+    func reset() {
+        dispatch_sync(self.lockQueue, {
+            self.handle.synchronizeFile()
+            self.handle.truncateFileAtOffset(0)
+            self.privateByteCounter = 0
+            self.privateModificationTracker = CFAbsoluteTimeGetCurrent()
+        })
+    }
+
+}
+
+
 public class LXRotatingFileEndpoint: LXEndpoint {
     public var minimumLogLevel: LXLogLevel
     public var dateFormatter: LXDateFormatter
@@ -24,176 +134,98 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     public let requiresNewlines: Bool = true
 
     private let directoryURL: NSURL
-    private let baseFilename: String
-    private let maxFileSizeBytes: Int
-    private let numberOfFiles: Int
-    private lazy var currentIndex: Int = {
-        let names = Array(1...self.numberOfFiles).map({ i -> (index: Int, name: String) in
-            return (index: i, name: self.fileNameWithIndex(i))
-        })
-        let props = names.map({ index, name -> (index: Int, name: String, size: Int?, lastModified: NSDate?) in
-            let URL = self.directoryURL.URLByAppendingPathComponent(name, isDirectory: false)
-            guard let attributes = self.getAttributesForFileAtURL(URL) else {
-                return (index: index, name: name, size: nil, lastModified: nil)
+    private let baseFileName: String
+    private let maxFileSizeBytes: UIntMax
+    private let numberOfFiles: UInt
+
+    private lazy var currentIndex: UInt = {
+        let startingFile: (index: UInt, modified: NSTimeInterval) = Array(1...self.numberOfFiles).reduce((1, 0), combine: {
+            if let path = self.URLForIndex($1).path {
+                do {
+                    let props = try NSFileManager.defaultManager().propertiesOfFileAtPath(path)
+                    if let modified = props.modified where modified > $0.1 {
+                        return (index: $1, modified: modified)
+                    }
+                } catch {}
             }
-            let size = (attributes[NSFileSize] as? NSNumber)?.integerValue
-            let modified = attributes[NSFileModificationDate] as? NSDate
-            return (index: index, name: name, size: size, lastModified: modified)
+            return $0
         })
-        let lastModIndex = props.filter({ $0.lastModified != nil }).maxElement({ $0.lastModified! > $1.lastModified! })?.index
-        let underSizeIndexes = props.filter({ $0.size != nil && $0.size! < self.maxFileSizeBytes }).map({ $0.index })
-        switch (lastModIndex) {
-        // if lastModified exists and it is under size limit
-        case .Some(let index) where underSizeIndexes.contains(index):
-            return index
-        // if lastModified exists but has reached size limit and index is last file
-        case .Some(let index) where index == self.numberOfFiles:
-            return 1
-        // if lastModified exists but has reached size limit
-        case .Some(let index):
-            return index + 1
-        // if lastModified does not exist
-        case .None:
-            return 1
-        }
+        return startingFile.index
     }()
-    private lazy var channel: dispatch_io_t = {
-        let size = self.getSizeOfFileAtURL(self.currentURL)
-        let shouldAppend = size == nil || size! < self.maxFileSizeBytes
-        guard let openedChannel = self.openChannelAtURL(self.currentURL, forAppending: shouldAppend) else {
-            assertionFailure("Could not open file at URL '\(self.currentURL.absoluteString)'")
-            let nullHandle = NSFileHandle.fileHandleWithNullDevice()
-            defer { nullHandle.closeFile() }
-            return dispatch_io_create(DISPATCH_IO_STREAM, nullHandle.fileDescriptor, LOGKIT_QUEUE, { _ in })
+
+    private lazy var currentFile: LXLogFile? = {
+        print("Selected: \(self.currentIndex)")
+        guard let file = LXLogFile(URL: self.currentURL, shouldAppend: true) else {
+            assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
+            return nil
         }
-        return openedChannel
-    }()
-    private lazy var timer: dispatch_source_t = {
-        dispatchRepeatingTimer(delay: 5.0, interval: 30.0, tolerance: 5.0, handler: { self.rotateIfNeeded() })
+        return file
     }()
 
     public init?(
         baseURL: NSURL? = LOGKIT_LOG_FILE_URL,
-        numberOfFiles: Int = 5,
-        maxFileSizeKiB: Int = 1024,
+        numberOfFiles: UInt = 5,
+        maxFileSizeKiB: UInt = 1024,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
-        do {
-            self.dateFormatter = dateFormatter
-            self.entryFormatter = entryFormatter
-            self.maxFileSizeBytes = maxFileSizeKiB * 1024
-            self.numberOfFiles = numberOfFiles
-            guard let dirURL = baseURL?.URLByDeletingLastPathComponent, filename = baseURL?.lastPathComponent else {
-                throw LXEndpointError.CustomError(message: "The log file URL '\(baseURL?.absoluteString ?? String())' is invalid")
-            }
-            try NSFileManager.defaultManager().createDirectoryAtURL(dirURL, withIntermediateDirectories: true, attributes: nil)
-            self.minimumLogLevel = minimumLogLevel
-            self.directoryURL = dirURL
-            self.baseFilename = filename
-        } catch let error {
-            assertionFailure("\(error)")
+        self.dateFormatter = dateFormatter
+        self.entryFormatter = entryFormatter
+        self.maxFileSizeBytes = UIntMax(maxFileSizeKiB) * 1024
+        self.numberOfFiles = numberOfFiles
+        //TODO: check file or directory to predict if file is accessible
+        guard let dirURL = baseURL?.URLByDeletingLastPathComponent, filename = baseURL?.lastPathComponent else {
+            assertionFailure("The log file URL '\(baseURL?.absoluteString ?? String())' is invalid")
             self.minimumLogLevel = .None
             self.directoryURL = NSURL(string: "")!
-            self.baseFilename = ""
+            self.baseFileName = ""
             return nil
         }
-        dispatch_resume(self.timer)
+        self.minimumLogLevel = minimumLogLevel
+        self.directoryURL = dirURL
+        self.baseFileName = filename
     }
 
-    deinit {
-        dispatch_source_cancel(self.timer)
-        dispatch_io_close(self.channel, 0)
+    private var nextIndex: UInt { return self.currentIndex + 1 > self.numberOfFiles ? 1 : self.currentIndex + 1 }
+    private var currentURL: NSURL { return self.URLForIndex(self.currentIndex) }
+    private var nextURL: NSURL { return self.URLForIndex(self.nextIndex) }
+
+    private func URLForIndex(index: UInt) -> NSURL {
+        return self.directoryURL.URLByAppendingPathComponent(self.fileNameForIndex(index), isDirectory: false)
     }
 
-    private var currentURL: NSURL {
-        return self.directoryURL.URLByAppendingPathComponent(self.fileNameWithIndex(self.currentIndex), isDirectory: false)
+    private func fileNameForIndex(index: UInt) -> String {
+        let format = "%0\(Int(floor(log10(Double(self.numberOfFiles)) + 1.0)))d"
+        return "\(String(format: format, index))_\(self.baseFileName)"
     }
 
-    private var nextIndex: Int {
-        return self.currentIndex >= self.numberOfFiles ? 1 : self.currentIndex + 1
-    }
-
-    public func write(entryString: String) {
-        if let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) {
-            dispatch_io_write(self.channel, 0, data, LOGKIT_QUEUE, { _, _, _ in })
+    public func write(string: String) {
+        if let data = string.dataUsingEncoding(NSUTF8StringEncoding) {
+            //TODO: might pass test but file fills before write
+            if let nextFile = self.rotateToFileBeforeWritingDataWithLength(data.length) {
+                self.currentFile = nextFile
+                self.currentIndex = self.nextIndex
+            }
+            self.currentFile?.writeData(data)
+            print("Wrote to \(self.currentIndex); total \(self.currentFile?.sizeInBytes ?? 0) bytes")
         } else {
             assertionFailure("Failure to create data from entry string")
         }
-        dispatch_async(defaultQueue, { self.rotateIfNeeded() })
     }
 
-    public func resetCurrentFile() throws { //TODO: what happens when you open existing (and in use) file with truncate??
-        guard let openedChannel = self.openChannelAtURL(self.currentURL, forAppending: false) else {
-            throw LXEndpointError.CustomError(message: "")
-        }
-        self.swapCurrentChannelForChannel(openedChannel)
+    public func resetCurrentFile() {
+        self.currentFile?.reset()
     }
 
-    private func swapCurrentChannelForChannel(newChannel: dispatch_io_t) {
-        let oldChannel = self.channel
-        self.channel = newChannel
-        dispatch_io_close(oldChannel, 0)
-    }
-
-    private func openChannelAtURL(URL: NSURL, forAppending shouldAppend: Bool) -> dispatch_io_t? {
-        guard let path = URL.path else { return nil }
-        let appendOption = shouldAppend ? O_APPEND : O_TRUNC
-        return dispatch_io_create_with_path(
-            DISPATCH_IO_STREAM,
-            path,
-            O_WRONLY | O_NONBLOCK | appendOption | O_CREAT,
-            S_IRUSR | S_IWUSR | S_IRGRP,
-            LOGKIT_QUEUE,
-            { _ in }
-        ) as dispatch_io_t?
-    }
-
-    private func URLWithIndex(index: Int) -> NSURL {
-        return self.directoryURL.URLByAppendingPathComponent(self.fileNameWithIndex(index), isDirectory: false)
-    }
-
-    private func fileNameWithIndex(index: Int) -> String {
-        let format = "%0\(Int(floor(log10(Double(self.numberOfFiles)) + 1.0)))d"
-        return "\(String(format: format, index))_\(self.baseFilename)"
-    }
-
-    private func getAttributesForFileAtURL(URL: NSURL) -> [String: AnyObject]? {
-        do {
-            guard let filePath = URL.path else {
-                throw LXEndpointError.CustomError(message: "Could not determine file '\(URL.absoluteString)' filesystem path")
-            }
-            return try NSFileManager.defaultManager().attributesOfItemAtPath(filePath)
-        } catch {
+    private func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
+        switch self.currentFile?.sizeInBytes {
+        case .Some(let size) where size + UIntMax(length) > self.maxFileSizeBytes:  // Won't fit in current file
+            fallthrough
+        case .None:                                                                 // Can't determine size of current file
+            return LXLogFile(URL: self.nextURL, shouldAppend: false)
+        case .Some:                                                                 // Will fit in current file
             return nil
-        }
-    }
-
-    private func getSizeOfFileAtURL(URL: NSURL) -> Int? {
-        return (self.getAttributesForFileAtURL(self.currentURL)?[NSFileSize] as? NSNumber)?.integerValue
-    }
-
-    private func shouldRotate() -> Bool {
-        guard let currentSize = self.getSizeOfFileAtURL(self.currentURL) else {
-            return false //TODO: or should this be true?
-        }
-        return currentSize >= self.maxFileSizeBytes
-    }
-
-    private func doRotate() {
-        let nextURL = self.URLWithIndex(self.nextIndex)
-        if let newChannel = self.openChannelAtURL(nextURL, forAppending: false) {
-            self.currentIndex = self.nextIndex
-            self.swapCurrentChannelForChannel(newChannel)
-        } else {
-            assertionFailure("Failed to open next log file at '\(nextURL.absoluteString)'")
-        }
-    }
-
-    private func rotateIfNeeded() {
-        if self.shouldRotate() {
-            self.doRotate()
         }
     }
 
@@ -201,11 +233,6 @@ public class LXRotatingFileEndpoint: LXEndpoint {
 
 
 public class LXFileEndpoint: LXRotatingFileEndpoint {
-
-    private override var currentIndex: Int {
-        get { return 1 }
-        set {}
-    }
 
     public init?(
         fileURL: NSURL? = LOGKIT_LOG_FILE_URL,
@@ -217,39 +244,27 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
         super.init(
             baseURL: fileURL,
             numberOfFiles: 1,
-            maxFileSizeKiB: Int.max,
+            maxFileSizeKiB: 0,
             minimumLogLevel: minimumLogLevel,
             dateFormatter: dateFormatter,
             entryFormatter: entryFormatter
         )
-        dispatch_source_cancel(self.timer)
     }
 
-    public override func write(entryString: String) {
-        if let data = entryString.dispatchDataUsingEncoding(NSUTF8StringEncoding) {
-            dispatch_io_write(self.channel, 0, data, LOGKIT_QUEUE, { _, _, _ in })
-        } else {
-            assertionFailure("Failure to create data from entry string")
-        }
+    private override func fileNameForIndex(index: UInt) -> String {
+        return self.baseFileName
     }
 
-    private override var nextIndex: Int { return 1 }
-    private override func fileNameWithIndex(index: Int) -> String { return self.baseFilename }
-    private override func shouldRotate() -> Bool { return false }
-    private override func doRotate() {}
-    private override func rotateIfNeeded() {}
-
+    private override func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
+        return nil
+    }
+    
 }
 
 
 public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
 
     private let nameFormatter = LXDateFormatter.dateOnlyFormatter()
-
-    private override var currentIndex: Int {
-        get { return 1 }
-        set {}
-    }
 
     public init?(
         baseURL: NSURL? = LOGKIT_LOG_FILE_URL,
@@ -260,28 +275,26 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
         super.init(
             baseURL: baseURL,
             numberOfFiles: 1,
-            maxFileSizeKiB: Int.max,
+            maxFileSizeKiB: 0,
             minimumLogLevel: minimumLogLevel,
             dateFormatter: dateFormatter,
             entryFormatter: entryFormatter
         )
     }
 
-    private override var nextIndex: Int { return 1 }
-
-    private override func fileNameWithIndex(index: Int) -> String {
-        return "\(self.nameFormatter.stringFromDate(NSDate()))_\(self.baseFilename)"
+    private override func fileNameForIndex(index: UInt) -> String {
+        return "\(self.nameFormatter.stringFromDate(NSDate()))_\(self.baseFileName)"
     }
 
-    private func getModificationDateOfFileAtURL(URL: NSURL) -> NSDate? {
-        return self.getAttributesForFileAtURL(URL)?[NSFileModificationDate] as? NSDate
-    }
-
-    private override func shouldRotate() -> Bool {
-        guard let modDate = self.getModificationDateOfFileAtURL(self.currentURL) else {
-            return false //TODO: or should this be true?
+    private override func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
+        switch self.currentFile?.modificationDate {
+        case .Some(let modificationDate) where NSCalendar.currentCalendar().isDateNotToday(modificationDate):   // Wrong date
+            fallthrough
+        case .None:                                                                                             // Don't know
+            return LXLogFile(URL: self.nextURL, shouldAppend: false)
+        case .Some:                                                                                             // Correct date
+            return nil
         }
-        return NSCalendar.currentCalendar().isDateNotToday(modDate)
     }
 
 }
