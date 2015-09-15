@@ -41,7 +41,17 @@ public struct LXLogEntry {
     /// Indicates whether the log entry was created on the main thread.
     public let isMainThread: Bool
     /// The version of the LogKit framework that generated this entry.
-    public let logKitVersion: String
+    public let logKitVersion: String = LK_LOGKIT_VERSION
+
+    public let osVersionString: String = LK_DEVICE_OS.decription
+    public let osMajorVersion: Int = LK_DEVICE_OS.majorVersion
+    public let osMinorVersion: Int = LK_DEVICE_OS.minorVersion
+    public let osPatchVersion: Int = LK_DEVICE_OS.patchVersion
+    public let osBuildVersion: String = LK_DEVICE_OS.buildVersion
+    public let bundleID: String = LK_BUNDLE_ID
+    public let deviceModel: String = LK_DEVICE_MODEL
+    public let deviceVendorID: String = LK_DEVICE_IDS.vendor
+    public let deviceAdvertisingID: String = LK_DEVICE_IDS.advertising
 
     /// The name of the source file from which the log entry was created.
     public var fileName: String { return (self.filePath as NSString).lastPathComponent }
@@ -67,6 +77,15 @@ internal extension LXLogEntry {
         result["threadName"] = self.threadName
         result["isMainThread"] = self.isMainThread
         result["logKitVersion"] = self.logKitVersion
+        result["osVersionString"] = self.osVersionString
+        result["osMajorVersion"] = self.osMajorVersion
+        result["osMinorVersion"] = self.osMinorVersion
+        result["osPatchVersion"] = self.osPatchVersion
+        result["osBuildVersion"] = self.osBuildVersion
+        result["bundleID"] = self.bundleID
+        result["deviceModel"] = self.deviceModel
+        result["deviceVendorID"] = self.deviceVendorID
+        result["deviceAdvertisingID"] = self.deviceAdvertisingID
         return result
     }
 
