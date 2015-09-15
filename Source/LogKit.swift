@@ -15,6 +15,13 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 import Foundation
+#if os(iOS)
+import UIKit
+import AdSupport
+#endif
+
+/* This file is admittedly somewhat of a dumping ground for globals. */
+
 
 /// The version of the LogKit framework currently in use.
 internal let LK_LOGKIT_VERSION = "2.0.0-beta-1"
@@ -93,3 +100,59 @@ internal func dispatchRepeatingTimer(
     )
     return timer
 }
+
+
+internal let LK_BUNDLE_ID: String = NSBundle.mainBundle().bundleIdentifier ?? ""
+
+internal let LK_DEVICE_MODEL: String = {
+    var len: size_t = 0
+    if sysctlbyname("hw.model", nil, &len, nil, 0) == 0 {
+        var result = Array<CChar>(count: len, repeatedValue: 0)
+        if sysctlbyname("hw.model", &result, &len, nil, 0) == 0 {
+            return String.fromCString(result) ?? ""
+        }
+    }
+    return ""
+}()
+
+internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion: Int, patchVersion: Int, buildVersion: String) = {
+    var hold: (String, Int, Int, Int, String)?
+    dispatch_sync(LK_LOGKIT_QUEUE, {
+        let systemVersion = NSDictionary(contentsOfFile: "/System/Library/CoreServices/SystemVersion.plist")
+        let build = systemVersion?["ProductBuildVersion"] as? String ?? ""
+        let info = NSProcessInfo.processInfo()
+        let description = info.operatingSystemVersionString
+        if #available(OSX 10.10, OSXApplicationExtension 10.10,  iOS 8.0, iOSApplicationExtension 8.0, watchOS 2.0, *) {
+            let version = info.operatingSystemVersion
+            hold = (description, version.majorVersion, version.minorVersion, version.patchVersion, build)
+        } else {
+            let version = systemVersion?["ProductVersion"] as? String
+            let parts = version?.characters.split(".") ?? []
+            let major = parts.count > 0 ? Int(String(parts[0])) ?? -1 : -1
+            let minor = parts.count > 1 ? Int(String(parts[1])) ?? -1 : -1
+            let patch = parts.count > 2 ? Int(String(parts[2])) ?? -1 : -1
+            hold = (description, major, minor, patch, build)
+        }
+    })
+    return hold!
+}()
+
+
+internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
+#if os(OSX)
+    var timeSpec = timespec(tv_sec: 0, tv_nsec: 0)
+    var bytes = Array<CUnsignedChar>(count: 16, repeatedValue: 0)
+    guard gethostuuid(&bytes, &timeSpec) == 0 else {
+        return ("", "")
+    }
+    let nsuuid = NSUUID(UUIDBytes: bytes)
+    return (nsuuid.UUIDString, "")
+#elseif os(iOS)
+    let vendorID = UIDevice.currentDevice().identifierForVendor?.UUIDString ?? ""
+    let adManager = ASIdentifierManager.sharedManager()
+    let advertisingID = adManager.advertisingTrackingEnabled ? adManager.advertisingIdentifier.UUIDString : ""
+    return (vendorID, advertisingID)
+#else
+    return ("", "")
+#endif
+}()
