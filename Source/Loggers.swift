@@ -79,7 +79,7 @@ public final class LXLogger {
                     threadID: threadID,
                     threadName: threadName,
                     isMainThread: isMainThread,
-                    logKitVersion: LOGKIT_VERSION
+                    logKitVersion: LK_LOGKIT_VERSION,
                 ), appendNewline: endpoint.requiresNewlines)
                 endpoint.write(entryString)
             }

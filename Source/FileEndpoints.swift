@@ -163,7 +163,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     }()
 
     public init?(
-        baseURL: NSURL? = LOGKIT_LOG_FILE_URL,
+        baseURL: NSURL? = LK_LOG_FILE_URL,
         numberOfFiles: UInt = 5,
         maxFileSizeKiB: UInt = 1024,
         minimumLogLevel: LXLogLevel = .All,
@@ -235,7 +235,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
 public class LXFileEndpoint: LXRotatingFileEndpoint {
 
     public init?(
-        fileURL: NSURL? = LOGKIT_LOG_FILE_URL,
+        fileURL: NSURL? = LK_LOG_FILE_URL,
         shouldAppend: Bool = true,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
@@ -267,7 +267,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
     private let nameFormatter = LXDateFormatter.dateOnlyFormatter()
 
     public init?(
-        baseURL: NSURL? = LOGKIT_LOG_FILE_URL,
+        baseURL: NSURL? = LK_LOG_FILE_URL,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
