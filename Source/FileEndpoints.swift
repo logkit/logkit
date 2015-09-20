@@ -33,19 +33,6 @@ private extension NSFileManager {
         )
     }
 
-    private func ensureFileAtURL(URL: NSURL, withIntermediateDirectories createDirs: Bool) -> Bool {
-        if let dirURL = URL.URLByDeletingLastPathComponent, path = URL.path {
-            do {
-                let manager = NSFileManager.defaultManager()
-                try manager.createDirectoryAtURL(dirURL, withIntermediateDirectories: createDirs, attributes: nil)
-                return manager.fileExistsAtPath(path) ? true : manager.createFileAtPath(path, contents: nil, attributes: nil)
-            } catch {
-                assertionFailure("File system error (maybe access denied) at path: '\(path)'")
-            }
-        }
-        assertionFailure("Invalid log file path '\(URL.absoluteString)'")
-        return false
-    }
 
 }
 
