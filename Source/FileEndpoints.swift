@@ -17,10 +17,7 @@
 import Foundation
 
 
-private struct LXFileProperties {
-    let size: UIntMax?
-    let modified: NSTimeInterval?
-}
+private let defaultLogFileURL: NSURL? = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent("log.txt", isDirectory: false)
 
 
 private extension NSFileManager {
@@ -33,7 +30,12 @@ private extension NSFileManager {
         )
     }
 
+}
 
+
+private struct LXFileProperties {
+    let size: UIntMax?
+    let modified: NSTimeInterval?
 }
 
 
@@ -150,7 +152,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     }()
 
     public init?(
-        baseURL: NSURL? = LK_LOG_FILE_URL,
+        baseURL: NSURL? = defaultLogFileURL,
         numberOfFiles: UInt = 5,
         maxFileSizeKiB: UInt = 1024,
         minimumLogLevel: LXLogLevel = .All,
@@ -222,7 +224,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
 public class LXFileEndpoint: LXRotatingFileEndpoint {
 
     public init?(
-        fileURL: NSURL? = LK_LOG_FILE_URL,
+        fileURL: NSURL? = defaultLogFileURL,
         shouldAppend: Bool = true,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
@@ -254,7 +256,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
     private let nameFormatter = LXDateFormatter.dateOnlyFormatter()
 
     public init?(
-        baseURL: NSURL? = LK_LOG_FILE_URL,
+        baseURL: NSURL? = defaultLogFileURL,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()

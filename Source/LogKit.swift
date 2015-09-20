@@ -36,7 +36,7 @@ internal let LK_LOGKIT_QUEUE: dispatch_queue_t = {
 }()
 
 
-internal let LK_LOG_FILE_URL: NSURL? = {
+internal let LK_DEFAULT_LOG_DIRECTORY: NSURL? = {
     guard let
         bundleID = NSBundle.mainBundle().bundleIdentifier,
         appSupportURL = NSFileManager.defaultManager()
@@ -48,7 +48,6 @@ internal let LK_LOG_FILE_URL: NSURL? = {
     return appSupportURL
         .URLByAppendingPathComponent(bundleID, isDirectory: true)
         .URLByAppendingPathComponent("logs", isDirectory: true)
-        .URLByAppendingPathComponent("log.txt", isDirectory: false)
 }()
 
 
