@@ -53,16 +53,16 @@ internal let LK_DEFAULT_LOG_DIRECTORY: NSURL? = {
 
 internal extension NSCalendar {
 
-    internal func isDateNotToday(date: NSDate) -> Bool {
-        if #available(iOS 8.0, iOSApplicationExtension 8.0, watchOS 2.0, *) {
-            return !self.isDate(date, inSameDayAsDate: NSDate())
+    internal func isDateSameAsToday(date: NSDate) -> Bool {
+        if #available(OSX 10.9, OSXApplicationExtension 10.9,  iOS 8.0, iOSApplicationExtension 8.0, watchOS 2.0, *) {
+            return self.isDateInToday(date)
         } else {
-            let now = NSDate()
-            let todayDay = self.ordinalityOfUnit(.Day, inUnit: .Year, forDate: now)
-            let todayYear = self.ordinalityOfUnit(.Year, inUnit: .Era, forDate: now)
+            let today = NSDate()
+            let todayDay = self.ordinalityOfUnit(.Day, inUnit: .Year, forDate: today)
+            let todayYear = self.ordinalityOfUnit(.Year, inUnit: .Era, forDate: today)
             let dateDay = self.ordinalityOfUnit(.Day, inUnit: .Year, forDate: date)
             let dateYear = self.ordinalityOfUnit(.Year, inUnit: .Era, forDate: date)
-            return todayDay != dateDay || todayYear != dateYear
+            return todayYear == dateYear && todayDay == dateDay
         }
     }
 
@@ -97,7 +97,7 @@ internal extension NSFileManager {
         assertionFailure("Invalid file path '\(URL.absoluteString)'")
         return false
     }
-    
+
 }
 
 

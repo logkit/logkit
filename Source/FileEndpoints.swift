@@ -282,11 +282,11 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
 
     private override func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
         switch self.currentFile?.modificationDate {
-        case .Some(let modificationDate) where NSCalendar.currentCalendar().isDateNotToday(modificationDate):   // Wrong date
+        case .Some(let modificationDate) where !UTCCalendar.isDateSameAsToday(modificationDate):    // Wrong date
             fallthrough
-        case .None:                                                                                             // Don't know
+        case .None:                                                                                 // Don't know
             return LXLogFile(URL: self.nextURL, shouldAppend: false)
-        case .Some:                                                                                             // Correct date
+        case .Some:                                                                                 // Correct date
             return nil
         }
     }
