@@ -17,6 +17,111 @@
 import Foundation
 
 
+private let defaultSuccessCodes = Set([200, 201, 202, 204])
+private let defaultCacheFileURL: NSURL = {
+    guard let URL = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent("httpCache.txt", isDirectory: false) else {
+        assertionFailure("Failure to resolve default HTTP Endpoint cache file URL")
+        return NSURL(string: "")!
+    }
+    return URL
+}()
+
+
+private class LXPersistedCache {
+    private let lock: dispatch_queue_t = dispatch_queue_create("persistedCacheQueue", DISPATCH_QUEUE_SERIAL)
+    private let storage: NSFileHandle?
+    private var cache: [UInt: NSData]
+    private var inProgress: [UInt: NSTimeInterval] = [:]
+    private let timeoutInterval: NSTimeInterval
+    private var currentMaxID: UInt
+
+    init(timeoutInterval: NSTimeInterval) {
+        self.timeoutInterval = timeoutInterval
+        NSFileManager.defaultManager().ensureFileAtURL(defaultCacheFileURL, withIntermediateDirectories: true)
+        do { try self.storage = NSFileHandle(forUpdatingURL: defaultCacheFileURL) } catch { self.storage = nil }
+        self.storage?.seekToFileOffset(0) // Do we need to do this?
+        self.cache = [:]
+        let encoded = self.storage?.readDataToEndOfFile() ?? NSData()
+        if let decoded = NSString(data: encoded, encoding: NSUTF8StringEncoding) as? String {
+            for lines in decoded.componentsSeparatedByString("\n") {
+                let line = lines.componentsSeparatedByString(" ")
+                if line.count == 2, let id = UInt(line[0]), data = NSData(base64EncodedString: line[1], options: []) {
+                    self.cache[id] = data
+                } //TODO: error handling - corrupted file?
+            }
+        }
+        self.currentMaxID = self.cache.keys.maxElement() ?? 0
+        assert(self.storage != nil, "HTTP Cache could not open cache file.")
+    }
+
+    deinit {
+        dispatch_barrier_sync(self.lock, {
+            self.storage?.synchronizeFile()
+            self.storage?.closeFile()
+        })
+    }
+
+    func addData(data: NSData) {
+        dispatch_async(self.lock, {
+            let id = ++self.currentMaxID
+            self.cache[id] = data
+
+            self.storage?.seekToEndOfFile() // Do we need to do this?
+            guard let outData = self.dataString(data, withID: id).dataUsingEncoding(NSUTF8StringEncoding) else {
+                assertionFailure("Failure to encode data for temporary storage")
+                return
+            }
+            self.storage?.writeData(outData)
+        })
+    }
+
+    func reserveData() -> [UInt: NSData] {
+        var reserved: [UInt: NSData]?
+        dispatch_sync(self.lock, {
+            let now = CFAbsoluteTimeGetCurrent()
+            reserved = self.cache
+            let ignored = self.inProgress.filter({ _, expiry in now < expiry }).map({ id, _ in id })
+            for id in ignored { reserved!.removeValueForKey(id) }
+            let expires = now + self.timeoutInterval
+            for id in reserved!.keys { self.inProgress[id] = expires }
+        })
+        return reserved!
+    }
+
+    func completeProgressOnIDs(ids: [UInt]) {
+        dispatch_async(self.lock, {
+            for id in ids {
+                self.cache.removeValueForKey(id)
+                self.inProgress.removeValueForKey(id)
+            }
+
+            var completeOutput: String = ""
+            for (id, data) in self.cache {
+                completeOutput += self.dataString(data, withID: id)
+            }
+            guard let outData = completeOutput.dataUsingEncoding(NSUTF8StringEncoding) else {
+                assertionFailure("//TODO:")
+                return //TODO: what do we really want to do if encoding fails? leave the file alone? dump what was in there?
+            }
+            self.storage?.truncateFileAtOffset(0)
+            self.storage?.writeData(outData)
+        })
+    }
+
+    func cancelProgressOnIDs(ids: [UInt]) {
+        dispatch_async(self.lock, {
+            for id in ids {
+                self.inProgress.removeValueForKey(id)
+            }
+        })
+    }
+
+    func dataString(data: NSData, withID id: UInt) -> String {
+        return "\(id) \(data.base64EncodedStringWithOptions([]))\n"
+    }
+
+}
+
 /// Makes an attempt to upload entries in order, but no guarantee
 public class LXHTTPEndpoint: LXEndpoint {
     public var minimumLogLevel: LXLogLevel
@@ -24,18 +129,20 @@ public class LXHTTPEndpoint: LXEndpoint {
     public var entryFormatter: LXEntryFormatter
     public let requiresNewlines: Bool = false
 
-    private let lock: dispatch_queue_t = dispatch_queue_create("LX-HTTPEndpoint-Family-Lock", DISPATCH_QUEUE_SERIAL)
-    private var suspended: Bool = false
-    private var pending: [NSURLSessionTask] = []
-    private lazy var clearTimer: dispatch_source_t = { return self.newClearTimer() }()
-
     private let successCodes: Set<Int>
     private let session: NSURLSession
     private let request: NSURLRequest
 
+    private let cache: LXPersistedCache = LXPersistedCache(timeoutInterval: 50)
+    private lazy var timer: NSTimer = {
+        let timer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: "upload:", userInfo: nil, repeats: true)
+        timer.tolerance = 10
+        return timer
+    }()
+
     public init(
         request: NSURLRequest,
-        successCodes: Set<Int> = Set([200, 201, 202, 204]),
+        successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
@@ -49,13 +156,13 @@ public class LXHTTPEndpoint: LXEndpoint {
         self.session = NSURLSession(configuration: sessionConfiguration)
         self.request = request
 
-        dispatch_resume(self.clearTimer)
+        self.timer.fire()
     }
 
     public convenience init(
         URL: NSURL,
         HTTPMethod: String,
-        successCodes: Set<Int> = Set([200, 201, 202, 204]),
+        successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
@@ -75,9 +182,8 @@ public class LXHTTPEndpoint: LXEndpoint {
     }
 
     deinit {
-        if !self.suspended {
-            dispatch_source_cancel(self.clearTimer)
-        }
+        self.timer.fire()
+        self.timer.invalidate()
         self.session.finishTasksAndInvalidate()
     }
 
@@ -86,51 +192,24 @@ public class LXHTTPEndpoint: LXEndpoint {
             assertionFailure("Failure to create data from entry string")
             return
         }
-        self.uploadData(data)
+        self.cache.addData(data)
+        self.timer.fire() // or should we just wait for the next timer firing?
     }
 
-    private func newClearTimer() -> dispatch_source_t {
-        return dispatchRepeatingTimer(delay: 5.0, interval: 15.0, tolerance: 5.0, handler: { self.clearCompleted() })
-    }
-
-    private func uploadData(data: NSData) {
-        dispatch_async(self.lock, {
-            let task = self.session.uploadTaskWithRequest(self.request, fromData: data, completionHandler: { _, response, _ in
-                if !self.successCodes.contains((response as? NSHTTPURLResponse)?.statusCode ?? -1) {
-                    self.uploadData(data)
-                }
-            })
-            if !self.suspended {
+    @objc private func upload(timer: NSTimer?) {
+        dispatch_async(LK_LOGKIT_QUEUE, {
+            let pendingUploads = self.cache.reserveData()
+            for (id, data) in pendingUploads {
+                let task = self.session.uploadTaskWithRequest(self.request, fromData: data, completionHandler: { _, response, _ in
+                    if self.successCodes.contains((response as? NSHTTPURLResponse)?.statusCode ?? -1) {
+                        self.cache.completeProgressOnIDs([id]) //TODO: more efficient releasing
+                    } else {
+                        self.cache.cancelProgressOnIDs([id])
+                    }
+                })
                 task.resume()
             }
         })
-    }
-
-    private func clearCompleted() {
-        dispatch_barrier_async(self.lock, {
-            self.pending = self.pending.filter({ $0.state == .Running || $0.state == .Suspended })
-        })
-    }
-
-    public func suspend() {
-        if !self.suspended {
-            dispatch_source_cancel(self.clearTimer)
-            self.suspended = true
-            dispatch_barrier_async(self.lock, {
-                self.pending.filter({ $0.state == .Running }).map({ task -> Void in task.suspend() })
-            })
-        }
-    }
-
-    public func resume() {
-        if self.suspended {
-            self.suspended = false
-            self.clearTimer = self.newClearTimer()
-            dispatch_resume(self.clearTimer)
-            dispatch_barrier_async(self.lock, {
-                self.pending.filter({ $0.state == .Suspended }).map({ task -> Void in task.resume() })
-            })
-        }
     }
 
 }
@@ -140,7 +219,7 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
 
     public init(
         request: NSURLRequest,
-        successCodes: Set<Int> = Set([200, 201, 202, 204]),
+        successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter()
@@ -158,7 +237,7 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
     public convenience init(
         URL: NSURL,
         HTTPMethod: String,
-        successCodes: Set<Int> = Set([200, 201, 202, 204]),
+        successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter()
