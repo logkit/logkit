@@ -18,6 +18,11 @@ import Foundation
 
 
 private let defaultLogFileURL: NSURL? = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent("log.txt", isDirectory: false)
+private let UTCCalendar: NSCalendar = { //TODO: this is a cheap hack because .currentCalendar() compares dates based on local TZ
+    let cal = NSCalendar.currentCalendar().copy() as! NSCalendar
+    cal.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+    return cal
+}()
 
 
 private extension NSFileManager {
