@@ -75,7 +75,7 @@ private class LXLogFile {
     }
 
     deinit {
-        dispatch_sync(self.lockQueue, {
+        dispatch_barrier_sync(self.lockQueue, {
             self.handle.synchronizeFile()
             self.handle.closeFile()
         })
@@ -148,7 +148,6 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     }()
 
     private lazy var currentFile: LXLogFile? = {
-        print("Selected: \(self.currentIndex)")
         guard let file = LXLogFile(URL: self.currentURL, shouldAppend: true) else {
             assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
             return nil
@@ -202,7 +201,6 @@ public class LXRotatingFileEndpoint: LXEndpoint {
                 self.currentIndex = self.nextIndex
             }
             self.currentFile?.writeData(data)
-            print("Wrote to \(self.currentIndex); total \(self.currentFile?.sizeInBytes ?? 0) bytes")
         } else {
             assertionFailure("Failure to create data from entry string")
         }
@@ -284,7 +282,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
         switch self.currentFile?.modificationDate {
         case .Some(let modificationDate) where !UTCCalendar.isDateSameAsToday(modificationDate):    // Wrong date
             fallthrough
-        case .None:                                                                                 // Don't know
+        case .None:                                                                                 // Can't determine the date
             return LXLogFile(URL: self.nextURL, shouldAppend: false)
         case .Some:                                                                                 // Correct date
             return nil
