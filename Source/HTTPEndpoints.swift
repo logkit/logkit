@@ -29,19 +29,19 @@ private let defaultCacheFileURL: NSURL = {
 
 private class LXPersistedCache {
     private let lock: dispatch_queue_t = dispatch_queue_create("persistedCacheQueue", DISPATCH_QUEUE_SERIAL)
-    private let storage: NSFileHandle?
+    private let file: NSFileHandle?
     private var cache: [UInt: NSData]
-    private var inProgress: [UInt: NSTimeInterval] = [:]
+    private var reserved: [UInt: NSTimeInterval] = [:]
     private let timeoutInterval: NSTimeInterval
     private var currentMaxID: UInt
 
     init(timeoutInterval: NSTimeInterval) {
         self.timeoutInterval = timeoutInterval
         NSFileManager.defaultManager().ensureFileAtURL(defaultCacheFileURL, withIntermediateDirectories: true)
-        do { try self.storage = NSFileHandle(forUpdatingURL: defaultCacheFileURL) } catch { self.storage = nil }
-        self.storage?.seekToFileOffset(0) // Do we need to do this?
+        do { try self.file = NSFileHandle(forUpdatingURL: defaultCacheFileURL) } catch { self.file = nil }
+        self.file?.seekToFileOffset(0) // Do we need to do this?
         self.cache = [:]
-        let encoded = self.storage?.readDataToEndOfFile() ?? NSData()
+        let encoded = self.file?.readDataToEndOfFile() ?? NSData()
         if let decoded = NSString(data: encoded, encoding: NSUTF8StringEncoding) as? String {
             for lines in decoded.componentsSeparatedByString("\n") {
                 let line = lines.componentsSeparatedByString(" ")
@@ -51,13 +51,13 @@ private class LXPersistedCache {
             }
         }
         self.currentMaxID = self.cache.keys.maxElement() ?? 0
-        assert(self.storage != nil, "HTTP Cache could not open cache file.")
+        assert(self.file != nil, "HTTP Cache could not open cache file.")
     }
 
     deinit {
         dispatch_barrier_sync(self.lock, {
-            self.storage?.synchronizeFile()
-            self.storage?.closeFile()
+            self.file?.synchronizeFile()
+            self.file?.closeFile()
         })
     }
 
@@ -66,52 +66,52 @@ private class LXPersistedCache {
             let id = ++self.currentMaxID
             self.cache[id] = data
 
-            self.storage?.seekToEndOfFile() // Do we need to do this?
+            self.file?.seekToEndOfFile() // Do we need to do this?
             guard let outData = self.dataString(data, withID: id).dataUsingEncoding(NSUTF8StringEncoding) else {
                 assertionFailure("Failure to encode data for temporary storage")
                 return
             }
-            self.storage?.writeData(outData)
+            self.file?.writeData(outData)
         })
     }
 
     func reserveData() -> [UInt: NSData] {
-        var reserved: [UInt: NSData]?
+        var toReserve: [UInt: NSData]?
         dispatch_sync(self.lock, {
             let now = CFAbsoluteTimeGetCurrent()
-            reserved = self.cache
-            let ignored = self.inProgress.filter({ _, expiry in now < expiry }).map({ id, _ in id })
-            for id in ignored { reserved!.removeValueForKey(id) }
+            toReserve = self.cache
+            let ignored = self.reserved.filter({ _, expiry in now < expiry }).map({ id, _ in id })
+            for id in ignored { toReserve!.removeValueForKey(id) }
             let expires = now + self.timeoutInterval
-            for id in reserved!.keys { self.inProgress[id] = expires }
+            for id in toReserve!.keys { self.reserved[id] = expires }
         })
-        return reserved!
+        return toReserve!
     }
 
     func completeProgressOnIDs(ids: [UInt]) {
         dispatch_async(self.lock, {
             for id in ids {
                 self.cache.removeValueForKey(id)
-                self.inProgress.removeValueForKey(id)
+                self.reserved.removeValueForKey(id)
             }
 
             var completeOutput: String = ""
             for (id, data) in self.cache {
                 completeOutput += self.dataString(data, withID: id)
             }
-            guard let outData = completeOutput.dataUsingEncoding(NSUTF8StringEncoding) else {
-                assertionFailure("//TODO:")
+            guard let fileData = completeOutput.dataUsingEncoding(NSUTF8StringEncoding) else {
+                assertionFailure("Failure to encode data for temporary storage")
                 return //TODO: what do we really want to do if encoding fails? leave the file alone? dump what was in there?
             }
-            self.storage?.truncateFileAtOffset(0)
-            self.storage?.writeData(outData)
+            self.file?.truncateFileAtOffset(0)
+            self.file?.writeData(fileData)
         })
     }
 
     func cancelProgressOnIDs(ids: [UInt]) {
         dispatch_async(self.lock, {
             for id in ids {
-                self.inProgress.removeValueForKey(id)
+                self.reserved.removeValueForKey(id)
             }
         })
     }
