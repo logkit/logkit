@@ -63,30 +63,31 @@ public struct LXLogEntry {
 internal extension LXLogEntry {
     /// Returns log entry as a dictionary. Will replace any top-level `userInfo` items that use one of the reserved names.
     internal func asMap() -> [String: AnyObject] {
-        var result = self.userInfo
-        result["message"] = self.message
-        result["level"] = self.level
-        result["timestamp"] = self.timestamp
-        result["dateTime"] = self.dateTime
-        result["functionName"] = self.functionName
-        result["fileName"] = self.fileName
-        result["filePath"] = self.filePath
-        result["lineNumber"] = self.lineNumber
-        result["columnNumber"] = self.columnNumber
-        result["threadID"] = self.threadID
-        result["threadName"] = self.threadName
-        result["isMainThread"] = self.isMainThread
-        result["logKitVersion"] = self.logKitVersion
-        result["osVersionString"] = self.osVersionString
-        result["osMajorVersion"] = self.osMajorVersion
-        result["osMinorVersion"] = self.osMinorVersion
-        result["osPatchVersion"] = self.osPatchVersion
-        result["osBuildVersion"] = self.osBuildVersion
-        result["bundleID"] = self.bundleID
-        result["deviceModel"] = self.deviceModel
-        result["deviceVendorID"] = self.deviceVendorID
-        result["deviceAdvertisingID"] = self.deviceAdvertisingID
-        return result
+        return [
+            "userInfo": self.userInfo,
+            "message": self.message,
+            "level": self.level,
+            "timestamp": self.timestamp,
+            "dateTime": self.dateTime,
+            "functionName": self.functionName,
+            "fileName": self.fileName,
+            "filePath": self.filePath,
+            "lineNumber": self.lineNumber,
+            "columnNumber": self.columnNumber,
+            "threadID": self.threadID,
+            "threadName": self.threadName,
+            "isMainThread": self.isMainThread,
+            "logKitVersion": self.logKitVersion,
+            "osVersionString": self.osVersionString,
+            "osMajorVersion": self.osMajorVersion,
+            "osMinorVersion": self.osMinorVersion,
+            "osPatchVersion": self.osPatchVersion,
+            "osBuildVersion": self.osBuildVersion,
+            "bundleID": self.bundleID,
+            "deviceModel": self.deviceModel,
+            "deviceVendorID": self.deviceVendorID,
+            "deviceAdvertisingID": self.deviceAdvertisingID,
+        ]
     }
 
 }
