@@ -14,9 +14,11 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+import Foundation
+
 
 private protocol LXConsoleWriter {
-    func write(entryString: String) throws -> Void
+    func writeData(data: NSData) -> Void
 }
 
 
@@ -29,7 +31,7 @@ public class LXConsoleEndpoint: LXEndpoint {
     private let writer: LXConsoleWriter
 
     public init(
-        asynchronous: Bool = false,
+        synchronous: Bool = true,
         minimumLogLevel: LXLogLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
@@ -38,20 +40,20 @@ public class LXConsoleEndpoint: LXEndpoint {
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
 
-        switch asynchronous {
-        case false:
-            self.writer = LXSynchronousConsoleWriter()
+        switch synchronous {
         case true:
+            self.writer = LXSynchronousConsoleWriter()
+        case false:
             self.writer = LXAsynchronousConsoleWriter()
         }
     }
 
     public func write(string: String) {
-        do {
-            try self.writer.write(string)
-        } catch {
+        guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
             assertionFailure("Failure to create data from entry string")
+            return
         }
+        self.writer.writeData(data)
     }
 
 }
@@ -62,20 +64,20 @@ private class LXSynchronousConsoleWriter: LXConsoleWriter {
 
     deinit { self.stdoutHandle.closeFile() }
 
-    private func write(string: String) throws {
-        guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
-            throw LXEndpointError.EntryEncodingError
-        }
+    private func writeData(data: NSData) {
         self.stdoutHandle.writeData(data)
     }
+
 }
 
 
 private class LXAsynchronousConsoleWriter: LXConsoleWriter {
-    private func write(string: String) throws {
-        guard let data = string.dispatchDataUsingEncoding(NSUTF8StringEncoding) else {
-            throw LXEndpointError.EntryEncodingError
+    private func writeData(data: NSData) {
+        guard let dispatchData = dispatch_data_create(data.bytes, data.length, nil, nil) else {
+            assertionFailure("Failure to create data from entry string")
+            return
         }
-        dispatch_write(STDOUT_FILENO, data, LK_LOGKIT_QUEUE, { _, _ in })
+        dispatch_write(STDOUT_FILENO, dispatchData, LK_LOGKIT_QUEUE, { _, _ in })
     }
+
 }
