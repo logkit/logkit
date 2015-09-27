@@ -69,7 +69,7 @@ public final class LXLogger {
                 let entryString = endpoint.entryFormatter.stringFromEntry(LXLogEntry(
                     message: message,
                     userInfo: userInfo,
-                    logLevel: level.description,
+                    level: level.description,
                     timestamp: now.timeIntervalSince1970,
                     dateTime: endpoint.dateFormatter.stringFromDate(now),
                     functionName: functionName,

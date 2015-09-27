@@ -21,7 +21,7 @@ public struct LXLogEntry {
     /// A dictionary of additional values to be provided to the entry formatter.
     public let userInfo: [String: AnyObject]
     /// The name of the entry's log level.
-    public let logLevel: String
+    public let level: String
     /// The number of seconds since the Unix epoch (midnight 1970-01-01 UTC).
     public let timestamp: Double
     /// The entry's timestamp as a string formatted by an endpoint's `dateFormatter`.
@@ -65,7 +65,7 @@ internal extension LXLogEntry {
     internal func asMap() -> [String: AnyObject] {
         var result = self.userInfo
         result["message"] = self.message
-        result["logLevel"] = self.logLevel
+        result["level"] = self.level
         result["timestamp"] = self.timestamp
         result["dateTime"] = self.dateTime
         result["functionName"] = self.functionName

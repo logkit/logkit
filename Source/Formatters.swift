@@ -39,9 +39,9 @@ public class LXDateFormatter {
 
 public class LXEntryFormatter {
 
-    public class func longFormatter() -> Self { return self.init { e in "\(e.dateTime) (\(e.timestamp)) [\(e.logLevel.uppercaseString)] {thread: \(e.threadID) '\(e.threadName)' main: \(e.isMainThread)} \(e.functionName) <\(e.fileName):\(e.lineNumber).\(e.columnNumber)> \(e.message)" } }
-    public class func standardFormatter() -> Self { return self.init { e in "\(e.dateTime) [\(e.logLevel.uppercaseString)] \(e.functionName) <\(e.fileName):\(e.lineNumber)> \(e.message)" } }
-    public class func shortFormatter() -> Self { return self.init { e in "\(e.dateTime) [\(e.logLevel.uppercaseString)] \(e.message)" } }
+    public class func longFormatter() -> Self { return self.init { e in "\(e.dateTime) (\(e.timestamp)) [\(e.level.uppercaseString)] {thread: \(e.threadID) '\(e.threadName)' main: \(e.isMainThread)} \(e.functionName) <\(e.fileName):\(e.lineNumber).\(e.columnNumber)> \(e.message)" } }
+    public class func standardFormatter() -> Self { return self.init { e in "\(e.dateTime) [\(e.level.uppercaseString)] \(e.functionName) <\(e.fileName):\(e.lineNumber)> \(e.message)" } }
+    public class func shortFormatter() -> Self { return self.init { e in "\(e.dateTime) [\(e.level.uppercaseString)] \(e.message)" } }
     public class func messageOnlyFormatter() -> Self { return self.init { e in e.message } }
 
     private let entryFormatter: (entry: LXLogEntry) -> String
