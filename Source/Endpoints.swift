@@ -14,8 +14,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-import Foundation
-
 
 public protocol LXEndpoint {
     /// Only log entries of this level or above will be written to this endpoint.
@@ -32,19 +30,5 @@ public protocol LXEndpoint {
     :param: entryString The log entry, after being formatted by the `entryFormatter`.
     */
     func write(string: String) -> Void
-
-}
-
-
-internal enum LXEndpointError: ErrorType, CustomStringConvertible {
-    case CustomError(message: String)
-    case EntryEncodingError
-
-    var description: String {
-        switch self {
-        case .CustomError(let message): return message
-        case .EntryEncodingError: return "Failure to create data from entry string"
-        }
-    }
 
 }
