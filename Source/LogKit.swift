@@ -18,6 +18,8 @@ import Foundation
 #if os(iOS)
 import UIKit
 import AdSupport
+#elseif os(watchOS)
+import WatchKit
 #endif
 
 /* This file is admittedly somewhat of a dumping ground for globals. */
@@ -63,6 +65,20 @@ internal let LK_DEVICE_MODEL: String = {
         }
     }
     return ""
+}()
+
+
+/// The type of this device.
+internal let LK_DEVICE_TYPE: String = {
+#if os(OSX)
+    return "Mac"
+#elseif os(iOS)
+    return UIDevice.currentDevice().model
+#elseif os(watchOS)
+    return WKInterfaceDevice.currentDevice().model
+#else
+    return ""
+#endif
 }()
 
 

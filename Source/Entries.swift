@@ -50,6 +50,7 @@ public struct LXLogEntry {
     public let osBuildVersion: String = LK_DEVICE_OS.buildVersion
     public let bundleID: String = LK_BUNDLE_ID
     public let deviceModel: String = LK_DEVICE_MODEL
+    public let deviceType: String = LK_DEVICE_TYPE
     public let deviceVendorID: String = LK_DEVICE_IDS.vendor
     public let deviceAdvertisingID: String = LK_DEVICE_IDS.advertising
 
@@ -85,6 +86,7 @@ internal extension LXLogEntry {
             "osBuildVersion": self.osBuildVersion,
             "bundleID": self.bundleID,
             "deviceModel": self.deviceModel,
+            "deviceType": self.deviceType,
             "deviceVendorID": self.deviceVendorID,
             "deviceAdvertisingID": self.deviceAdvertisingID,
         ]
