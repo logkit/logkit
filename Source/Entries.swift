@@ -20,7 +20,7 @@ public struct LXLogEntry {
     public let message: String
     /// A dictionary of additional values to be provided to the entry formatter.
     public let userInfo: [String: AnyObject]
-    /// The name of the entry's log level.
+    /// The name of the entry's priority level.
     public let level: String
     /// The number of seconds since the Unix epoch (midnight 1970-01-01 UTC).
     public let timestamp: Double

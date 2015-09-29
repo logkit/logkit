@@ -15,7 +15,7 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
-public enum LXLogLevel: Int, Comparable, CustomStringConvertible {
+public enum LXPriorityLevel: Int, Comparable, CustomStringConvertible {
     // These levels are designed to match ASL levels
     // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
     case All      =  100
@@ -54,11 +54,11 @@ public enum LXLogLevel: Int, Comparable, CustomStringConvertible {
 }
 
 /// Determines if two log levels are equal.
-public func ==(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
+public func ==(lhs: LXPriorityLevel, rhs: LXPriorityLevel) -> Bool {
     return lhs.rawValue == rhs.rawValue
 }
 
 /// Performs a comparison between two log levels.
-public func <(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
+public func <(lhs: LXPriorityLevel, rhs: LXPriorityLevel) -> Bool {
     return lhs.rawValue > rhs.rawValue // Yes, this is reversed
 }

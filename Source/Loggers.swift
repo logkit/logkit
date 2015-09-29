@@ -50,7 +50,7 @@ public final class LXLogger {
     private func log(
         messageBlock: () -> String,
         userInfo: [String: AnyObject],
-        level: LXLogLevel,
+        level: LXPriorityLevel,
         functionName: String,
         filePath: String,
         lineNumber: Int,

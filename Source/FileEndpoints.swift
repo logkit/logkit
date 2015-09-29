@@ -122,7 +122,7 @@ private class LXLogFile {
 
 
 public class LXRotatingFileEndpoint: LXEndpoint {
-    public var minimumLogLevel: LXLogLevel
+    public var minimumLogLevel: LXPriorityLevel
     public var dateFormatter: LXDateFormatter
     public var entryFormatter: LXEntryFormatter
     public let requiresNewlines: Bool = true
@@ -159,7 +159,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         baseURL: NSURL? = defaultLogFileURL,
         numberOfFiles: UInt = 5,
         maxFileSizeKiB: UInt = 1024,
-        minimumLogLevel: LXLogLevel = .All,
+        minimumLogLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
@@ -229,7 +229,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
     public init?(
         fileURL: NSURL? = defaultLogFileURL,
         shouldAppend: Bool = true,
-        minimumLogLevel: LXLogLevel = .All,
+        minimumLogLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
@@ -260,7 +260,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
 
     public init?(
         baseURL: NSURL? = defaultLogFileURL,
-        minimumLogLevel: LXLogLevel = .All,
+        minimumLogLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
