@@ -26,9 +26,10 @@ import WatchKit
 
 
 /// The version of the LogKit framework currently in use.
-internal let LK_LOGKIT_VERSION = "2.0.0-beta-1"
+internal let LK_LOGKIT_VERSION = "2.0.0"
 
 
+/// The default queue used throughout the framework for background tasks.
 internal let LK_LOGKIT_QUEUE: dispatch_queue_t = {
     if #available(OSX 10.10, OSXApplicationExtension 10.10,  iOS 8.0, iOSApplicationExtension 8.0, watchOS 2.0, *) {
         return dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
@@ -38,6 +39,7 @@ internal let LK_LOGKIT_QUEUE: dispatch_queue_t = {
 }()
 
 
+/// The default log file directory; `Application Support/{bundleID}/logs/`.
 internal let LK_DEFAULT_LOG_DIRECTORY: NSURL? = {
     guard let
         bundleID = NSBundle.mainBundle().bundleIdentifier,
@@ -53,9 +55,11 @@ internal let LK_DEFAULT_LOG_DIRECTORY: NSURL? = {
 }()
 
 
+/// The bundle ID of the currently running application, _not_ the LogKit framework.
 internal let LK_BUNDLE_ID: String = NSBundle.mainBundle().bundleIdentifier ?? ""
 
 
+/// The model of this device.
 internal let LK_DEVICE_MODEL: String = {
     var len: size_t = 0
     if sysctlbyname("hw.model", nil, &len, nil, 0) == 0 {
@@ -82,6 +86,7 @@ internal let LK_DEVICE_TYPE: String = {
 }()
 
 
+/// A tuple describing OS this device is running.
 internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion: Int, patchVersion: Int, buildVersion: String) = {
     let systemVersion = NSDictionary(contentsOfFile: "/System/Library/CoreServices/SystemVersion.plist")
     let build = systemVersion?["ProductBuildVersion"] as? String ?? ""
@@ -101,6 +106,15 @@ internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion:
 }()
 
 
+/**
+A tuple of any device IDs available.
+
+In OS X, only the `vendor` ID is available.
+
+In iOS, the `advertising` ID honors the `advertisingTrackingEnabled` flag, and is only returned if that flag is true.
+
+Other OSes currently return empty strings.
+*/
 internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
 #if os(OSX)
     var timeSpec = timespec(tv_sec: 0, tv_nsec: 0)
@@ -123,11 +137,20 @@ internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
 
 internal extension NSFileManager {
 
-    internal func ensureFileAtURL(URL: NSURL, withIntermediateDirectories createDirs: Bool) -> Bool {
+    /**
+    This method attempts to ensure that a file is available at the specified URL. It will attempt to create an empty file if
+    one does not already exist at that location.
+    
+    - parameter withIntermediateDirectories: Indicates whether intermediate directories should be created if necessary, before
+    checking for the file.
+    
+    - returns: A `Bool` indicating whether the file is available or not.
+    */
+    internal func ensureFileAtURL(URL: NSURL, withIntermediateDirectories shouldCreateDirs: Bool) -> Bool {
         if let dirURL = URL.URLByDeletingLastPathComponent, path = URL.path {
             do {
                 let manager = NSFileManager.defaultManager()
-                try manager.createDirectoryAtURL(dirURL, withIntermediateDirectories: createDirs, attributes: nil)
+                try manager.createDirectoryAtURL(dirURL, withIntermediateDirectories: shouldCreateDirs, attributes: nil)
                 return manager.fileExistsAtPath(path) ? true : manager.createFileAtPath(path, contents: nil, attributes: nil)
             } catch {
                 assertionFailure("File system error (maybe access denied) at path: '\(path)'")
@@ -142,6 +165,7 @@ internal extension NSFileManager {
 
 internal extension NSCalendar {
 
+    /// Returns whether the given date is the same date as "today". Exists as a compatibility shim for older operating systems.
     internal func isDateSameAsToday(date: NSDate) -> Bool {
         if #available(iOS 8.0, iOSApplicationExtension 8.0, watchOS 2.0, *) {
             return self.isDateInToday(date)
