@@ -19,7 +19,7 @@ import LogKit
 import XCTest
 
 
-class LogLevelTests: XCTestCase {
+class PriorityLevelTests: XCTestCase {
 
 //    override func setUp() {
 //        super.setUp()
@@ -30,9 +30,9 @@ class LogLevelTests: XCTestCase {
 //    }
 
     func testPriorities() {
-        XCTAssertEqual(LXLogLevel.Error, LXLogLevel.Error, "LXLogLevel Comparable conformance: .Error != .Error")
-        XCTAssertGreaterThan(LXLogLevel.Warning, LXLogLevel.Debug, "LXLogLevel Comparable conformance: .Warning !> .Debug")
-        XCTAssertLessThan(LXLogLevel.Info, LXLogLevel.Notice, "LXLogLevel Comparable conformance: .Info !< .Notice")
+        XCTAssertEqual(LXPriorityLevel.Error, LXPriorityLevel.Error, "LXPriorityLevel Comparable conformance: .Error != .Error")
+        XCTAssertGreaterThan(LXPriorityLevel.Warning, LXPriorityLevel.Debug, "LXPriorityLevel Comparable conformance: .Warning !> .Debug")
+        XCTAssertLessThan(LXPriorityLevel.Info, LXPriorityLevel.Notice, "LXPriorityLevel Comparable conformance: .Info !< .Notice")
     }
 
 //    func testPerformanceExample() {

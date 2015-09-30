@@ -17,8 +17,8 @@
 
 public protocol LXEndpoint {
     /// Only log entries of this level or above will be written to this endpoint.
-    var minimumLogLevel: LXPriorityLevel { get }
     /// The date formatter that this endpoint will use to convert an entry's `dateTime` to a string.
+    var minimumPriorityLevel: LXPriorityLevel { get }
     var dateFormatter: LXDateFormatter { get }
     /// The entry formatter that this endpoint will use to convert an entry to a string.
     var entryFormatter: LXEntryFormatter { get }

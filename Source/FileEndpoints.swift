@@ -122,7 +122,7 @@ private class LXLogFile {
 
 
 public class LXRotatingFileEndpoint: LXEndpoint {
-    public var minimumLogLevel: LXPriorityLevel
+    public var minimumPriorityLevel: LXPriorityLevel
     public var dateFormatter: LXDateFormatter
     public var entryFormatter: LXEntryFormatter
     public let requiresNewlines: Bool = true
@@ -159,7 +159,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         baseURL: NSURL? = defaultLogFileURL,
         numberOfFiles: UInt = 5,
         maxFileSizeKiB: UInt = 1024,
-        minimumLogLevel: LXPriorityLevel = .All,
+        minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
@@ -170,12 +170,12 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         //TODO: check file or directory to predict if file is accessible
         guard let dirURL = baseURL?.URLByDeletingLastPathComponent, filename = baseURL?.lastPathComponent else {
             assertionFailure("The log file URL '\(baseURL?.absoluteString ?? String())' is invalid")
-            self.minimumLogLevel = .None
+            self.minimumPriorityLevel = .None
             self.directoryURL = NSURL(string: "")!
             self.baseFileName = ""
             return nil
         }
-        self.minimumLogLevel = minimumLogLevel
+        self.minimumPriorityLevel = minimumPriorityLevel
         self.directoryURL = dirURL
         self.baseFileName = filename
     }
@@ -229,7 +229,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
     public init?(
         fileURL: NSURL? = defaultLogFileURL,
         shouldAppend: Bool = true,
-        minimumLogLevel: LXPriorityLevel = .All,
+        minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
@@ -237,7 +237,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
             baseURL: fileURL,
             numberOfFiles: 1,
             maxFileSizeKiB: 0,
-            minimumLogLevel: minimumLogLevel,
+            minimumPriorityLevel: minimumPriorityLevel,
             dateFormatter: dateFormatter,
             entryFormatter: entryFormatter
         )
@@ -260,7 +260,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
 
     public init?(
         baseURL: NSURL? = defaultLogFileURL,
-        minimumLogLevel: LXPriorityLevel = .All,
+        minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
@@ -268,7 +268,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
             baseURL: baseURL,
             numberOfFiles: 1,
             maxFileSizeKiB: 0,
-            minimumLogLevel: minimumLogLevel,
+            minimumPriorityLevel: minimumPriorityLevel,
             dateFormatter: dateFormatter,
             entryFormatter: entryFormatter
         )

@@ -23,7 +23,7 @@ private protocol LXConsoleWriter {
 
 
 public class LXConsoleEndpoint: LXEndpoint {
-    public var minimumLogLevel: LXPriorityLevel
+    public var minimumPriorityLevel: LXPriorityLevel
     public var dateFormatter: LXDateFormatter
     public var entryFormatter: LXEntryFormatter
     public let requiresNewlines: Bool = true
@@ -32,11 +32,11 @@ public class LXConsoleEndpoint: LXEndpoint {
 
     public init(
         synchronous: Bool = true,
-        minimumLogLevel: LXPriorityLevel = .All,
+        minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
-        self.minimumLogLevel = minimumLogLevel
+        self.minimumPriorityLevel = minimumPriorityLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
 

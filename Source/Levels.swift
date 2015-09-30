@@ -53,12 +53,12 @@ public enum LXPriorityLevel: Int, Comparable, CustomStringConvertible {
     
 }
 
-/// Determines if two log levels are equal.
+/// Determines if two priority levels are equal.
 public func ==(lhs: LXPriorityLevel, rhs: LXPriorityLevel) -> Bool {
     return lhs.rawValue == rhs.rawValue
 }
 
-/// Performs a comparison between two log levels.
+/// Performs a comparison between two priority levels.
 public func <(lhs: LXPriorityLevel, rhs: LXPriorityLevel) -> Bool {
     return lhs.rawValue > rhs.rawValue // Yes, this is reversed
 }

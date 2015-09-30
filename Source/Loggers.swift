@@ -41,7 +41,7 @@ public final class LXLogger {
     /**
     Delivers log entries to endpoints.
 
-    This function filters endpoints based on their `minimumLogLevel` property to deliver entries only to qualified endpoints.
+    This function filters endpoints based on their `minimumPriorityLevel` property to deliver entries only to qualified endpoints.
     If no endpoint qualifies, most of the work is skipped.
 
     After identifying qualified endpoints, the entry is converted to a string based on each endpoint's settings.
@@ -60,7 +60,7 @@ public final class LXLogger {
         isMainThread: Bool = NSThread.currentThread().isMainThread
     ) {
         let timestamp = CFAbsoluteTimeGetCurrent()
-        let targetEndpoints = self.endpoints.filter({ $0.minimumLogLevel <= level })
+        let targetEndpoints = self.endpoints.filter({ $0.minimumPriorityLevel <= level })
         if !targetEndpoints.isEmpty {
             // Resolve the message now, just once
             let message = messageBlock()

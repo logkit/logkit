@@ -126,7 +126,7 @@ private class LXPersistedCache {
 
 /// Makes an attempt to upload entries in order, but no guarantee
 public class LXHTTPEndpoint: LXEndpoint {
-    public var minimumLogLevel: LXPriorityLevel
+    public var minimumPriorityLevel: LXPriorityLevel
     public var dateFormatter: LXDateFormatter
     public var entryFormatter: LXEntryFormatter
     public let requiresNewlines: Bool = false
@@ -146,11 +146,11 @@ public class LXHTTPEndpoint: LXEndpoint {
         request: NSURLRequest,
         successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumLogLevel: LXPriorityLevel = .All,
+        minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
-        self.minimumLogLevel = minimumLogLevel
+        self.minimumPriorityLevel = minimumPriorityLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
 
@@ -166,7 +166,7 @@ public class LXHTTPEndpoint: LXEndpoint {
         HTTPMethod: String,
         successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumLogLevel: LXPriorityLevel = .All,
+        minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
@@ -177,7 +177,7 @@ public class LXHTTPEndpoint: LXEndpoint {
             request: request,
             successCodes: successCodes,
             sessionConfiguration: sessionConfiguration,
-            minimumLogLevel: minimumLogLevel,
+            minimumPriorityLevel: minimumPriorityLevel,
             dateFormatter: dateFormatter,
             entryFormatter: entryFormatter
         )
@@ -223,14 +223,14 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
         request: NSURLRequest,
         successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumLogLevel: LXPriorityLevel = .All,
+        minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter()
     ) {
         super.init(
             request: request,
             successCodes: successCodes,
             sessionConfiguration: sessionConfiguration,
-            minimumLogLevel: minimumLogLevel,
+            minimumPriorityLevel: minimumPriorityLevel,
             dateFormatter: dateFormatter,
             entryFormatter: LXEntryFormatter.jsonFormatter()
         )
@@ -241,7 +241,7 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
         HTTPMethod: String,
         successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumLogLevel: LXPriorityLevel = .All,
+        minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.ISO8601DateTimeFormatter()
     ) {
         let request = NSMutableURLRequest(URL: URL)
@@ -251,7 +251,7 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
             request: request,
             successCodes: successCodes,
             sessionConfiguration: sessionConfiguration,
-            minimumLogLevel: minimumLogLevel,
+            minimumPriorityLevel: minimumPriorityLevel,
             dateFormatter: dateFormatter
         )
     }
