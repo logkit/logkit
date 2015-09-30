@@ -18,13 +18,6 @@ import Foundation
 
 
 private let defaultSuccessCodes = Set([200, 201, 202, 204])
-private let defaultCacheFileURL: NSURL = {
-    guard let URL = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent(".logkit_upload_cache.txt", isDirectory: false) else {
-        assertionFailure("Failure to resolve default HTTP Endpoint cache file URL")
-        return NSURL(string: "")!
-    }
-    return URL
-}()
 
 
 private class LXPersistedCache {
@@ -35,10 +28,14 @@ private class LXPersistedCache {
     private let timeoutInterval: NSTimeInterval
     private var currentMaxID: UInt
 
-    init(timeoutInterval: NSTimeInterval) {
+    init(timeoutInterval: NSTimeInterval, fileName: String) {
         self.timeoutInterval = timeoutInterval
-        NSFileManager.defaultManager().ensureFileAtURL(defaultCacheFileURL, withIntermediateDirectories: true)
-        do { try self.file = NSFileHandle(forUpdatingURL: defaultCacheFileURL) } catch { self.file = nil }
+        if let fileURL = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent(fileName, isDirectory: false) {
+            NSFileManager.defaultManager().ensureFileAtURL(fileURL, withIntermediateDirectories: true)
+            do { try self.file = NSFileHandle(forUpdatingURL: fileURL) } catch { self.file = nil }
+        } else {
+            self.file = nil
+        }
         self.file?.seekToFileOffset(0) // Do we need to do this?
         self.cache = [:]
         let encoded = self.file?.readDataToEndOfFile() ?? NSData()
@@ -135,7 +132,8 @@ public class LXHTTPEndpoint: LXEndpoint {
     private let session: NSURLSession
     private let request: NSURLRequest
 
-    private let cache: LXPersistedCache = LXPersistedCache(timeoutInterval: 50)
+    private var cacheName: String { return ".http_endpoint_cache.txt" }
+    private lazy var cache: LXPersistedCache = LXPersistedCache(timeoutInterval: 50, fileName: self.cacheName)
     private lazy var timer: NSTimer = {
         let timer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: "upload:", userInfo: nil, repeats: true)
         timer.tolerance = 10
@@ -218,6 +216,8 @@ public class LXHTTPEndpoint: LXEndpoint {
 
 
 public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
+
+    private override var cacheName: String { return ".json_endpoint_cache.txt" }
 
     public init(
         request: NSURLRequest,
