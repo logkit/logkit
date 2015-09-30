@@ -21,6 +21,7 @@ public class LXDateFormatter {
     public class func standardFormatter() -> Self { return self.init(formatString: "yyyy-MM-dd HH:mm:ss.SSS") }
     public class func timeOnlyFormatter() -> Self { return self.init(formatString: "HH:mm:ss.SSS") }
     public class func dateOnlyFormatter() -> Self { return self.init(formatString: "yyyy-MM-dd") }
+    public class func ISO8601DateTimeFormatter() -> Self { return self.init(formatString: "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ") }
 
     private let dateFormatter: NSDateFormatter
 

@@ -242,7 +242,7 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
         successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
         minimumLogLevel: LXPriorityLevel = .All,
-        dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter()
+        dateFormatter: LXDateFormatter = LXDateFormatter.ISO8601DateTimeFormatter()
     ) {
         let request = NSMutableURLRequest(URL: URL)
         request.HTTPMethod = HTTPMethod
