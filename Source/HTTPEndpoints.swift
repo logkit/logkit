@@ -95,16 +95,18 @@ private class LXPersistedCache {
                 self.reserved.removeValueForKey(id)
             }
 
-            var completeOutput: String = ""
-            for (id, data) in self.cache {
-                completeOutput += self.dataString(data, withID: id)
-            }
-            guard let fileData = completeOutput.dataUsingEncoding(NSUTF8StringEncoding) else {
-                assertionFailure("Failure to encode data for temporary storage")
-                return //TODO: what do we really want to do if encoding fails? leave the file alone? dump what was in there?
-            }
             self.file?.truncateFileAtOffset(0)
-            self.file?.writeData(fileData)
+            if self.cache.isEmpty {
+                self.currentMaxID = 0
+            } else {
+                let output = self.cache.map({ id, data in self.dataString(data, withID: id) }).joinWithSeparator("")
+                if let fileData = output.dataUsingEncoding(NSUTF8StringEncoding) {
+                    self.file?.writeData(fileData)
+                } else {
+                    //TODO: what do we really want to do if encoding fails?
+                    assertionFailure("Failure to encode data for temporary storage")
+                }
+            }
         })
     }
 
