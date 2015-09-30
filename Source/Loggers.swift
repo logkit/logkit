@@ -17,23 +17,22 @@
 import Foundation
 
 
+/// The main logging API for application code. An instance of this class dispatches log entries to logging endpoints.
 public final class LXLogger {
     /// The collection of log endpoints that successfully initialized.
     private let endpoints: [LXEndpoint]
 
     /**
-    Initialize a logger.
+    Initialize a logger. Any endpoints that fail initialization are discarded.
 
-    :param: endpoints An array of log endpoints to output entries to.
-
-    :returns: An initialized logger populated with each of the provided endpoints. Any endpoints that fail initialization are discarded.
+    - parameter endpoints: An array of log endpoints to output entries to.
     */
     public init(endpoints: [LXEndpoint?]) {
         self.endpoints = endpoints.filter({ $0 != nil }).map({ $0! })
         assert(!self.endpoints.isEmpty, "A logger instance has been initialized, but no valid endpoints were provided.")
     }
 
-    /// Initialize a basic logger that writes to the console (stdout) with default settings.
+    /// Initialize a basic logger that writes to the console (`stdout`) with default settings.
     public convenience init() {
         self.init(endpoints: [LXConsoleEndpoint()])
     }
@@ -86,10 +85,10 @@ public final class LXLogger {
     }
 
     /**
-    Log a `Debug` entry. Exclude all arguments except `message` and `userInfo`.
+    Log a `Debug` entry.
 
-    :param: message The message to log.
-    :param: userInfo A dictionary of additional values for endpoints to consider.
+    - parameter message: The message to log.
+    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
     */
     public func debug(
         @autoclosure(escaping) message: () -> String,
@@ -103,10 +102,10 @@ public final class LXLogger {
     }
 
     /**
-    Log an `Info` entry. Exclude all arguments except `message` and `userInfo`.
+    Log an `Info` entry.
 
-    :param: message The message to log.
-    :param: userInfo A dictionary of additional values for endpoints to consider.
+    - parameter message: The message to log.
+    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
     */
     public func info(
         @autoclosure(escaping) message: () -> String,
@@ -120,10 +119,10 @@ public final class LXLogger {
     }
 
     /**
-    Log a `Notice` entry. Exclude all arguments except `message` and `userInfo`.
+    Log a `Notice` entry.
 
-    :param: message The message to log.
-    :param: userInfo A dictionary of additional values for endpoints to consider.
+    - parameter message: The message to log.
+    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
     */
     public func notice(
         @autoclosure(escaping) message: () -> String,
@@ -137,10 +136,10 @@ public final class LXLogger {
     }
 
     /**
-    Log a `Warning` entry. Exclude all arguments except `message` and `userInfo`.
+    Log a `Warning` entry.
 
-    :param: message The message to log.
-    :param: userInfo A dictionary of additional values for endpoints to consider.
+    - parameter message: The message to log.
+    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
     */
     public func warning(
         @autoclosure(escaping) message: () -> String,
@@ -154,10 +153,10 @@ public final class LXLogger {
     }
 
     /**
-    Log an `Error` entry. Exclude all arguments except `message` and `userInfo`.
+    Log an `Error` entry.
 
-    :param: message The message to log.
-    :param: userInfo A dictionary of additional values for endpoints to consider.
+    - parameter message: The message to log.
+    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
     */
     public func error(
         @autoclosure(escaping) message: () -> String,
@@ -171,10 +170,10 @@ public final class LXLogger {
     }
 
     /**
-    Log a `Critical` entry. Exclude all arguments except `message` and `userInfo`.
+    Log a `Critical` entry.
 
-    :param: message The message to log.
-    :param: userInfo A dictionary of additional values for endpoints to consider.
+    - parameter message: The message to log.
+    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
     */
     public func critical(
         @autoclosure(escaping) message: () -> String,
