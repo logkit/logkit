@@ -63,7 +63,9 @@ extension LXEntryFormatter {
 
     public class func jsonFormatter() -> Self { return self.init({
         do {
-            let data = try NSJSONSerialization.dataWithJSONObject($0.asMap(), options: [])
+            // TODO: this "object" is a bit of a hack, so that later we can enable uploading multiple enties at once.
+            let object = ["entries": [$0.asMap()]]
+            let data = try NSJSONSerialization.dataWithJSONObject(object, options: [])
             guard let json = NSString(data: data, encoding: NSUTF8StringEncoding) else {
                 throw EntryFormattingError.DecodingError
             }
