@@ -19,7 +19,7 @@ import Foundation
 
 private let defaultSuccessCodes = Set([200, 201, 202, 204])
 private let defaultCacheFileURL: NSURL = {
-    guard let URL = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent("httpCache.txt", isDirectory: false) else {
+    guard let URL = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent(".logkit_upload_cache.txt", isDirectory: false) else {
         assertionFailure("Failure to resolve default HTTP Endpoint cache file URL")
         return NSURL(string: "")!
     }
