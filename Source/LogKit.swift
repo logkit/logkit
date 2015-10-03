@@ -28,16 +28,16 @@ A closure that converts a log entry into a string for writing to an endpoint.
 
 :returns: The entry converted to a string.
 */
-public typealias LXLogEntryFormatter = (entry: LXLogEntry) -> String
+public typealias LXEntryFormatter = (entry: LXLogEntry) -> String
 
-/// Objects that conform to the `LXLogEndpoint` protocol may be used by an `LXLogger` as log entry destinations.
-public protocol LXLogEndpoint {
+/// Objects that conform to the `LXEndpoint` protocol may be used by an `LXLogger` as log entry destinations.
+public protocol LXEndpoint {
     /// Only log entries of this level or above will be written to this endpoint.
-    var minimumLogLevel: LXLogLevel { get }
+    var minimumLogLevel: LXPriorityLevel { get }
     /// The date formatter that this endpoint will use to convert an entry's `dateTime` to a string.
     var dateFormatter: NSDateFormatter { get }
     /// The entry formatter that this endpoint will use to convert an entry to a string.
-    var entryFormatter: LXLogEntryFormatter { get }
+    var entryFormatter: LXEntryFormatter { get }
     /**
     Write the formatted log entry to the endpoint.
 
@@ -137,7 +137,7 @@ Logging levels are described below, in order of lowest-to-highest value:
 - `Critical`: Event may crash application
 - `None`: Special value that excludes all log levels
 */
-public enum LXLogLevel: Int, Comparable, Printable {
+public enum LXPriorityLevel: Int, Comparable, Printable {
     // These levels are designed to match ASL levels
     // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
     case All      =  100
@@ -176,12 +176,12 @@ public enum LXLogLevel: Int, Comparable, Printable {
 }
 
 /// Determines if two log levels are equal.
-public func ==(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
+public func ==(lhs: LXPriorityLevel, rhs: LXPriorityLevel) -> Bool {
     return lhs.rawValue == rhs.rawValue
 }
 
 /// Performs a comparison between two log levels.
-public func <(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
+public func <(lhs: LXPriorityLevel, rhs: LXPriorityLevel) -> Bool {
     return lhs.rawValue > rhs.rawValue // Yes, this is reversed
 }
 
@@ -189,7 +189,7 @@ public func <(lhs: LXLogLevel, rhs: LXLogLevel) -> Bool {
 //MARK: Default Formatters
 
 /// A formatter block that returns an entry formatted as a string.
-private let defaultEntryFormatter: LXLogEntryFormatter = { entry in
+private let defaultEntryFormatter: LXEntryFormatter = { entry in
     return "\(entry.dateTime) [\(entry.logLevel.uppercaseString)] \(entry.functionName) <\(entry.fileName):\(entry.lineNumber)> \(entry.message)"
 }
 
@@ -204,14 +204,14 @@ private let defaultDateFormatter: NSDateFormatter = {
 
 //MARK: Endpoints
 
-/// An Abstract Base Class that conforms to the `LXLogEndpoint` protocol. Must be subclassed. Meant to be private; may be removed in future releases.
-public class LXLogAbstractEndpoint: LXLogEndpoint {
+/// An Abstract Base Class that conforms to the `LXEndpoint` protocol. Must be subclassed. Meant to be private; may be removed in future releases.
+public class LXAbstractEndpoint: LXEndpoint {
     /// Only log entries of this level or above will be written to this endpoint.
-    public var minimumLogLevel: LXLogLevel
+    public var minimumLogLevel: LXPriorityLevel
     /// The date formatter that this endpoint will use to convert an entry's `dateTime` to a string.
     public var dateFormatter: NSDateFormatter
     /// The entry formatter that this endpoint will use to convert an entry to a string.
-    public var entryFormatter: LXLogEntryFormatter
+    public var entryFormatter: LXEntryFormatter
 
     /**
     Initialize a log endpoint.
@@ -222,7 +222,7 @@ public class LXLogAbstractEndpoint: LXLogEndpoint {
 
     :returns: An initialized endpoint.
     */
-    public init(minimumLogLevel: LXLogLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: LXLogEntryFormatter = defaultEntryFormatter) {
+    public init(minimumLogLevel: LXPriorityLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: LXEntryFormatter = defaultEntryFormatter) {
         self.minimumLogLevel = minimumLogLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
@@ -236,7 +236,7 @@ public class LXLogAbstractEndpoint: LXLogEndpoint {
 }
 
 /// An endpoint that prints log entries to the console (stdout). Text from multiple threads may become jumbled.
-public class LXLogConsoleEndpoint: LXLogAbstractEndpoint {
+public class LXConsoleEndpoint: LXAbstractEndpoint {
     /// Writes an entry to the console (stdout).
     public override func write(entryString: String) {
         println(entryString)
@@ -250,7 +250,7 @@ An endpoint that prints log entries to the console (stdout) one at a time.
 Log enties from various threads will be printed in first-in-first-out order without overlapping.
 However, entry output may be slightly delayed due to the asynchronous nature of this endpoint.
 */
-public class LXLogSerialConsoleEndpoint: LXLogConsoleEndpoint {
+public class LXSerialConsoleEndpoint: LXConsoleEndpoint {
     /// Writes an entry to the console (stdout).
     public override func write(entryString: String) {
         if let data = (entryString + "\n").dispatchDataUsingEncoding(NSUTF8StringEncoding) {
@@ -263,7 +263,7 @@ public class LXLogSerialConsoleEndpoint: LXLogConsoleEndpoint {
 }
 
 /// An endpoint that writes log entries to a given log file asynchronously.
-public class LXLogFileEndpoint: LXLogAbstractEndpoint {
+public class LXFileEndpoint: LXAbstractEndpoint {
     /// An opportunity for subclasses to modify the file name that will be used. Base method simply returns it's input.
     private class func makeName(#baseName: String) -> String {
         return baseName
@@ -281,7 +281,7 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
 
     :returns: An initialized endpoint, or `nil` if the designated file could not be opened.
     */
-    public init?(fileURL: NSURL?, minimumLogLevel: LXLogLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: LXLogEntryFormatter = defaultEntryFormatter) {
+    public init?(fileURL: NSURL?, minimumLogLevel: LXPriorityLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: LXEntryFormatter = defaultEntryFormatter) {
         if let
             dirURL = fileURL?.URLByDeletingLastPathComponent,
             fileName = fileURL?.lastPathComponent,
@@ -316,7 +316,7 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
 
     :returns: An initialized endpoint, or `nil` if the requested file could not be opened.
     */
-    public convenience init?(minLogLevel: LXLogLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: LXLogEntryFormatter = defaultEntryFormatter) {
+    public convenience init?(minLogLevel: LXPriorityLevel = .All, dateFormatter: NSDateFormatter = defaultDateFormatter, entryFormatter: LXEntryFormatter = defaultEntryFormatter) {
         let fileURL: NSURL?
         if let
             bundleID = NSBundle.mainBundle().bundleIdentifier,
@@ -351,7 +351,7 @@ public class LXLogFileEndpoint: LXLogAbstractEndpoint {
 }
 
 /// An endpoint that writes log entries to a given log file asynchronously. A datestamp will be prepended to the file's name.
-public class LXLogDatedFileEndpoint: LXLogFileEndpoint {
+public class LXDatedFileEndpoint: LXFileEndpoint {
 
     /// Prepends a datestamp to the base file name in the format `yyyy-MM-dd_{fileName}`.
     override private class func makeName(#baseName: String) -> String {
@@ -364,7 +364,7 @@ public class LXLogDatedFileEndpoint: LXLogFileEndpoint {
 }
 
 /// An endpoint that writes log entries to an HTTP service.
-public class LXLogHTTPEndpoint: LXLogAbstractEndpoint {
+public class LXHTTPEndpoint: LXAbstractEndpoint {
     /// An opportunity for subclasses to modify the request that will be used.
     private class func makeRequest(URL: NSURL, HTTPMethod: String) -> NSMutableURLRequest {
         let request = NSMutableURLRequest(URL: URL)
@@ -398,9 +398,9 @@ public class LXLogHTTPEndpoint: LXLogAbstractEndpoint {
         HTTPMethod: String,
         successCodes: Set<Int> = Set([200, 201, 202, 204]),
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumLogLevel: LXLogLevel = .All,
+        minimumLogLevel: LXPriorityLevel = .All,
         dateFormatter: NSDateFormatter = defaultDateFormatter,
-        entryFormatter: LXLogEntryFormatter = defaultEntryFormatter
+        entryFormatter: LXEntryFormatter = defaultEntryFormatter
     ) {
         self.successCodes = successCodes
         self.session = NSURLSession(configuration: sessionConfiguration)
@@ -458,7 +458,7 @@ public class LXLogHTTPEndpoint: LXLogAbstractEndpoint {
 }
 
 /// An endpoint that writes log entries to an HTTP service in JSON format.
-public class LXLogHTTPJSONEndpoint: LXLogHTTPEndpoint {
+public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
     /// An opportunity for subclasses to modify the request that will be used. Sets `Content-Type` header to `application/json`.
     private override class func makeRequest(URL: NSURL, HTTPMethod: String) -> NSMutableURLRequest {
         let request = super.makeRequest(URL, HTTPMethod: HTTPMethod)
@@ -483,7 +483,7 @@ public class LXLogHTTPJSONEndpoint: LXLogHTTPEndpoint {
         HTTPMethod: String,
         successCodes: Set<Int> = Set([200, 201, 202, 204]),
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumLogLevel: LXLogLevel = .All,
+        minimumLogLevel: LXPriorityLevel = .All,
         dateFormatter: NSDateFormatter = defaultDateFormatter
     ) {
         super.init(
@@ -516,7 +516,7 @@ public class LXLogHTTPJSONEndpoint: LXLogHTTPEndpoint {
 /// The main logging API for application code. An instance of this class dispatches log entries to logging endpoints.
 public final class LXLogger {
     /// The collection of log endpoints that successfully initialized.
-    private let endpoints: [LXLogEndpoint]
+    private let endpoints: [LXEndpoint]
 
     /**
     Initialize a logger.
@@ -525,14 +525,14 @@ public final class LXLogger {
 
     :returns: An initialized logger populated with each of the provided endpoints. Any endpoints that fail initialization are discarded.
     */
-    public init(endpoints: [LXLogEndpoint?]) {
+    public init(endpoints: [LXEndpoint?]) {
         self.endpoints = endpoints.filter({ $0 != nil }).map({ $0! })
         assert(!self.endpoints.isEmpty, "A logger instance has been initialized, but no valid endpoints were provided.")
     }
 
     /// Initialize a basic logger that writes to the console (stdout) with default settings.
     public convenience init() {
-        self.init(endpoints: [LXLogConsoleEndpoint()])
+        self.init(endpoints: [LXConsoleEndpoint()])
     }
 
     /**
@@ -547,7 +547,7 @@ public final class LXLogger {
     private func log(
         messageBlock: () -> String,
         userInfo: [String: AnyObject],
-        level: LXLogLevel,
+        level: LXPriorityLevel,
         functionName: String,
         filePath: String,
         lineNumber: Int,
@@ -788,3 +788,19 @@ extension String {
     }
 
 }
+
+
+//MARK: LogKit 2 compatibility aliases
+
+public typealias LXLogEndpoint = LXEndpoint
+public typealias LXLogLevel = LXPriorityLevel
+public typealias LXLogConsoleEndpoint = LXConsoleEndpoint
+public typealias LXLogFileEndpoint = LXFileEndpoint
+public typealias LXLogHTTPEndpoint = LXHTTPEndpoint
+
+public typealias LXLogEntryFormatter = LXEntryFormatter
+
+public typealias LXLogAbstractEndpoint = LXAbstractEndpoint
+public typealias LXLogSerialConsoleEndpoint = LXSerialConsoleEndpoint
+public typealias LXLogDatedFileEndpoint = LXDatedFileEndpoint
+public typealias LXLogHTTPJSONEndpoint = LXHTTPJSONEndpoint
