@@ -52,7 +52,7 @@ The details of a log entry.
 
 :param: message The message provided.
 :param: userInfo A dictionary of additional values to be provided to the entry formatter.
-:param: logLevel The name of the entry's log level.
+:param: level The name of the entry's priority level.
 :param: timestamp The number of seconds since the Unix epoch (midnight 1970-01-01 UTC).
 :param: dateTime The entry's timestamp as a string formatted by an endpoint's `dateFormatter`.
 :param: functionName The function from which the log entry was created.
@@ -71,8 +71,8 @@ public struct LXLogEntry {
     public let message: String
     /// A dictionary of additional values to be provided to the entry formatter.
     public let userInfo: [String: AnyObject]
-    /// The name of the entry's log level.
-    public let logLevel: String
+    /// The name of the entry's priority level.
+    public let level: String
     /// The number of seconds since the Unix epoch (midnight 1970-01-01 UTC).
     public let timestamp: Double
     /// The entry's timestamp as a string formatted by an endpoint's `dateFormatter`.
@@ -96,6 +96,8 @@ public struct LXLogEntry {
 
     /// The name of the source file from which the log entry was created.
     public var fileName: String { return self.filePath.lastPathComponent }
+    /// Deprecated. Will be removed in LogKit 2. Use `self.level` instead.
+    public var logLevel: String { return self.level }
 
 }
 
@@ -105,7 +107,8 @@ private extension LXLogEntry {
     private func asMap() -> [String: AnyObject] {
         var result = self.userInfo
         result["message"] = self.message
-        result["logLevel"] = self.logLevel
+        result["level"] = self.level
+        result["logLevel"] = self.level
         result["timestamp"] = self.timestamp
         result["dateTime"] = self.dateTime
         result["functionName"] = self.functionName
@@ -566,7 +569,7 @@ public final class LXLogger {
                 let entryString = endpoint.entryFormatter(entry: LXLogEntry(
                     message: message,
                     userInfo: userInfo,
-                    logLevel: level.description,
+                    level: level.description,
                     timestamp: now.timeIntervalSince1970,
                     dateTime: endpoint.dateFormatter.stringFromDate(now),
                     functionName: functionName,
