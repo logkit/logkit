@@ -17,7 +17,7 @@
 import Foundation
 
 /// The version of the LogKit framework currently in use.
-private let logKitVersion = "1.0.4"
+private let logKitVersion = "1.1.0"
 
 //MARK: Definitions
 
@@ -794,16 +794,15 @@ extension String {
 
 
 //MARK: LogKit 2 compatibility aliases
-
+// All classes have been renamed to match their LogKit 2 versions, however the aliases below allow LogKit 1.0.x class names to
+// continue to work.
 public typealias LXLogEndpoint = LXEndpoint
-public typealias LXLogLevel = LXPriorityLevel
 public typealias LXLogConsoleEndpoint = LXConsoleEndpoint
-public typealias LXLogFileEndpoint = LXFileEndpoint
-public typealias LXLogHTTPEndpoint = LXHTTPEndpoint
-
-public typealias LXLogEntryFormatter = LXEntryFormatter
-
-public typealias LXLogAbstractEndpoint = LXAbstractEndpoint
 public typealias LXLogSerialConsoleEndpoint = LXSerialConsoleEndpoint
+public typealias LXLogFileEndpoint = LXFileEndpoint
 public typealias LXLogDatedFileEndpoint = LXDatedFileEndpoint
+public typealias LXLogHTTPEndpoint = LXHTTPEndpoint
 public typealias LXLogHTTPJSONEndpoint = LXHTTPJSONEndpoint
+public typealias LXLogLevel = LXPriorityLevel
+public typealias LXLogEntryFormatter = LXEntryFormatter
+public typealias LXLogAbstractEndpoint = LXAbstractEndpoint
