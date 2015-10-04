@@ -296,9 +296,9 @@
 			productReference = D00B8CBD1B2E3BC3003E5FED /* LogKit OSX Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		D0F8DD281B4B1ADC00D0865A /* LogKit Watch */ = {
+		D0F8DD281B4B1ADC00D0865A /* LogKit watchOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "LogKit Watch" */;
+			buildConfigurationList = D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "LogKit watchOS" */;
 			buildPhases = (
 				D0F8DD241B4B1ADC00D0865A /* Sources */,
 				D0F8DD251B4B1ADC00D0865A /* Frameworks */,
@@ -309,7 +309,7 @@
 			);
 			dependencies = (
 			);
-			name = "LogKit Watch";
+			name = "LogKit watchOS";
 			productName = "LogKit Watch";
 			productReference = D0F8DD291B4B1ADC00D0865A /* LogKit.framework */;
 			productType = "com.apple.product-type.framework";
@@ -357,7 +357,7 @@
 				D00B8CBC1B2E3BC3003E5FED /* LogKit OSX Tests */,
 				D00B8C911B2E3B8F003E5FED /* LogKit iOS */,
 				D00B8C9C1B2E3B8F003E5FED /* LogKit iOS Tests */,
-				D0F8DD281B4B1ADC00D0865A /* LogKit Watch */,
+				D0F8DD281B4B1ADC00D0865A /* LogKit watchOS */,
 			);
 		};
 /* End PBXProject section */
@@ -821,7 +821,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "LogKit Watch" */ = {
+		D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "LogKit watchOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D0F8DD2E1B4B1ADC00D0865A /* Debug */,
