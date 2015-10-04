@@ -43,6 +43,7 @@ This readme contains just a few tips to get you started with LogKit. To learn ev
 * Project targeting iOS 7+ or OS X 10.9+
 * Xcode 6.3 or 6.4 with Swift 1.2
 
+> Note: Please check the [master branch](https://github.com/logkit/logkit/tree/master) for a version compatible with Xcode 7 and Swift 2.
 
 ## Installation
 
