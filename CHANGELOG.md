@@ -1,6 +1,28 @@
 # Change Log
 
 
+### [1.1.0](https://github.com/logkit/logkit/releases/tag/1.1.0)
+
+This release facilitates compatibility with LogKit 2.
+
+#### Updated
+
+* Most classes have been renamed to match their LogKit 2 counterparts. Compatibility aliases have been added so that applications already using LogKit 1.0.x will continue to work properly with 1.1.
+  * `LXLogEndpoint` is now `LXEndpoint`
+  * `LXLogConsoleEndpoint` is now `LXConsoleEndpoint`
+  * `LXLogSerialConsoleEndpoint` is now `LXSerialConsoleEndpoint`
+  * `LXLogFileEndpoint` is now `LXFileEndpoint`
+  * `LXLogDatedFileEndpoint` is now `LXDatedFileEndpoint`
+  * `LXLogHTTPEndpoint` is now `LXHTTPEndpoint`
+  * `LXLogHTTPJSONEndpoint` is now `LXHTTPJSONEndpoint`
+  * `LXLogLevel` is now `LXPriorityLevel`
+  * `LXLogEntryFormatter` is now `LXEntryFormatter`
+* The log entry properties `logLevel` has been renamed to `level`
+  * `logLevel` remains available for compatibility, but will be removed in LogKit 2
+* The JSON Endpoint now uploads the `level` properties as `level` (instead of `logLevel`)
+  * `logLevel` is also included for compatibility, but will be removed in LogKit 2
+
+
 ### [1.0.4](https://github.com/logkit/logkit/releases/tag/1.0.4)
 
 OS X 10.9 and iOS 7 GCD Fix
