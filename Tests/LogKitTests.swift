@@ -19,7 +19,7 @@ import LogKit
 import XCTest
 
 
-class LogLevelTests: XCTestCase {
+class PriorityLevelTests: XCTestCase {
 
 //    override func setUp() {
 //        super.setUp()

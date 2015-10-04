@@ -166,7 +166,7 @@ let log = LXLogger(endpoints: [
 
     LXConsoleEndpoint(
         entryFormatter = { entry in
-            return "\(entry.dateTime) [\(entry.logLevel.uppercaseString)] \(entry.message)"
+            return "\(entry.dateTime) [\(entry.level.uppercaseString)] \(entry.message)"
         }
     ),
 
