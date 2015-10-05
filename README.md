@@ -2,12 +2,12 @@
 
 [http://www.logkit.info/][website]
 
-LogKit is a logging framework built to be **simple** to get started with, **efficient** to execute, **safe** for shipping code, and **extensible** for flexibility. It is written in pure Swift and is suitable for iOS and OS X application logging. For a developer looking for more power than `println()`, LogKit takes just a moment to get started with, and comes ready to log to the console, a file, an HTTP service, or all three. Need to log to somewhere else? Defining your own Endpoint is easy too.
+LogKit is a logging framework built to be **simple** to get started with, **efficient** to execute, **safe** for shipping code, and **extensible** for flexibility. It is written in pure Swift and is suitable for OS X, iOS, and watchOS application logging. For a developer looking for more power than `print()`, LogKit takes just a moment to get started with, and comes ready to log to the console, a file, an HTTP service, or all three. Need to log to somewhere else? Defining your own Endpoint is easy too.
 
 This readme contains just a few tips to get you started with LogKit. To learn everything else, check the [project website][website].
 
 [![Build Status](https://travis-ci.org/logkit/logkit.svg?branch=master)](https://travis-ci.org/logkit/logkit)
-[![CocoaPods](https://img.shields.io/badge/pod-1.0.4-blue.svg)](https://cocoapods.org/pods/LogKit)
+[![CocoaPods](https://img.shields.io/badge/pod-2.0.0-blue.svg)](https://cocoapods.org/pods/LogKit)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 
@@ -40,9 +40,10 @@ This readme contains just a few tips to get you started with LogKit. To learn ev
 
 ## Requirements
 
-* Project targeting iOS 7+ or OS X 10.9+
-* Xcode 6.3+ and Swift 1.2
+* Project targeting OS X 10.9+, iOS 7+, or watchOS 2+
+* Xcode 7.0 and Swift 2
 
+> Note: Please check the [swift-1.2 branch](https://github.com/logkit/logkit/tree/swift-1.2) for a version compatible with Xcode 6 and Swift 1.2.
 
 ## Installation
 
@@ -58,7 +59,7 @@ Include LogKit in your Podfile:
 
 ```ruby
 use_frameworks!
-pod 'LogKit', '~> 1.0'
+pod 'LogKit', '~> 2.0'
 ```
 
 For more information on getting started with CocoaPods, read the [guide][cocoapods].
@@ -70,7 +71,7 @@ For more information on getting started with CocoaPods, read the [guide][cocoapo
 Include LogKit in your Cartfile:
 
 ```
-github "logkit/logkit" >= 1.0
+github "logkit/logkit" >= 2.0
 ```
 
 For more information on getting started with Carthage, visit the [repo][carthage].
@@ -79,7 +80,7 @@ For more information on getting started with Carthage, visit the [repo][carthage
 
 > Supports iOS 8+, OS X 10.9+
 
-Include `LogKit.xcodeproj` within your project (second level, below your project root, as a sub-project). Select your target, and add LogKit as an Embedded Binary in the General tab. Choose the top LogKit for an iOS target, or the bottom LogKit for OS X.
+Include `LogKit.xcodeproj` within your project (second level, below your project root, as a sub-project). Select your target, and add LogKit as an Embedded Binary in the General tab. Choose the top LogKit for an OS X target, the middle LogKit for iOS, or the bottom for watchOS.
 
 ### Source
 
@@ -127,52 +128,47 @@ import LogKit
 
 let log = LXLogger(endpoints: [
 
-    LXLogConsoleEndpoint(),
+    LXConsoleEndpoint(),
 
-    LXLogFileEndpoint(
+    LXFileEndpoint(
         fileURL: NSURL(string: /* Path to your log file */),
-        minimumLogLevel: .Notice
+        minimumPriorityLevel: .Notice
     ),
 
 ])
 ```
 
-You can add and configure as many [Endpoints][endpoints] as desired, such as the included File and HTTP Service Endpoints. You can also completely customize the format in which log entries are written to each Endpoint.
+You can add and configure as many [Endpoints][endpoints] as desired, such as the included File and HTTP Service Endpoints. You can also completely [customize the format][formatting] in which log entries are written to each Endpoint.
 
 ### Formatting
 
-Each Endpoint has a property named `dateFormatter` that controls how an entry's `dateTime` property will be formatted. It accepts an `NSDateFormatter` instance and is usually set at initialization time.
+Each Endpoint has a property named `dateFormatter` that controls how an entry's `dateTime` property will be formatted. It accepts an `LXDateFormatter` instance and is usually set at initialization time.
 
 ```swift
 let log = LXLogger(endpoints: [
 
-    LXLogConsoleEndpoint(
-        dateFormatter = {
-            let formatter = NSDateFormatter()
-            formatter.dateFormat = "HH':'mm':'ss'.'SSS"
-            formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
-            return formatter
-        }()
+    LXConsoleEndpoint(
+        dateFormatter = LXDateFormatter(formatString: "HH:mm:ss.SSS")
     ),
 
 ])
 ```
 
-Each Endpoint also has a property named `entryFormatter` that controls how an entry will be converted to a string for output. It accepts an `LXLogEntryFormatter` object and is also usually set at initialization time.
+Each Endpoint also has a property named `entryFormatter` that controls how an entry will be converted to a string for output. It accepts an `LXEntryFormatter` instance and is also usually set at initialization time.
 
 ```swift
 let log = LXLogger(endpoints: [
 
-    LXLogConsoleEndpoint(
-        entryFormatter = { entry in
-            return "\(entry.dateTime) [\(entry.logLevel.uppercaseString)] \(entry.message)"
-        }
+    LXConsoleEndpoint(
+        entryFormatter = LXEntryFormatter({ entry in
+            return "\(entry.dateTime) [\(entry.level.uppercaseString)] \(entry.message)"
+        })
     ),
 
 ])
 ```
 
-See the [Entry Formatting documentation][formatting] for more details on formatting, available log entry properties, and `LXLogEntryFormatter`.
+See the [Entry Formatting documentation][formatting] for more details on formatting, available log entry properties, and `LXEntryFormatter`.
 
 
 ## Contributing
@@ -186,13 +182,13 @@ LogKit is licensed under the permissive [ISC License][license] (a member of the 
 
 
 [website]: http://www.logkit.info/
-[docs]: http://www.logkit.info/docs/
-[install]: http://www.logkit.info/docs/1.0/installation/
+[docs]: http://www.logkit.info/docs/2.0/
+[install]: http://www.logkit.info/docs/2.0/installation/
 [cocoapods]: https://guides.cocoapods.org/using/using-cocoapods.html
 [carthage]: https://github.com/Carthage/Carthage
-[usage]: http://www.logkit.info/docs/1.0/usage/
-[endpoints]: http://www.logkit.info/docs/1.0/endpoints/
-[formatting]: http://www.logkit.info/docs/1.0/formatting/
+[usage]: http://www.logkit.info/docs/2.0/usage/
+[endpoints]: http://www.logkit.info/docs/2.0/endpoints/
+[formatting]: http://www.logkit.info/docs/2.0/formatting/
 [contrib]: https://github.com/logkit/logkit/blob/master/CONTRIBUTING.md
 [license]: https://github.com/logkit/logkit/blob/master/LICENSE.txt
 [bsd]: http://choosealicense.com/licenses/#isc
