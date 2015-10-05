@@ -14,63 +14,30 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D00B8CB21B2E3BC3003E5FED"
+               BlueprintIdentifier = "D0F8DD281B4B1ADC00D0865A"
                BuildableName = "LogKit.framework"
-               BlueprintName = "LogKit OSX"
-               ReferencedContainer = "container:LogKit.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D00B8CBC1B2E3BC3003E5FED"
-               BuildableName = "LogKit OSX Tests.xctest"
-               BlueprintName = "LogKit OSX Tests"
+               BlueprintName = "LogKit watchOS"
                ReferencedContainer = "container:LogKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      buildConfiguration = "Debug">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D00B8CBC1B2E3BC3003E5FED"
-               BuildableName = "LogKit OSX Tests.xctest"
-               BlueprintName = "LogKit OSX Tests"
-               ReferencedContainer = "container:LogKit.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D00B8CB21B2E3BC3003E5FED"
-            BuildableName = "LogKit.framework"
-            BlueprintName = "LogKit OSX"
-            ReferencedContainer = "container:LogKit.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
@@ -78,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D00B8CB21B2E3BC3003E5FED"
+            BlueprintIdentifier = "D0F8DD281B4B1ADC00D0865A"
             BuildableName = "LogKit.framework"
-            BlueprintName = "LogKit OSX"
+            BlueprintName = "LogKit watchOS"
             ReferencedContainer = "container:LogKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -88,17 +55,17 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D00B8CB21B2E3BC3003E5FED"
+            BlueprintIdentifier = "D0F8DD281B4B1ADC00D0865A"
             BuildableName = "LogKit.framework"
-            BlueprintName = "LogKit OSX"
+            BlueprintName = "LogKit watchOS"
             ReferencedContainer = "container:LogKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
