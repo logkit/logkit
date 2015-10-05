@@ -11,10 +11,12 @@ LogKit 2 is a complete overhaul of the LogKit framework. LogKit 2 comes with new
 * watchOS support
 * Rotating File Endpoint - switches to a new file when the current file approaches a maximum size
 * More Log Entry properties, including OS version, device model/type, and device IDs
+* A variety of built-in datetime and entry formatting options, which are easily extended
 
 #### Updated
 
 * Many objects have been renamed (see the 1.1.0 release notes below -- they all apply to LogKit 2 as well)
+* Date and entry formatting are now performed by `LXDateFormatter` and `LXEntryFormatter` objects
 * The Console Endpoint may now be set as synchronous or asynchronous at init time, and will never jumble log entries
 * The Dated File Endpoint now rotates to a new file automatically at midnight
 * The HTTP and JSON Endpoints now persist pending uploads between runs, so that log messages will not get lost on a bad network
