@@ -30,13 +30,7 @@ internal let LK_LOGKIT_VERSION = "2.0.0"
 
 
 /// The default queue used throughout the framework for background tasks.
-internal let LK_LOGKIT_QUEUE: dispatch_queue_t = {
-    if #available(OSX 10.10, OSXApplicationExtension 10.10,  iOS 8.0, iOSApplicationExtension 8.0, *) {
-        return dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
-    } else {
-        return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-    }
-}()
+internal let LK_LOGKIT_QUEUE: dispatch_queue_t = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
 
 /// The default log file directory; `Application Support/{bundleID}/logs/`.
@@ -88,7 +82,8 @@ internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion:
     let build = systemVersion?["ProductBuildVersion"] as? String ?? ""
     let info = NSProcessInfo.processInfo()
     let description = info.operatingSystemVersionString
-    if #available(OSX 10.10, OSXApplicationExtension 10.10,  iOS 8.0, iOSApplicationExtension 8.0, *) {
+#if os(OSX) // Ugly hack, see issue #7
+    if #available(OSX 10.10, OSXApplicationExtension 10.10, *) {
         let version = info.operatingSystemVersion
         return (description, version.majorVersion, version.minorVersion, version.patchVersion, build)
     } else {
@@ -99,6 +94,19 @@ internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion:
         let patch = parts.count > 2 ? Int(String(parts[2])) ?? -1 : -1
         return (description, major, minor, patch, build)
     }
+#else
+    if info.respondsToSelector("operatingSystemVersion") {
+        let version = info.operatingSystemVersion
+        return (description, version.majorVersion, version.minorVersion, version.patchVersion, build)
+    } else {
+        let version = systemVersion?["ProductVersion"] as? String
+        let parts = version?.characters.split(".") ?? []
+        let major = parts.count > 0 ? Int(String(parts[0])) ?? -1 : -1
+        let minor = parts.count > 1 ? Int(String(parts[1])) ?? -1 : -1
+        let patch = parts.count > 2 ? Int(String(parts[2])) ?? -1 : -1
+        return (description, major, minor, patch, build)
+    }
+#endif
 }()
 
 
@@ -163,7 +171,7 @@ internal extension NSCalendar {
 
     /// Returns whether the given date is the same date as "today". Exists as a compatibility shim for older operating systems.
     internal func isDateSameAsToday(date: NSDate) -> Bool {
-        if #available(iOS 8.0, iOSApplicationExtension 8.0, *) {
+        if self.respondsToSelector("isDateInToday:") {
             return self.isDateInToday(date)
         } else {
             let today = NSDate()
