@@ -71,7 +71,7 @@ For more information on getting started with CocoaPods, read the [guide][cocoapo
 Include LogKit in your Cartfile:
 
 ```
-github "logkit/logkit" >= 1.1
+github "logkit/logkit" ~> 1.1
 ```
 
 For more information on getting started with Carthage, visit the [repo][carthage].
