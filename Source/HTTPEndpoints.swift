@@ -317,7 +317,7 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
         successCodes: Set<Int> = defaultSuccessCodes,
         sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
         minimumPriorityLevel: LXPriorityLevel = .All,
-        dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter()
+        dateFormatter: LXDateFormatter = LXDateFormatter.ISO8601DateTimeFormatter()
     ) {
         super.init(
             request: request,

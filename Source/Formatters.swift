@@ -113,7 +113,7 @@ extension LXEntryFormatter {
     private enum EntryFormattingError: ErrorType { case DecodingError }
 
     /// Converts `LXLogEntry` objects into JSON strings, representing a dictionary of all entry properties.
-    public class func jsonFormatter() -> Self { return self.init({
+    internal class func jsonFormatter() -> Self { return self.init({
         do {
             // TODO: this "object" is a bit of a hack, so that later we can enable uploading multiple enties at once.
             let object = ["entries": [$0.asMap()]]
