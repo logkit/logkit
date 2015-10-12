@@ -39,10 +39,10 @@ public class LXDateFormatter {
 
     /**
     Creates a new `LXDateFormatter` instance.
-    
+
     - parameter formatString: The desired format string used to convert dates to strings. Uses the same format string as
     `NSDateFormatter.dateFormat`.
-    - parameter timezone: (optional) An `NSTimeZone` instance representing the desired time zone of date string output. Defaults
+    - parameter timezone: (optional) An `NSTimeZone` instance representing the desired time zone of the date string output. Defaults
     to UTC.
     */
     public required init(formatString: String, timeZone: NSTimeZone = NSTimeZone(forSecondsFromGMT: 0)) {
@@ -53,9 +53,9 @@ public class LXDateFormatter {
 
     /**
     Converts an `NSDate` object into a string using the date formatter's settings.
-    
+
     - parameter date: The `NSDate` instance to be converted.
-    
+
     - returns: A string representation of the date, based on the formatter's settings.
     */
     internal func stringFromDate(date: NSDate) -> String {
@@ -87,7 +87,7 @@ public class LXEntryFormatter {
 
     /**
     Creates a new `LXEntryFormatter` instance.
-    
+
     - parameters:
       - _ A closure that accepts an `LXLogEntry` and returns a `String`.
     */
@@ -97,11 +97,11 @@ public class LXEntryFormatter {
 
     /**
     Converts an `LXLogEntry` object into a string using the entry formatter's settings.
-    
+
     - parameter entry: The `LXLogEntry` instance to be converted.
     - parameter appendNewline: Indicates whether a newline character should be appended to the ending of the converted Entry's
     string.
-    
+
     - returns: A string representation of the Log Entry, based on the formatter's settings.
     */
     internal func stringFromEntry(entry: LXLogEntry, appendNewline: Bool) -> String {
