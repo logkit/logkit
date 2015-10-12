@@ -16,58 +16,59 @@
 
 
 /**
-The details of a log entry.
+The details of a Log Entry.
 
-- parameters:
-  - message: The message provided.
-  - userInfo: A dictionary of additional values to be provided to the entry formatter.
-  - level: The name of the entry's priority level.
-  - timestamp: The number of seconds since the Unix epoch (midnight 1970-01-01 UTC).
-  - dateTime: The entry's timestamp as a string formatted by an endpoint's `dateFormatter`.
-  - functionName: The function from which the log entry was created.
-  - fileName: The name of the source file from which the log entry was created.
-  - filePath: The absolute path of the source file from which the log entry was created.
-  - lineNumber: The line number in the file from which the log entry was created.
-  - columnNumber: The column number in the file from which the log entry was created.
-  - threadID: The ID of the thread from which the log entry was created.
-  - threadName: The name of the thread from which the log entry was created.
-  - isMainThread: An indicator of whether the log entry was created on the main thread.
-  - osVersionString: A description of the operating system, including its name and version.
-  - osMajorVersion: The major version number of the operating system.
-  - osMinorVersion: The minor version number of the operating system.
-  - osPatchVersion: The patch version number of the operating system.
-  - osBuildVersion: The build version string of the operating system.
-  - bundleID: The bundle ID of the running application.
-  - deviceModel: The model of the device running the application.
-  - deviceType: The type of the device running the application.
-  - deviceVendorID: The vendor ID (if available) of the device running the application.
-  - deviceAdvertisingID: The advertising ID (if available) of the device running the application.
-  - logKitVersion: The version of the LogKit framework that generated this entry.
+- parameter logKitVersion: The version of the LogKit framework that generated this Entry.
+- parameter message: The message provided during the logging call.
+- parameter userInfo: A dictionary of additional values to be provided to each Endpoint's `entryFormatter`.
+- parameter level: The name of the Entry's Priority Level.
+- parameter timestamp: The number of seconds since the Unix epoch (midnight 1970-01-01 UTC).
+- parameter dateTime: The Entry's timestamp as a string serialized by an Endpoint's `dateFormatter`.
+- parameter functionName: The function from which the Log Entry was created.
+- parameter fileName: The name of the source file from which the Log Entry was created.
+- parameter filePath: The absolute path of the source file from which the Log Entry was created.
+- parameter lineNumber: The line number in the file from which the Log Entry was created.
+- parameter columnNumber: The column number in the file from which the Log Entry was created.
+- parameter threadID: The ID of the thread from which the Log Entry was created.
+- parameter threadName: The name of the thread from which the Log Entry was created.
+- parameter isMainThread: An indicator of whether the Log Entry was created on the main thread.
+- parameter osVersionString: A description of the operating system, including its name and version.
+- parameter osMajorVersion: The major version number of the operating system.
+- parameter osMinorVersion: The minor version number of the operating system.
+- parameter osPatchVersion: The patch version number of the operating system.
+- parameter osBuildVersion: The build version string of the operating system.
+- parameter bundleID: The bundle ID of the host application.
+- parameter deviceModel: The model of the device running the application.
+- parameter deviceType: The type of the device running the application.
+- parameter deviceVendorID: The vendor ID of the device running the application (if available).
+- parameter deviceAdvertisingID: The advertising ID of the device running the application (if available).
 */
 public struct LXLogEntry {
-    /// The message provided.
+    /// The version of the LogKit framework that generated this Entry.
+    public let logKitVersion: String = LK_LOGKIT_VERSION
+    /// The message provided during the logging call.
     public let message: String
-    /// A dictionary of additional values to be provided to the entry formatter.
+    /// A dictionary of additional values to be provided to each Endpoint's `entryFormatter`.
     public let userInfo: [String: AnyObject]
-    /// The name of the entry's priority level.
+    /// The name of the Entry's Priority Level.
     public let level: String
     /// The number of seconds since the Unix epoch (midnight 1970-01-01 UTC).
     public let timestamp: Double
-    /// The entry's timestamp as a string formatted by an endpoint's `dateFormatter`.
+    /// The Entry's timestamp as a string serialized by an Endpoint's `dateFormatter`.
     public let dateTime: String
-    /// The function from which the log entry was created.
+    /// The function from which the Log Entry was created.
     public let functionName: String
-    /// The absolute path of the source file from which the log entry was created.
+    /// The absolute path of the source file from which the Log Entry was created.
     public let filePath: String
-    /// The line number in the file from which the log entry was created.
+    /// The line number in the file from which the Log Entry was created.
     public let lineNumber: Int
-    /// The column number in the file from which the log entry was created.
+    /// The column number in the file from which the Log Entry was created.
     public let columnNumber: Int
-    /// The ID of the thread from which the log entry was created.
+    /// The ID of the thread from which the Log Entry was created.
     public let threadID: String
-    /// The name of the thread from which the log entry was created.
+    /// The name of the thread from which the Log Entry was created.
     public let threadName: String
-    /// An indicator of whether the log entry was created on the main thread.
+    /// An indicator of whether the Log Entry was created on the main thread.
     public let isMainThread: Bool
     /// A description of the operating system, including its name and version.
     public let osVersionString: String = LK_DEVICE_OS.decription
@@ -79,20 +80,18 @@ public struct LXLogEntry {
     public let osPatchVersion: Int = LK_DEVICE_OS.patchVersion
     /// The build version string of the operating system.
     public let osBuildVersion: String = LK_DEVICE_OS.buildVersion
-    /// The bundle ID of the running application.
+    /// The bundle ID of the host application.
     public let bundleID: String = LK_BUNDLE_ID
     /// The model of the device running the application.
     public let deviceModel: String = LK_DEVICE_MODEL
     /// The type of the device running the application.
     public let deviceType: String = LK_DEVICE_TYPE
-    /// The vendor ID (if available) of the device running the application.
+    /// The vendor ID of the device running the application (if available).
     public let deviceVendorID: String = LK_DEVICE_IDS.vendor
-    /// The advertising ID (if available) of the device running the application.
+    /// The advertising ID of the device running the application (if available).
     public let deviceAdvertisingID: String = LK_DEVICE_IDS.advertising
-    /// The version of the LogKit framework that generated this entry.
-    public let logKitVersion: String = LK_LOGKIT_VERSION
 
-    /// The name of the source file from which the log entry was created.
+    /// The name of the source file from which the Log Entry was created.
     public var fileName: String { return (self.filePath as NSString).lastPathComponent }
 
 }
@@ -101,9 +100,10 @@ public struct LXLogEntry {
 /// Private extension to facilitate JSON serialization.
 internal extension LXLogEntry {
 
-    /// Returns log entry as a dictionary.
+    /// Returns the Log Entry as a dictionary.
     internal func asMap() -> [String: AnyObject] {
         return [
+            "logKitVersion": self.logKitVersion,
             "message": self.message,
             "userInfo": self.userInfo,
             "level": self.level,
@@ -127,7 +127,6 @@ internal extension LXLogEntry {
             "deviceType": self.deviceType,
             "deviceVendorID": self.deviceVendorID,
             "deviceAdvertisingID": self.deviceAdvertisingID,
-            "logKitVersion": self.logKitVersion,
         ]
     }
 

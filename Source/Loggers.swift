@@ -17,34 +17,34 @@
 import Foundation
 
 
-/// The main logging API for application code. An instance of this class dispatches log entries to logging endpoints.
+/// The main logging API for application code. An instance of this class distributes Log Lntries to Endpoints for writing.
 public final class LXLogger {
-    /// The collection of log endpoints that successfully initialized.
+    /// The collection of Endpoints that successfully initialized.
     private let endpoints: [LXEndpoint]
 
     /**
-    Initialize a logger. Any endpoints that fail initialization are discarded.
+    Initialize a Logger. Any Endpoints that fail initialization are discarded.
 
-    - parameter endpoints: An array of log endpoints to output entries to.
+    - parameter endpoints: An array of Endpoints to dispatch Log Entries to.
     */
     public init(endpoints: [LXEndpoint?]) {
         self.endpoints = endpoints.filter({ $0 != nil }).map({ $0! })
         assert(!self.endpoints.isEmpty, "A logger instance has been initialized, but no valid endpoints were provided.")
     }
 
-    /// Initialize a basic logger that writes to the console (`stdout`) with default settings.
+    /// Initialize a basic Logger that writes to the console (`stdout`) with default settings.
     public convenience init() {
         self.init(endpoints: [LXConsoleEndpoint()])
     }
 
     /**
-    Delivers log entries to endpoints.
+    Delivers Log Entries to Endpoints.
 
-    This function filters endpoints based on their `minimumPriorityLevel` property to deliver entries only to qualified endpoints.
-    If no endpoint qualifies, most of the work is skipped.
+    This function filters Endpoints based on their `minimumPriorityLevel` property to deliver Entries only to qualified Endpoints.
+    If no Endpoint qualifies, most of the work is skipped.
 
-    After identifying qualified endpoints, the entry is converted to a string based on each endpoint's settings.
-    Then, it is output to the endpoint.
+    After identifying qualified Endpoints, the Log Entry is serialized to a string based on each Endpoint's individual settings.
+    Then, it is dispatched to the Endpoint for writing.
     */
     private func log(
         messageBlock: () -> String,

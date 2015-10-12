@@ -16,7 +16,7 @@
 
 
 /**
-Logging priority levels are described below, in order of lowest-to-highest value:
+Logging Priority Levels are described below, in order of lowest-to-highest priority:
 
 - `All`: Special value that includes all priority levels
 - `Debug`: Programmer debugging
@@ -30,16 +30,25 @@ Logging priority levels are described below, in order of lowest-to-highest value
 public enum LXPriorityLevel: Int, Comparable, CustomStringConvertible {
     // These levels are designed to match ASL levels
     // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
+
+    /// A special value that includes all Priority Levels.
     case All      =  100
+    /// Programmer debugging
     case Debug    =    7
+    /// Programmer information
     case Info     =    6
+    /// General notice
     case Notice   =    5
+    /// Event may affect user experience at some point, if not corrected
     case Warning  =    4
+    /// Event will definitely affect user experience
     case Error    =    3
+    /// Event may crash application
     case Critical =    2
+    /// A special value that excludes all Priority Levels
     case None     = -100
 
-    /// A string representation of the priority level.
+    /// A string representation of the Priority Level.
     public var description: String {
         switch self {
         case .All:
@@ -63,12 +72,12 @@ public enum LXPriorityLevel: Int, Comparable, CustomStringConvertible {
     
 }
 
-/// Determines if two priority levels are equal.
+/// Determines if two Priority Levels are equal.
 public func ==(lhs: LXPriorityLevel, rhs: LXPriorityLevel) -> Bool {
     return lhs.rawValue == rhs.rawValue
 }
 
-/// Performs a comparison between two priority levels.
+/// Performs a comparison between two Priority Levels.
 public func <(lhs: LXPriorityLevel, rhs: LXPriorityLevel) -> Bool {
     return lhs.rawValue > rhs.rawValue // Yes, this is reversed intentionally
 }

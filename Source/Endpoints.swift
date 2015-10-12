@@ -15,21 +15,21 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
-/// Objects that conform to the `LXEndpoint` protocol may be used by an `LXLogger` as log entry destinations.
+/// Objects that conform to the Endpoint protocol may be used by an `LXLogger` instance as Log Entry destinations.
 public protocol LXEndpoint {
-    /// Only log entries of this level or above will be written to this endpoint.
+    /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
     var minimumPriorityLevel: LXPriorityLevel { get }
-    /// The date formatter that this endpoint will use to convert an entry instance's `dateTime` to a string.
+    /// The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a string.
     var dateFormatter: LXDateFormatter { get }
-    /// The entry formatter that this endpoint will use to convert an entry instance to a string.
+    /// The formatter used by this Endpoint to serialize each Log Entry to a string.
     var entryFormatter: LXEntryFormatter { get }
-    /// Indicates whether this endpoint requires a newline character appended to each converted log entry instance.
+    /// Indicates whether this Endpoint requires a newline character appended to each serialized Log Entry string.
     var requiresNewlines: Bool { get }
 
     /**
-    Write the converted log entry string to the endpoint.
+    Writes a serialized Log Entry string to the final destination this Endpoint represents.
 
-    - parameter string: The log entry, after being converted by the `entryFormatter`.
+    - parameter string: The Log Entry, after being serialized to a string by the `entryFormatter`.
     */
     func write(string: String) -> Void
 

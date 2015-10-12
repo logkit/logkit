@@ -17,8 +17,10 @@
 import Foundation
 
 
+//MARK: Date Formatter
+
 /**
-Instances of LXDateFormatter create string representations of `NSDate` objects. There are several pre-set formats available, or
+Instances of `LXDateFormatter` create string representations of `NSDate` objects. There are several built-in formats available, or
 a custom format can be specified in the same format as in `NSDateFormatter` objects.
 */
 public class LXDateFormatter {
@@ -38,7 +40,7 @@ public class LXDateFormatter {
     /**
     Creates a new `LXDateFormatter` instance.
     
-    - parameter formatString: The desired format string used to convert dates to strings. Uses the same date format as
+    - parameter formatString: The desired format string used to convert dates to strings. Uses the same format string as
     `NSDateFormatter.dateFormat`.
     - parameter timezone: (optional) An `NSTimeZone` instance representing the desired time zone of date string output. Defaults
     to UTC.
@@ -63,17 +65,19 @@ public class LXDateFormatter {
 }
 
 
+//MARK: Entry Formatter
+
 /**
-Instances of LXEntryFormatter create string representations of `LXLogEntry` objects. There are several pre-set formats available,
-or a custom format can be specified.
+Instances of LXEntryFormatter create string representations of `LXLogEntry` objects. There are several built-in formats available,
+or a custom format can be specified as a closure of the type `(LXLogEntry) -> String`.
 */
 public class LXEntryFormatter {
 
-    /// Converts `LXLogEntry` objects into strings in a long format that contains detailed debugging information.
-    public class func longFormatter() -> Self { return self.init { e in "\(e.dateTime) (\(e.timestamp)) [\(e.level.uppercaseString)] {thread: \(e.threadID) '\(e.threadName)' main: \(e.isMainThread)} \(e.functionName) <\(e.fileName):\(e.lineNumber).\(e.columnNumber)> \(e.message)" } }
     /// Converts `LXLogEntry` objects into strings in a standard format that contains basic debugging information.
     public class func standardFormatter() -> Self { return self.init { e in "\(e.dateTime) [\(e.level.uppercaseString)] \(e.functionName) <\(e.fileName):\(e.lineNumber)> \(e.message)" } }
-    /// Converts `LXLogEntry` objects into strings in a short format that contains minimal information.
+    /// Converts `LXLogEntry` objects into strings in a long format that contains detailed debugging information.
+    public class func longFormatter() -> Self { return self.init { e in "\(e.dateTime) (\(e.timestamp)) [\(e.level.uppercaseString)] {thread: \(e.threadID) '\(e.threadName)' main: \(e.isMainThread)} \(e.functionName) <\(e.fileName):\(e.lineNumber).\(e.columnNumber)> \(e.message)" } }
+    /// Converts `LXLogEntry` objects into strings in a short format that contains minimal debugging information.
     public class func shortFormatter() -> Self { return self.init { e in "\(e.dateTime) [\(e.level.uppercaseString)] \(e.message)" } }
     /// Converts `LXLogEntry` objects into strings in a short format that contains only the logged message.
     public class func messageOnlyFormatter() -> Self { return self.init { e in e.message } }
@@ -94,11 +98,11 @@ public class LXEntryFormatter {
     /**
     Converts an `LXLogEntry` object into a string using the entry formatter's settings.
     
-    - parameter entry: The 'LXLogEntry` instance to be converted.
-    - parameter appendNewline: Indicates whether a newline character should be appended to the ended of the converted entry's
+    - parameter entry: The `LXLogEntry` instance to be converted.
+    - parameter appendNewline: Indicates whether a newline character should be appended to the ending of the converted Entry's
     string.
     
-    - returns: A string representation of the entry, based on the formatter's settings.
+    - returns: A string representation of the Log Entry, based on the formatter's settings.
     */
     internal func stringFromEntry(entry: LXLogEntry, appendNewline: Bool) -> String {
         return appendNewline ? entryFormatter(entry: entry) + "\n" : entryFormatter(entry: entry)
@@ -112,7 +116,7 @@ extension LXEntryFormatter {
     /// An internal error indicating that the serialized JSON data could not be decoded into a string.
     private enum EntryFormattingError: ErrorType { case DecodingError }
 
-    /// Converts `LXLogEntry` objects into JSON strings, representing a dictionary of all entry properties.
+    /// Converts `LXLogEntry` objects into JSON strings, representing a dictionary of all Entry properties.
     internal class func jsonFormatter() -> Self { return self.init({
         do {
             // TODO: this "object" is a bit of a hack, so that later we can enable uploading multiple enties at once.

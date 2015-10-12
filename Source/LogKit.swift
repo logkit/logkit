@@ -25,6 +25,8 @@ import WatchKit
 /* This file is admittedly somewhat of a dumping ground for globals. */
 
 
+//MARK: Global Constants
+
 /// The version of the LogKit framework currently in use.
 internal let LK_LOGKIT_VERSION = "2.0.0"
 
@@ -45,7 +47,7 @@ internal let LK_DEFAULT_LOG_DIRECTORY: NSURL? = {
 }()
 
 
-/// The bundle ID of the currently running application, _not_ the LogKit framework.
+/// The bundle ID of the currently running host application, _not_ the LogKit framework.
 internal let LK_BUNDLE_ID: String = NSBundle.mainBundle().bundleIdentifier ?? ""
 
 
@@ -138,6 +140,8 @@ internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
 #endif
 }()
 
+
+//MARK: Shared Extensions
 
 internal extension NSFileManager {
 
