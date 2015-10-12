@@ -7,7 +7,7 @@ LogKit 2 is a complete overhaul of the LogKit framework. LogKit 2 comes with new
 
 #### Added
 
-* Swift 2 support
+* Swift 2 and Xcode 7 support
 * watchOS support
 * Rotating File Endpoint - switches to a new file when the current file approaches a maximum size
 * More Log Entry properties, including OS version, device model/type, and device IDs
@@ -15,13 +15,27 @@ LogKit 2 is a complete overhaul of the LogKit framework. LogKit 2 comes with new
 
 #### Updated
 
-* Many objects have been renamed (see the 1.1.0 release notes below -- they all apply to LogKit 2 as well)
+* Many objects have been renamed:
+  * `LXLogEndpoint` is now `LXEndpoint`
+  * `LXLogConsoleEndpoint` is now `LXConsoleEndpoint`
+  * `LXLogFileEndpoint` is now `LXFileEndpoint`
+  * `LXLogDatedFileEndpoint` is now `LXDatedFileEndpoint`
+  * `LXLogHTTPEndpoint` is now `LXHTTPEndpoint`
+  * `LXLogHTTPJSONEndpoint` is now `LXHTTPJSONEndpoint`
+  * `LXLogLevel` is now `LXPriorityLevel`
+  * `LXLogEntryFormatter` is now `LXEntryFormatter`
+* The `LXLogEntry` property `logLevel` has been renamed to `level`
+* The JSON Endpoint's behavior has been updated in several ways:
+  * The `level` property is now included as `level` (instead of `logLevel`)
+  * The `userInfo` property is now included as a dictionary under the `userInfo` key
+  * Uploads now consist of a JSON dictionary, with an item `entries` that includes an array of Log Entries
 * Date and entry formatting are now performed by `LXDateFormatter` and `LXEntryFormatter` objects
+  * Each formatter object now has a variety of built-in output formats
 * The Console Endpoint may now be set as synchronous or asynchronous at init time, and will never jumble log entries
-* The Dated File Endpoint now rotates to a new file automatically at midnight
-* The HTTP and JSON Endpoints now persist pending uploads between runs, so that log messages will not get lost on a bad network
-* The JSON Endpoint now includes all `userInfo` items as a second-level dictionary under the `userInfo` key
-
+  * The Serial Console Endpoint has been removed. Use the Console Endpoint asynchronously instead
+* The Dated File Endpoint now rotates to a new file automatically at midnight UTC
+* The HTTP and JSON Endpoints now persist pending entries until successful upload, so that log messages will not get lost on a bad network
+  * Entries are also persisted between application runs, so that remaining entries may be uploaded at next run
 
 ### [1.1.0](https://github.com/logkit/logkit/releases/tag/1.1.0)
 

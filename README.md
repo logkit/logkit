@@ -53,7 +53,7 @@ There are a few ways to install LogKit. Below are some tips, but for full detail
 
 ### CocoaPods
 
-> Supports iOS 8+, OS X 10.9+
+> Supports iOS 8+, OS X 10.9+, watchOS 2+
 
 Include LogKit in your Podfile:
 
@@ -66,7 +66,7 @@ For more information on getting started with CocoaPods, read the [guide][cocoapo
 
 ### Carthage
 
-> Supports iOS 8+, OS X 10.9+
+> Supports iOS 8+, OS X 10.9+, watchOS 2+
 
 Include LogKit in your Cartfile:
 
@@ -78,17 +78,22 @@ For more information on getting started with Carthage, visit the [repo][carthage
 
 ### Embedded Framework
 
-> Supports iOS 8+, OS X 10.9+
+> Supports iOS 8+, OS X 10.9+, watchOS 2+
 
 Include `LogKit.xcodeproj` within your project (second level, below your project root, as a sub-project). Select your target, and add LogKit as an Embedded Binary in the General tab. Choose the top LogKit for an OS X target, the middle LogKit for iOS, or the bottom for watchOS.
 
 ### Source
 
-> Supports iOS 7+, OS X 10.9+
+> Supports iOS 7+, OS X 10.9+, watchOS 2+
 >
-> Integrating the LogKit source file is the only way to include LogKit in projects targeting iOS 7. When this installation method is used, skip the `import LogKit`.
+> Integrating the LogKit source is the only way to include LogKit in projects targeting iOS 7. When this installation method is used, skip the `import LogKit`.
 
 Add all of the `.swift` files found in the `Sources` directory to your project. No other steps are necessary for installation.
+
+
+## Migrating from LogKit 1
+
+If you have previously used LogKit 1, most of LogKit 2 will be familiar to you. However, many objects have updated names and initializers. Please review the [ChangeLog][changelog] and read the [Migration Guide][migration] to update your code for LogKit 2.
 
 
 ## Usage
@@ -184,11 +189,15 @@ LogKit is licensed under the permissive [ISC License][license] (a member of the 
 [website]: http://www.logkit.info/
 [docs]: http://www.logkit.info/docs/2.0/
 [install]: http://www.logkit.info/docs/2.0/installation/
-[cocoapods]: https://guides.cocoapods.org/using/using-cocoapods.html
-[carthage]: https://github.com/Carthage/Carthage
 [usage]: http://www.logkit.info/docs/2.0/usage/
 [endpoints]: http://www.logkit.info/docs/2.0/endpoints/
 [formatting]: http://www.logkit.info/docs/2.0/formatting/
+[migration]: http://www.logkit.info/docs/2.0/migration/
+
+[changelog]: https://github.com/logkit/logkit/blob/master/CHANGELOG.md
 [contrib]: https://github.com/logkit/logkit/blob/master/CONTRIBUTING.md
 [license]: https://github.com/logkit/logkit/blob/master/LICENSE.txt
+
+[cocoapods]: https://guides.cocoapods.org/using/using-cocoapods.html
+[carthage]: https://github.com/Carthage/Carthage
 [bsd]: http://choosealicense.com/licenses/#isc
