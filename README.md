@@ -7,7 +7,7 @@ LogKit is a logging framework built to be **simple** to get started with, **effi
 This readme contains just a few tips to get you started with LogKit. To learn everything else, check the [project website][website].
 
 [![Build Status](https://travis-ci.org/logkit/logkit.svg?branch=master)](https://travis-ci.org/logkit/logkit)
-[![CocoaPods](https://img.shields.io/badge/pod-2.0.0-blue.svg)](https://cocoapods.org/pods/LogKit)
+[![CocoaPods](https://img.shields.io/badge/pod-2.0.1-blue.svg)](https://cocoapods.org/pods/LogKit)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 
@@ -34,7 +34,7 @@ This readme contains just a few tips to get you started with LogKit. To learn ev
 * [x] [Comprehensive documentation][docs]
 * [x] Built-in Console, File, and HTTP [Endpoints][endpoints]
 * [x] Priority-filtering per Endpoint
-* [x] Complete log entry [format customization][formatting] per Endpoint
+* [x] Complete Log Entry [format customization][formatting] per Endpoint
 * [x] Custom Endpoints via simple protocol conformance
 
 
@@ -126,7 +126,7 @@ Now you're logging! You can use the `debug`, `info`, `notice`, `warning`, `error
 
 ### Additional Endpoints
 
-If you wanted to log to a file as well as the console, and you wanted the file to only receive `notice` and higher entries, you could set your logger up like this:
+If you wanted to log to a file as well as the console, and you wanted the file to only receive `notice` and higher Log Entries, you could set your logger up like this:
 
 ```swift
 import LogKit
@@ -143,11 +143,11 @@ let log = LXLogger(endpoints: [
 ])
 ```
 
-You can add and configure as many [Endpoints][endpoints] as desired, such as the included File and HTTP Service Endpoints. You can also completely [customize the format][formatting] in which log entries are written to each Endpoint.
+You can add and configure as many [Endpoints][endpoints] as desired, such as the included File and HTTP Service Endpoints. You can also completely [customize the format][formatting] in which Log Entries are written to each Endpoint.
 
 ### Formatting
 
-Each Endpoint has a property named `dateFormatter` that controls how an entry's `dateTime` property will be formatted. It accepts an `LXDateFormatter` instance and is usually set at initialization time.
+Each Endpoint has a property named `dateFormatter` that controls how an Entry's `dateTime` property will be formatted. It accepts an `LXDateFormatter` instance and is usually set at initialization time.
 
 ```swift
 let log = LXLogger(endpoints: [
@@ -159,7 +159,7 @@ let log = LXLogger(endpoints: [
 ])
 ```
 
-Each Endpoint also has a property named `entryFormatter` that controls how an entry will be converted to a string for output. It accepts an `LXEntryFormatter` instance and is also usually set at initialization time.
+Each Endpoint also has a property named `entryFormatter` that controls how an Entry will be converted to a string for output. It accepts an `LXEntryFormatter` instance and is also usually set at initialization time.
 
 ```swift
 let log = LXLogger(endpoints: [
@@ -173,7 +173,7 @@ let log = LXLogger(endpoints: [
 ])
 ```
 
-See the [Entry Formatting documentation][formatting] for more details on formatting, available log entry properties, and `LXEntryFormatter`.
+See the [Entry Formatting documentation][formatting] for more details on formatting, available Log Entry properties, and `LXEntryFormatter`.
 
 
 ## Contributing
