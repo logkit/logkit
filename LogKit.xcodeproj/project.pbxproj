@@ -92,10 +92,10 @@
 		D00B8C931B2E3B8F003E5FED /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D00B8C921B2E3B8F003E5FED /* LogKit.framework */,
-				D00B8C9D1B2E3B8F003E5FED /* LogKit iOS Tests.xctest */,
 				D00B8CB31B2E3BC3003E5FED /* LogKit.framework */,
 				D00B8CBD1B2E3BC3003E5FED /* LogKit OSX Tests.xctest */,
+				D00B8C921B2E3B8F003E5FED /* LogKit.framework */,
+				D00B8C9D1B2E3B8F003E5FED /* LogKit iOS Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
