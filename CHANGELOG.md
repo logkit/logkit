@@ -1,6 +1,16 @@
 # Change Log
 
 
+### [1.1.1](https://github.com/logkit/logkit/releases/tag/1.1.1)
+
+Documentation updates
+
+#### Fixed
+
+* Revised the ordering of products in Xcode to match the documentation
+* Minor README documentation updates
+
+
 ### [1.1.0](https://github.com/logkit/logkit/releases/tag/1.1.0)
 
 This release facilitates compatibility with LogKit 2.

@@ -7,7 +7,7 @@ LogKit is a logging framework built to be **simple** to get started with, **effi
 This readme contains just a few tips to get you started with LogKit. To learn everything else, check the [project website][website].
 
 [![Build Status](https://travis-ci.org/logkit/logkit.svg?branch=swift-1.2)](https://travis-ci.org/logkit/logkit)
-[![CocoaPods](https://img.shields.io/badge/pod-1.1.0-blue.svg)](https://cocoapods.org/pods/LogKit)
+[![CocoaPods](https://img.shields.io/badge/pod-1.1.1-blue.svg)](https://cocoapods.org/pods/LogKit)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 
@@ -44,6 +44,7 @@ This readme contains just a few tips to get you started with LogKit. To learn ev
 * Xcode 6.3 or 6.4 with Swift 1.2
 
 > Note: Please check the [master branch](https://github.com/logkit/logkit/tree/master) for a version compatible with Xcode 7 and Swift 2.
+
 
 ## Installation
 
@@ -88,7 +89,7 @@ Include `LogKit.xcodeproj` within your project (second level, below your project
 >
 > Integrating the LogKit source file is the only way to include LogKit in projects targeting iOS 7. When this installation method is used, skip the `import LogKit`.
 
-Add `LogKit.swift` (found in the `Sources` directory) to your project. No other steps are necessary for installation.
+Add the `LogKit.swift` file found in the `Source` directory to your project. No other steps are necessary for installation.
 
 
 ## Usage
@@ -189,11 +190,13 @@ LogKit is licensed under the permissive [ISC License][license] (a member of the 
 [website]: http://www.logkit.info/
 [docs]: http://www.logkit.info/docs/1.1/
 [install]: http://www.logkit.info/docs/1.1/installation/
-[cocoapods]: https://guides.cocoapods.org/using/using-cocoapods.html
-[carthage]: https://github.com/Carthage/Carthage
 [usage]: http://www.logkit.info/docs/1.1/usage/
 [endpoints]: http://www.logkit.info/docs/1.1/endpoints/
 [formatting]: http://www.logkit.info/docs/1.1/formatting/
+
 [contrib]: https://github.com/logkit/logkit/blob/master/CONTRIBUTING.md
 [license]: https://github.com/logkit/logkit/blob/master/LICENSE.txt
+
+[cocoapods]: https://guides.cocoapods.org/using/using-cocoapods.html
+[carthage]: https://github.com/Carthage/Carthage
 [bsd]: http://choosealicense.com/licenses/#isc
