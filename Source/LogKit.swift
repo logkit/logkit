@@ -28,7 +28,7 @@ import WatchKit
 //MARK: Global Constants
 
 /// The version of the LogKit framework currently in use.
-internal let LK_LOGKIT_VERSION = "2.0.1"
+internal let LK_LOGKIT_VERSION = "2.0.2"
 
 
 /// The default queue used throughout the framework for background tasks.
@@ -148,10 +148,10 @@ internal extension NSFileManager {
     /**
     This method attempts to ensure that a file is available at the specified URL. It will attempt to create an empty file if
     one does not already exist at that location.
-    
+
     - parameter withIntermediateDirectories: Indicates whether intermediate directories should be created if necessary, before
     checking for the file.
-    
+
     - returns: A `Bool` indicating whether the file is available or not.
     */
     internal func ensureFileAtURL(URL: NSURL, withIntermediateDirectories shouldCreateDirs: Bool) -> Bool {

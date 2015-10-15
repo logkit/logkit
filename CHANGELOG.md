@@ -1,6 +1,16 @@
 # Change Log
 
 
+### [2.0.2](https://github.com/logkit/logkit/releases/tag/2.0.2)
+
+Documentation updates
+
+#### Fixed
+
+* Revised the ordering of products in Xcode to match the documentation
+* Minor documentation typo fixes
+
+
 ### [2.0.1](https://github.com/logkit/logkit/releases/tag/2.0.1)
 
 HTTP JSON Endpoint initializer fix; improved documentation
@@ -50,6 +60,16 @@ LogKit 2 is a complete overhaul of the LogKit framework. LogKit 2 comes with new
 * The Dated File Endpoint now rotates to a new file automatically at midnight UTC
 * The HTTP and JSON Endpoints now persist pending entries until successful upload, so that log messages will not get lost on a bad network
   * Entries are also persisted between application runs, so that remaining entries may be uploaded at next run
+
+
+### [1.1.1](https://github.com/logkit/logkit/releases/tag/1.1.1)
+
+Documentation updates
+
+#### Fixed
+
+* Revised the ordering of products in Xcode to match the documentation
+* Minor README documentation updates
 
 
 ### [1.1.0](https://github.com/logkit/logkit/releases/tag/1.1.0)
