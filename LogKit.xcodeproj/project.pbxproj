@@ -33,6 +33,18 @@
 		D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
 		D0449EB91B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
 		D0449EBA1B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
+		D0C618151BD01918008BF5F2 /* LogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C6180B1BD01917008BF5F2 /* LogKit.framework */; };
+		D0C618221BD01A0F008BF5F2 /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
+		D0C618231BD01A12008BF5F2 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA21B4C606900D7E1D3 /* Entries.swift */; };
+		D0C618241BD01A14008BF5F2 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
+		D0C618251BD01A17008BF5F2 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA61B4C62B100D7E1D3 /* Levels.swift */; };
+		D0C618261BD01A1A008BF5F2 /* Loggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */; };
+		D0C618271BD01A1C008BF5F2 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */; };
+		D0C618281BD01A1F008BF5F2 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
+		D0C618291BD01A22008BF5F2 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
+		D0C6182A1BD01A25008BF5F2 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
+		D0C6182B1BD01A28008BF5F2 /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0C6182C1BD01A30008BF5F2 /* LogKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CE21B2E9457003E5FED /* LogKitTests.swift */; };
 		D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
 		D0C6C8E71B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
 		D0C6C8E81B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
@@ -58,6 +70,13 @@
 			remoteGlobalIDString = D00B8CB21B2E3BC3003E5FED;
 			remoteInfo = "LogKit OSX";
 		};
+		D0C618161BD01918008BF5F2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D00B8C891B2E3B8F003E5FED /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C6180A1BD01917008BF5F2;
+			remoteInfo = "LogKit tvOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +95,8 @@
 		D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Endpoints.swift; sourceTree = "<group>"; };
 		D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleEndpoints.swift; sourceTree = "<group>"; };
 		D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEndpoints.swift; sourceTree = "<group>"; };
+		D0C6180B1BD01917008BF5F2 /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0C618141BD01918008BF5F2 /* LogKit tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "LogKit tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPEndpoints.swift; sourceTree = "<group>"; };
 		D0F8DD291B4B1ADC00D0865A /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0F8DD331B4B253700D0865A /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
@@ -112,6 +133,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D0C618071BD01917008BF5F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D0C618111BD01918008BF5F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0C618151BD01918008BF5F2 /* LogKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D0F8DD251B4B1ADC00D0865A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -134,11 +170,13 @@
 		D00B8C931B2E3B8F003E5FED /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D00B8C921B2E3B8F003E5FED /* LogKit.framework */,
-				D00B8C9D1B2E3B8F003E5FED /* LogKit iOS Tests.xctest */,
 				D00B8CB31B2E3BC3003E5FED /* LogKit.framework */,
 				D00B8CBD1B2E3BC3003E5FED /* LogKit OSX Tests.xctest */,
+				D00B8C921B2E3B8F003E5FED /* LogKit.framework */,
+				D00B8C9D1B2E3B8F003E5FED /* LogKit iOS Tests.xctest */,
 				D0F8DD291B4B1ADC00D0865A /* LogKit.framework */,
+				D0C6180B1BD01917008BF5F2 /* LogKit.framework */,
+				D0C618141BD01918008BF5F2 /* LogKit tvOS Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -210,6 +248,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				D00B8CDD1B2E9126003E5FED /* LogKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D0C618081BD01917008BF5F2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0C6182B1BD01A28008BF5F2 /* LogKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,6 +342,42 @@
 			productReference = D00B8CBD1B2E3BC3003E5FED /* LogKit OSX Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		D0C6180A1BD01917008BF5F2 /* LogKit tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D0C618201BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "LogKit tvOS" */;
+			buildPhases = (
+				D0C618061BD01917008BF5F2 /* Sources */,
+				D0C618071BD01917008BF5F2 /* Frameworks */,
+				D0C618081BD01917008BF5F2 /* Headers */,
+				D0C618091BD01917008BF5F2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "LogKit tvOS";
+			productName = "LogKit tvOS";
+			productReference = D0C6180B1BD01917008BF5F2 /* LogKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		D0C618131BD01918008BF5F2 /* LogKit tvOS Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D0C618211BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "LogKit tvOS Tests" */;
+			buildPhases = (
+				D0C618101BD01918008BF5F2 /* Sources */,
+				D0C618111BD01918008BF5F2 /* Frameworks */,
+				D0C618121BD01918008BF5F2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D0C618171BD01918008BF5F2 /* PBXTargetDependency */,
+			);
+			name = "LogKit tvOS Tests";
+			productName = "LogKit tvOSTests";
+			productReference = D0C618141BD01918008BF5F2 /* LogKit tvOS Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D0F8DD281B4B1ADC00D0865A /* LogKit watchOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "LogKit watchOS" */;
@@ -320,7 +402,7 @@
 		D00B8C891B2E3B8F003E5FED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = LogKit;
 				TargetAttributes = {
@@ -335,6 +417,12 @@
 					};
 					D00B8CBC1B2E3BC3003E5FED = {
 						CreatedOnToolsVersion = 6.3.2;
+					};
+					D0C6180A1BD01917008BF5F2 = {
+						CreatedOnToolsVersion = 7.1;
+					};
+					D0C618131BD01918008BF5F2 = {
+						CreatedOnToolsVersion = 7.1;
 					};
 					D0F8DD281B4B1ADC00D0865A = {
 						CreatedOnToolsVersion = 7.0;
@@ -358,6 +446,8 @@
 				D00B8C911B2E3B8F003E5FED /* LogKit iOS */,
 				D00B8C9C1B2E3B8F003E5FED /* LogKit iOS Tests */,
 				D0F8DD281B4B1ADC00D0865A /* LogKit watchOS */,
+				D0C6180A1BD01917008BF5F2 /* LogKit tvOS */,
+				D0C618131BD01918008BF5F2 /* LogKit tvOS Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -385,6 +475,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D00B8CBB1B2E3BC3003E5FED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D0C618091BD01917008BF5F2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D0C618121BD01918008BF5F2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -449,6 +553,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D0C618061BD01917008BF5F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0C618281BD01A1F008BF5F2 /* ConsoleEndpoints.swift in Sources */,
+				D0C618241BD01A14008BF5F2 /* Formatters.swift in Sources */,
+				D0C6182A1BD01A25008BF5F2 /* HTTPEndpoints.swift in Sources */,
+				D0C618291BD01A22008BF5F2 /* FileEndpoints.swift in Sources */,
+				D0C618231BD01A12008BF5F2 /* Entries.swift in Sources */,
+				D0C618261BD01A1A008BF5F2 /* Loggers.swift in Sources */,
+				D0C618251BD01A17008BF5F2 /* Levels.swift in Sources */,
+				D0C618271BD01A1C008BF5F2 /* Endpoints.swift in Sources */,
+				D0C618221BD01A0F008BF5F2 /* LogKit.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D0C618101BD01918008BF5F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0C6182C1BD01A30008BF5F2 /* LogKitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D0F8DD241B4B1ADC00D0865A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -477,6 +605,11 @@
 			isa = PBXTargetDependency;
 			target = D00B8CB21B2E3BC3003E5FED /* LogKit OSX */;
 			targetProxy = D00B8CBF1B2E3BC3003E5FED /* PBXContainerItemProxy */;
+		};
+		D0C618171BD01918008BF5F2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C6180A1BD01917008BF5F2 /* LogKit tvOS */;
+			targetProxy = D0C618161BD01918008BF5F2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -735,6 +868,72 @@
 			};
 			name = Release;
 		};
+		D0C6181C1BD01918008BF5F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
+		D0C6181D1BD01918008BF5F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		D0C6181E1BD01918008BF5F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
+		D0C6181F1BD01918008BF5F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
 		D0F8DD2E1B4B1ADC00D0865A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -820,6 +1019,22 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		D0C618201BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "LogKit tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D0C6181C1BD01918008BF5F2 /* Debug */,
+				D0C6181D1BD01918008BF5F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		D0C618211BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "LogKit tvOS Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D0C6181E1BD01918008BF5F2 /* Debug */,
+				D0C6181F1BD01918008BF5F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "LogKit watchOS" */ = {
 			isa = XCConfigurationList;

@@ -1,6 +1,15 @@
 # Change Log
 
 
+### [2.1.0](https://github.com/logkit/logkit/releases/tag/2.1.0)
+
+tvOS support
+
+#### Added
+
+* Support for projects targeting tvOS
+
+
 ### [2.0.1](https://github.com/logkit/logkit/releases/tag/2.0.1)
 
 HTTP JSON Endpoint initializer fix; improved documentation

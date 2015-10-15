@@ -2,7 +2,7 @@
 
 [http://www.logkit.info/][website]
 
-LogKit is a logging framework built to be **simple** to get started with, **efficient** to execute, **safe** for shipping code, and **extensible** for flexibility. It is written in pure Swift and is suitable for OS X, iOS, and watchOS application logging. For a developer looking for more power than `print()`, LogKit takes just a moment to get started with, and comes ready to log to the console, a file, an HTTP service, or all three. Need to log to somewhere else? Defining your own Endpoint is easy too.
+LogKit is a logging framework built to be **simple** to get started with, **efficient** to execute, **safe** for shipping code, and **extensible** for flexibility. It is written in pure Swift and is suitable for OS X, iOS, watchOS, and tvOS application logging. For a developer looking for more power than `print()`, LogKit takes just a moment to get started with, and comes ready to log to the console, a file, an HTTP service, or all three. Need to log to somewhere else? Defining your own Endpoint is easy too.
 
 This readme contains just a few tips to get you started with LogKit. To learn everything else, check the [project website][website].
 
@@ -40,8 +40,8 @@ This readme contains just a few tips to get you started with LogKit. To learn ev
 
 ## Requirements
 
-* Project targeting OS X 10.9+, iOS 7+, or watchOS 2+
-* Xcode 7.0 and Swift 2
+* Project targeting OS X 10.9+, iOS 7+, watchOS 2+, or tvOS 9+
+* Xcode 7.1 and Swift 2.1
 
 > Note: Please check the [swift-1.2 branch](https://github.com/logkit/logkit/tree/swift-1.2) for a version compatible with Xcode 6 and Swift 1.2.
 
@@ -53,7 +53,7 @@ There are a few ways to install LogKit. Below are some tips, but for full detail
 
 ### CocoaPods
 
-> Supports iOS 8+, OS X 10.9+, watchOS 2+
+> Supports iOS 8+, OS X 10.9+, watchOS 2+, tvOS 9+
 
 Include LogKit in your Podfile:
 
@@ -66,7 +66,7 @@ For more information on getting started with CocoaPods, read the [guide][cocoapo
 
 ### Carthage
 
-> Supports iOS 8+, OS X 10.9+, watchOS 2+
+> Supports iOS 8+, OS X 10.9+, watchOS 2+, tvOS 9+
 
 Include LogKit in your Cartfile:
 
@@ -78,13 +78,13 @@ For more information on getting started with Carthage, visit the [repo][carthage
 
 ### Embedded Framework
 
-> Supports iOS 8+, OS X 10.9+, watchOS 2+
+> Supports iOS 8+, OS X 10.9+, watchOS 2+, tvOS 9+
 
 Include `LogKit.xcodeproj` within your project (second level, below your project root, as a sub-project). Select your target, and add LogKit as an Embedded Binary in the General tab. Choose the top LogKit for an OS X target, the middle LogKit for iOS, or the bottom for watchOS.
 
 ### Source
 
-> Supports iOS 7+, OS X 10.9+, watchOS 2+
+> Supports iOS 7+, OS X 10.9+, watchOS 2+, tvOS 9+
 >
 > Integrating the LogKit source is the only way to include LogKit in projects targeting iOS 7. When this installation method is used, skip the `import LogKit`.
 
