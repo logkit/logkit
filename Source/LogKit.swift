@@ -15,7 +15,7 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 import Foundation
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 import UIKit
 import AdSupport
 #elseif os(watchOS)
@@ -68,7 +68,7 @@ internal let LK_DEVICE_MODEL: String = {
 internal let LK_DEVICE_TYPE: String = {
 #if os(OSX)
     return "Mac"
-#elseif os(iOS)
+#elseif os(iOS) || os(tvOS)
     return UIDevice.currentDevice().model
 #elseif os(watchOS)
     return WKInterfaceDevice.currentDevice().model
@@ -130,7 +130,7 @@ internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
     }
     let nsuuid = NSUUID(UUIDBytes: bytes)
     return (nsuuid.UUIDString, "")
-#elseif os(iOS)
+#elseif os(iOS) || os(tvOS)
     let vendorID = UIDevice.currentDevice().identifierForVendor?.UUIDString ?? ""
     let adManager = ASIdentifierManager.sharedManager()
     let advertisingID = adManager.advertisingTrackingEnabled ? adManager.advertisingIdentifier.UUIDString : ""
