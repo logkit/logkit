@@ -8,6 +8,7 @@ tvOS support
 #### Added
 
 * Support for projects targeting tvOS
+* Added a Logger test, which also tests generating Log Entries
 
 
 ### [2.0.2](https://github.com/logkit/logkit/releases/tag/2.0.2)

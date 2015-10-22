@@ -74,3 +74,18 @@ class HTTPEndpointTests: XCTestCase {
     }
 
 }
+
+class LoggerTests: XCTestCase {
+
+    let log = LXLogger()
+
+    func testLog() {
+        self.log.debug("debug")
+        self.log.info("info")
+        self.log.notice("notice")
+        self.log.warning("warning")
+        self.log.error("error")
+        self.log.critical("critical")
+    }
+
+}
