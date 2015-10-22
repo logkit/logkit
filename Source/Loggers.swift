@@ -17,7 +17,7 @@
 import Foundation
 
 
-/// The main logging API for application code. An instance of this class distributes Log Lntries to Endpoints for writing.
+/// The main logging API for application code. An instance of this class distributes Log Entries to Endpoints for writing.
 public final class LXLogger {
     /// The collection of Endpoints that successfully initialized.
     private let endpoints: [LXEndpoint]
