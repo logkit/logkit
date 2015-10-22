@@ -81,7 +81,7 @@ For more information on getting started with Carthage, visit the [repo][carthage
 
 > Supports iOS 8+, OS X 10.9+, watchOS 2+, tvOS 9+
 
-Include `LogKit.xcodeproj` within your project (second level, below your project root, as a sub-project). Select your target, and add LogKit as an Embedded Binary in the General tab. Choose the top LogKit for an OS X target, the middle LogKit for iOS, or the bottom for watchOS.
+Include `LogKit.xcodeproj` within your project (second level, below your project root, as a sub-project). Select your target, and add LogKit as an Embedded Binary in the General tab. Pick the appropriate LogKit framework for your target’s OS. Be sure to select the framework, not the Tests.
 
 ### Source
 
