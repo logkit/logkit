@@ -1,6 +1,16 @@
 # Change Log
 
 
+### [2.1.0](https://github.com/logkit/logkit/releases/tag/2.1.0)
+
+tvOS support
+
+#### Added
+
+* Support for projects targeting tvOS
+* Added a Logger test, which also tests generating Log Entries
+
+
 ### [2.0.2](https://github.com/logkit/logkit/releases/tag/2.0.2)
 
 Documentation updates

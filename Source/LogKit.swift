@@ -15,7 +15,7 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 import Foundation
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 import UIKit
 import AdSupport
 #elseif os(watchOS)
@@ -28,7 +28,7 @@ import WatchKit
 //MARK: Global Constants
 
 /// The version of the LogKit framework currently in use.
-internal let LK_LOGKIT_VERSION = "2.0.2"
+internal let LK_LOGKIT_VERSION = NSBundle(identifier: "info.logkit.LogKit")?.infoDictionary?["CFBundleShortVersionString"] as? String ?? "2.0.2"
 
 
 /// The default queue used throughout the framework for background tasks.
@@ -68,7 +68,7 @@ internal let LK_DEVICE_MODEL: String = {
 internal let LK_DEVICE_TYPE: String = {
 #if os(OSX)
     return "Mac"
-#elseif os(iOS)
+#elseif os(iOS) || os(tvOS)
     return UIDevice.currentDevice().model
 #elseif os(watchOS)
     return WKInterfaceDevice.currentDevice().model
@@ -130,7 +130,7 @@ internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
     }
     let nsuuid = NSUUID(UUIDBytes: bytes)
     return (nsuuid.UUIDString, "")
-#elseif os(iOS)
+#elseif os(iOS) || os(tvOS)
     let vendorID = UIDevice.currentDevice().identifierForVendor?.UUIDString ?? ""
     let adManager = ASIdentifierManager.sharedManager()
     let advertisingID = adManager.advertisingTrackingEnabled ? adManager.advertisingIdentifier.UUIDString : ""
