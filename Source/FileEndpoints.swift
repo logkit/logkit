@@ -168,6 +168,9 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     public var dateFormatter: LXDateFormatter
     /// The formatter used by this Endpoint to serialize each Log Entry to a string.
     public var entryFormatter: LXEntryFormatter
+    /// Indicates whether the Endpoint should continue appending Log Entries to the end of the
+    /// file, or clear it and start at the beginning. Defaults to `true`.
+    public var shouldAppend: Bool = true
     /// This Endpoint requires a newline character appended to each serialized Log Entry string.
     public let requiresNewlines: Bool = true
 
@@ -196,7 +199,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     }()
     /// The file currently being written to.
     private lazy var currentFile: LXLogFile? = {
-        guard let file = LXLogFile(URL: self.currentURL, shouldAppend: true) else {
+        guard let file = LXLogFile(URL: self.currentURL, shouldAppend: self.shouldAppend) else {
             assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
             return nil
         }
@@ -212,6 +215,8 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     - parameter numberOfFiles: (optional) The number of files to be used in the rotation. Defaults to `5`.
     - parameter maxFileSizeKiB: (optional) The maximum file size of each file in the rotation, specified in kilobytes. Defaults
     to `1024`.
+     - parameter shouldAppend: (optional) Indicates whether the Endpoint should continue appending Log Entries to the end of the
+     file, or clear it and start at the beginning. Defaults to `true`.
     - parameter minimumPriorityLevel: (optional) The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
     Defaults to `.All`.
     - parameter dateFormatter: (optional) The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a
@@ -223,6 +228,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         baseURL: NSURL? = defaultLogFileURL,
         numberOfFiles: UInt = 5,
         maxFileSizeKiB: UInt = 1024,
+        shouldAppend: Bool = true,
         minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
@@ -230,6 +236,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
         self.maxFileSizeBytes = UIntMax(maxFileSizeKiB) * 1024
+        self.shouldAppend = shouldAppend
         self.numberOfFiles = numberOfFiles
         //TODO: check file or directory to predict if file is accessible
         guard let dirURL = baseURL?.URLByDeletingLastPathComponent, filename = baseURL?.lastPathComponent else {
@@ -293,7 +300,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         case .Some(let size) where size + UIntMax(length) > self.maxFileSizeBytes:  // Won't fit in current file
             fallthrough
         case .None:                                                                 // Can't determine size of current file
-            return LXLogFile(URL: self.nextURL, shouldAppend: false)
+            return LXLogFile(URL: self.nextURL, shouldAppend: self.shouldAppend)
         case .Some:                                                                 // Will fit in current file
             return nil
         }
@@ -332,6 +339,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
             baseURL: fileURL,
             numberOfFiles: 1,
             maxFileSizeKiB: 0,
+            shouldAppend: shouldAppend,
             minimumPriorityLevel: minimumPriorityLevel,
             dateFormatter: dateFormatter,
             entryFormatter: entryFormatter
