@@ -56,10 +56,11 @@ class ConsoleEndpointTests: XCTestCase {
 class FileEndpointTests: XCTestCase {
 
     let endpoint = LXFileEndpoint(
-        fileURL: NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask).first?.URLByAppendingPathComponent("info.logkit.test", isDirectory: true).URLByAppendingPathComponent("FileEndpointTests.txt")
+        fileURL: NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).URLByAppendingPathComponent("info.logkit.FileEndpointTests.txt", isDirectory: false)
     )
 
     func testWrite() {
+        print(NSTemporaryDirectory())
         self.endpoint?.write("Hello from the File Endpoint!")
     }
 
