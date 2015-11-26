@@ -336,6 +336,9 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
             dateFormatter: dateFormatter,
             entryFormatter: entryFormatter
         )
+        if !shouldAppend {
+            self.resetCurrentFile()
+        }
     }
 
     /// This endpoint always uses `baseFileName` as its file name.
