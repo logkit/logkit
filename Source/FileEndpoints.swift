@@ -181,16 +181,19 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     private let numberOfFiles: UInt
     /// The index of the current file from the rotating set.
     private lazy var currentIndex: UInt = {
-        let startingFile: (index: UInt, modified: NSTimeInterval) = Array(1...self.numberOfFiles).reduce((1, 0), combine: {
-            if let path = self.URLForIndex($1).path {
+        /* The goal here is to find the file in the set that was last modified (has the largest `modified` time interval). If no
+        file returns a `modified` property, it's probably because no files in this set exist yet, in which case we'll just return
+        index 1. */
+        let startingFile: (index: UInt, modified: NSTimeInterval) = Array(1...self.numberOfFiles).reduce((index: 1, modified: 0), combine: { lastModified, targetIndex in
+            if let path = self.URLForIndex(targetIndex).path {
                 do {
                     let props = try NSFileManager.defaultManager().propertiesOfFileAtPath(path)
-                    if let modified = props.modified where modified > $0.1 {
-                        return (index: $1, modified: modified)
+                    if let modified = props.modified where modified >= lastModified.modified {
+                        return (index: targetIndex, modified: modified)
                     }
-                } catch {}
+                } catch {/* No props for this file - probably doesn't exist - so just move on */}
             }
-            return $0
+            return lastModified
         })
         return startingFile.index
     }()
