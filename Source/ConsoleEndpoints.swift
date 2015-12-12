@@ -27,7 +27,7 @@ private protocol LXConsoleWriter {
 
 //MARK: Console Endpoint
 
-/// An Endpoint that prints Log Entries to the console (`stdout`) in either a synchronous or asynchronous fashion.
+/// An Endpoint that prints Log Entries to the console (`stderr`) in either a synchronous or asynchronous fashion.
 public class LXConsoleEndpoint: LXEndpoint {
     /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
     public var minimumPriorityLevel: LXPriorityLevel
@@ -75,7 +75,7 @@ public class LXConsoleEndpoint: LXEndpoint {
         }
     }
 
-    /// Writes a serialized Log Entry string to the console (`stdout`).
+    /// Writes a serialized Log Entry string to the console (`stderr`).
     public func write(string: String) {
         guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
             assertionFailure("Failure to create data from entry string")
@@ -92,15 +92,15 @@ public class LXConsoleEndpoint: LXEndpoint {
 /// A private console writer that facilitates synchronous output.
 private class LXSynchronousConsoleWriter: LXConsoleWriter {
 
-    /// The console's (`stdout`) file handle.
-    private let stdoutHandle = NSFileHandle.fileHandleWithStandardOutput()
+    /// The console's (`stderr`) file handle.
+    private let handle = NSFileHandle.fileHandleWithStandardError()
 
     /// Clean up.
-    deinit { self.stdoutHandle.closeFile() }
+    deinit { self.handle.closeFile() }
 
-    /// Writes the data to the console (`stdout`).
+    /// Writes the data to the console (`stderr`).
     private func writeData(data: NSData) {
-        self.stdoutHandle.writeData(data)
+        self.handle.writeData(data)
     }
 
 }
@@ -108,15 +108,15 @@ private class LXSynchronousConsoleWriter: LXConsoleWriter {
 
 /// A private console writer that facilitates asynchronous output.
 private class LXAsynchronousConsoleWriter: LXConsoleWriter {
-//TODO: open a dispatch IO channel to stdout instead of one-off writes?
+//TODO: open a dispatch IO channel to stderr instead of one-off writes?
 
-    /// Writes the data to the console (`stdout`).
+    /// Writes the data to the console (`stderr`).
     private func writeData(data: NSData) {
         guard let dispatchData = dispatch_data_create(data.bytes, data.length, nil, nil) else {
             assertionFailure("Failure to create data from entry string")
             return
         }
-        dispatch_write(STDOUT_FILENO, dispatchData, LK_LOGKIT_QUEUE, { _, _ in })
+        dispatch_write(STDERR_FILENO, dispatchData, LK_LOGKIT_QUEUE, { _, _ in })
     }
 
 }

@@ -32,7 +32,7 @@ public final class LXLogger {
         assert(!self.endpoints.isEmpty, "A logger instance has been initialized, but no valid endpoints were provided.")
     }
 
-    /// Initialize a basic Logger that writes to the console (`stdout`) with default settings.
+    /// Initialize a basic Logger that writes to the console (`stderr`) with default settings.
     public convenience init() {
         self.init(endpoints: [LXConsoleEndpoint()])
     }
