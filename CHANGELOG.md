@@ -1,6 +1,16 @@
 # Change Log
 
 
+### [2.1.1](https://github.com/logkit/logkit/releases/tag/2.1.1)
+
+Bugfix update
+
+#### Fixed
+
+* `LXFileEndpoint` now honors its `shouldAppend` initialization parameter (thanks @csmann)
+* `LXConsoleEndpoint` synchronicity issues resolved by outputting to `stderr` (thanks @mark-anders)
+
+
 ### [2.1.0](https://github.com/logkit/logkit/releases/tag/2.1.0)
 
 tvOS support
