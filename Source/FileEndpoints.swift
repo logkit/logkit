@@ -17,6 +17,38 @@
 import Foundation
 
 
+/**
+This notification is posted whenever a FileEndpoint-family Endpoint instance is about to rotate to a new log file.
+
+The notification's `object` is the actual Endpoint instance that is rotating files. The `userInfo` dictionary contains
+the current and next URLs, at the `LXFileEndpointRotationCurrentURLKey` and `LXFileEndpointRotationNextURLKey` keys,
+respectively.
+
+This notification is send _before_ the rotation occurs.
+*/
+public let LXFileEndpointWillRotateFilesNotification: String = "info.logkit.endpoint.fileEndpoint.willRotateFiles"
+
+/**
+This notification is posted whenever a FileEndpoint-family Endpoint instance has completed rotating to a new log file.
+
+The notification's `object` is the actual Endpoint instance that is rotating files. The `userInfo` dictionary contains
+the current and previous URLs, at the `LXFileEndpointRotationCurrentURLKey` and `LXFileEndpointRotationPreviousURLKey` keys,
+respectively.
+
+This notification is send _after_ the rotation occurs, but _before_ any pending Log Entries have been written to the new file.
+*/
+public let LXFileEndpointDidRotateFilesNotification:  String = "info.logkit.endpoint.fileEndpoint.didRotateFiles"
+
+/// The value found at this key is the `NSURL` of the sender's previous log file.
+public let LXFileEndpointRotationPreviousURLKey:      String = "info.logkit.endpoint.fileEndpoint.previousURL"
+
+/// The value found at this key is the `NSURL` of the sender's current log file.
+public let LXFileEndpointRotationCurrentURLKey:       String = "info.logkit.endpoint.fileEndpoint.currentURL"
+
+/// The value found at this key is the `NSURL` of the sender's next log file.
+public let LXFileEndpointRotationNextURLKey:          String = "info.logkit.endpoint.fileEndpoint.nextURL"
+
+
 /// The default file to use when logging: `log.txt`
 private let defaultLogFileURL: NSURL? = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent("log.txt", isDirectory: false)
 
@@ -159,7 +191,8 @@ private class LXLogFile {
 
 /**
 An Endpoint that writes Log Entries to a set of numbered files. Once a file has reached its maximum file size, the Endpoint
-automatically rotates to the next file in the set.
+automatically rotates to the next file in the set. The notifications `LXFileEndpointWillRotateFilesNotification` and
+`LXFileEndpointDidRotateFilesNotification` are sent to the default notification center directly before and after rotating files.
 */
 public class LXRotatingFileEndpoint: LXEndpoint {
     /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
@@ -270,8 +303,29 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         if let data = string.dataUsingEncoding(NSUTF8StringEncoding) {
             //TODO: might pass test but file fills before write
             if let nextFile = self.rotateToFileBeforeWritingDataWithLength(data.length) {
+                //TODO: Move these notifications into property observers, if the properties can be made non-lazy.
+                //TODO: Getting `nextURL` from `nextFile`, instead of calculating it again, might be more robust.
+                NSNotificationCenter.defaultCenter().postNotificationName(
+                    LXFileEndpointWillRotateFilesNotification,
+                    object: self,
+                    userInfo: [
+                        LXFileEndpointRotationCurrentURLKey: self.currentURL,
+                        LXFileEndpointRotationNextURLKey: self.nextURL
+                    ]
+                )
+
+                let previousURL = self.currentURL
                 self.currentFile = nextFile
                 self.currentIndex = self.nextIndex
+
+                NSNotificationCenter.defaultCenter().postNotificationName(
+                    LXFileEndpointDidRotateFilesNotification,
+                    object: self,
+                    userInfo: [
+                        LXFileEndpointRotationCurrentURLKey: self.currentURL,
+                        LXFileEndpointRotationPreviousURLKey: previousURL
+                    ]
+                )
             }
             self.currentFile?.writeData(data)
         } else {
@@ -361,7 +415,8 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
 
 /**
 An Endpoint that writes Log Enties to a dated file. A datestamp will be prepended to the file's name. The file rotates
-automatically at midnight UTC.
+automatically at midnight UTC. The notifications `LXFileEndpointWillRotateFilesNotification` and
+`LXFileEndpointDidRotateFilesNotification` are sent to the default notification center directly before and after rotating files.
 */
 public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
 
