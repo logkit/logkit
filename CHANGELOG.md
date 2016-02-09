@@ -7,8 +7,8 @@ Bugfix update
 
 #### Fixed
 
-* `LXFileEndpoint` now honors its `shouldAppend` initialization parameter (thanks @csmann)
-* `LXConsoleEndpoint` synchronicity issues resolved by outputting to `stderr` (thanks @mark-anders)
+* `LXFileEndpoint` now honors its `shouldAppend` initialization parameter (#9 thanks @csmann)
+* `LXConsoleEndpoint` synchronicity issues resolved by outputting to `stderr` (#10 thanks @mark-anders)
 
 
 ### [2.1.0](https://github.com/logkit/logkit/releases/tag/2.1.0)
