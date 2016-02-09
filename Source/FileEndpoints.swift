@@ -171,8 +171,8 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     /// This Endpoint requires a newline character appended to each serialized Log Entry string.
     public let requiresNewlines: Bool = true
 
-    /// The URL of the directory of the log files.
-    private let directoryURL: NSURL
+    /// The URL of the directory in which the set of log files is located.
+    public let directoryURL: NSURL
     /// The base file name of the log files.
     private let baseFileName: String
     /// The maximum allowed file size in bytes.
@@ -249,8 +249,8 @@ public class LXRotatingFileEndpoint: LXEndpoint {
 
     /// The index of the next file in the rotation.
     private var nextIndex: UInt { return self.currentIndex + 1 > self.numberOfFiles ? 1 : self.currentIndex + 1 }
-    /// The URL of the currently selected file.
-    private var currentURL: NSURL { return self.URLForIndex(self.currentIndex) }
+    /// The URL of the log file currently in use. Manually modifying this file is _not_ recommended.
+    public var currentURL: NSURL { return self.URLForIndex(self.currentIndex) }
     /// The URL of the next file in the rotation.
     private var nextURL: NSURL { return self.URLForIndex(self.nextIndex) }
 
