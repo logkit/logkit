@@ -1,6 +1,16 @@
 # Change Log
 
 
+### [2.2.0](https://github.com/logkit/logkit/releases/tag/2.2.0)
+
+New API for accessing the log file URLs used by the family of File Endpoints. All changes are backward-compatible.
+
+#### Added
+
+* `directoryURL` and `currentURL` properties of `LXRotatingFileEndpoint`, `LXFileEndpoint`, and `LXDatedFileEndpoint` are now publicly accessible (#11 thanks @rabidaudio)
+* The File Endpoints now post notifications directly before and after automatically rotating log files
+
+
 ### [2.1.1](https://github.com/logkit/logkit/releases/tag/2.1.1)
 
 Bugfix update

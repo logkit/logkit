@@ -7,7 +7,7 @@ LogKit is a logging framework built to be **simple** to get started with, **effi
 This readme contains just a few tips to get you started with LogKit. To learn everything else, check the [project website][website].
 
 [![Build Status](https://travis-ci.org/logkit/logkit.svg?branch=master)](https://travis-ci.org/logkit/logkit)
-[![CocoaPods](https://img.shields.io/badge/pod-2.1.1-blue.svg)](https://cocoapods.org/pods/LogKit)
+[![CocoaPods](https://img.shields.io/badge/pod-2.2.0-blue.svg)](https://cocoapods.org/pods/LogKit)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 
@@ -60,7 +60,7 @@ Include LogKit in your Podfile:
 
 ```ruby
 use_frameworks!
-pod 'LogKit', '~> 2.1'
+pod 'LogKit', '~> 2.2'
 ```
 
 For more information on getting started with CocoaPods, read the [guide][cocoapods].
@@ -72,7 +72,7 @@ For more information on getting started with CocoaPods, read the [guide][cocoapo
 Include LogKit in your Cartfile:
 
 ```
-github "logkit/logkit" ~> 2.1
+github "logkit/logkit" ~> 2.2
 ```
 
 For more information on getting started with Carthage, visit the [repo][carthage].
@@ -188,12 +188,12 @@ LogKit is licensed under the permissive [ISC License][license] (a member of the 
 
 
 [website]: http://www.logkit.info/
-[docs]: http://www.logkit.info/docs/2.1/
-[install]: http://www.logkit.info/docs/2.1/installation/
-[usage]: http://www.logkit.info/docs/2.1/usage/
-[endpoints]: http://www.logkit.info/docs/2.1/endpoints/
-[formatting]: http://www.logkit.info/docs/2.1/formatting/
-[migration]: http://www.logkit.info/docs/2.1/migration/
+[docs]: http://www.logkit.info/docs/2.2/
+[install]: http://www.logkit.info/docs/2.2/installation/
+[usage]: http://www.logkit.info/docs/2.2/usage/
+[endpoints]: http://www.logkit.info/docs/2.2/endpoints/
+[formatting]: http://www.logkit.info/docs/2.2/formatting/
+[migration]: http://www.logkit.info/docs/2.2/migration/
 
 [changelog]: https://github.com/logkit/logkit/blob/master/CHANGELOG.md
 [contrib]: https://github.com/logkit/logkit/blob/master/CONTRIBUTING.md
