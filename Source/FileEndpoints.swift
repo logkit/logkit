@@ -39,6 +39,13 @@ This notification is send _after_ the rotation occurs, but _before_ any pending 
 */
 public let LXFileEndpointDidRotateFilesNotification:  String = "info.logkit.endpoint.fileEndpoint.didRotateFiles"
 
+/**
+This notification clients can post which will cause any `LXManuallyRotatingFileEndpoint` instances to rotate immediately.
+
+The notification's `object` and `userInfo` fields are ignored.
+*/
+public let LXFileEndpointCauseRotationNotification:   String = "info.logkit.endpoint.fileEndpoint.rotate"
+
 /// The value found at this key is the `NSURL` of the sender's previous log file.
 public let LXFileEndpointRotationPreviousURLKey:      String = "info.logkit.endpoint.fileEndpoint.previousURL"
 
@@ -47,9 +54,6 @@ public let LXFileEndpointRotationCurrentURLKey:       String = "info.logkit.endp
 
 /// The value found at this key is the `NSURL` of the sender's next log file.
 public let LXFileEndpointRotationNextURLKey:          String = "info.logkit.endpoint.fileEndpoint.nextURL"
-
-/// This is a notification that can be posted to cause any `LXManuallyRotatingFileEndpoint` instances to rotate immediately
-public let LXFileEndpointCauseRotationKey:            String = "info.logkit.endpoint.fileEndpoint.rotate"
 
 
 /// The default file to use when logging: `log.txt`
@@ -386,7 +390,11 @@ public class LXManuallyRotatingFileEndpoint: LXRotatingFileEndpoint {
     ) {
         super.init(baseURL: baseURL, numberOfFiles: numberOfFiles, maxFileSizeKiB: maxFileSizeKiB, minimumPriorityLevel: minimumPriorityLevel, dateFormatter: dateFormatter, entryFormatter: entryFormatter)
         /// Listen for rotation notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("rotate"), name: LXFileEndpointCauseRotationKey, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotateNotification:", name: LXFileEndpointCauseRotationNotification, object: nil)
+    }
+    
+    @objc private func rotateNotification(notification: NSNotification){
+        rotate()
     }
 
     /**
