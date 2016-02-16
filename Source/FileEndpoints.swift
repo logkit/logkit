@@ -48,6 +48,9 @@ public let LXFileEndpointRotationCurrentURLKey:       String = "info.logkit.endp
 /// The value found at this key is the `NSURL` of the sender's next log file.
 public let LXFileEndpointRotationNextURLKey:          String = "info.logkit.endpoint.fileEndpoint.nextURL"
 
+/// This is a notification that can be posted to cause any `LXManuallyRotatingFileEndpoint` instances to rotate immediately
+public let LXFileEndpointCauseRotationKey:            String = "info.logkit.endpoint.fileEndpoint.rotate"
+
 
 /// The default file to use when logging: `log.txt`
 private let defaultLogFileURL: NSURL? = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent("log.txt", isDirectory: false)
@@ -382,6 +385,8 @@ public class LXManuallyRotatingFileEndpoint: LXRotatingFileEndpoint {
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
         super.init(baseURL: baseURL, numberOfFiles: numberOfFiles, maxFileSizeKiB: maxFileSizeKiB, minimumPriorityLevel: minimumPriorityLevel, dateFormatter: dateFormatter, entryFormatter: entryFormatter)
+        /// Listen for rotation notifications
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("rotate"), name: LXFileEndpointCauseRotationKey, object: nil)
     }
 
     /**
