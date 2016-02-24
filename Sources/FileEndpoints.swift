@@ -38,13 +38,6 @@ public let LXFileEndpointWillRotateFilesNotification: String = "info.logkit.endp
 /// the new file.
 public let LXFileEndpointDidRotateFilesNotification:  String = "info.logkit.endpoint.fileEndpoint.didRotateFiles"
 
-/**
-This notification clients can post which will cause any `LXManuallyRotatingFileEndpoint` instances to rotate immediately.
-
-The notification's `object` and `userInfo` fields are ignored.
-*/
-public let LXFileEndpointCauseRotationNotification:   String = "info.logkit.endpoint.fileEndpoint.rotate"
-
 /// The value found at this key is the `NSURL` of the sender's previous log file.
 public let LXFileEndpointRotationPreviousURLKey:      String = "info.logkit.endpoint.fileEndpoint.previousURL"
 
@@ -208,8 +201,8 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     public let directoryURL: NSURL
     /// The base file name of the log files.
     private let baseFileName: String
-    /// The maximum allowed file size in bytes.
-    private let maxFileSizeBytes: UIntMax
+    /// The maximum allowed file size in bytes. `nil` indicates no limit.
+    private let maxFileSizeBytes: UIntMax?
     /// The number of files to include in the rotating set.
     private let numberOfFiles: UInt
     /// The index of the current file from the rotating set.
@@ -249,7 +242,8 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     ///                                   to `Application Support/{bundleID}/logs/{number}_log.txt`.
     /// - parameter        numberOfFiles: The number of files to be used in the rotation. Defaults to `5`.
     /// - parameter       maxFileSizeKiB: The maximum file size of each file in the rotation, specified in kilobytes.
-    ///                                   Defaults to `1024`.
+    ///                                   Passing `nil` results in no limit, and no automatic rotation. Defaults
+    ///                                   to `1024`.
     /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
     ///                                   Endpoint. Defaults to `.All`.
     /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
@@ -259,14 +253,14 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     public init?(
         baseURL: NSURL? = defaultLogFileURL,
         numberOfFiles: UInt = 5,
-        maxFileSizeKiB: UInt = 1024,
+        maxFileSizeKiB: UInt? = 1024,
         minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
-        self.maxFileSizeBytes = UIntMax(maxFileSizeKiB) * 1024
+        self.maxFileSizeBytes = maxFileSizeKiB == nil ? nil : UIntMax(maxFileSizeKiB!) * 1024
         self.numberOfFiles = numberOfFiles
         //TODO: check file or directory to predict if file is accessible
         guard let dirURL = baseURL?.URLByDeletingLastPathComponent, filename = baseURL?.lastPathComponent else {
@@ -299,12 +293,19 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         return "\(String(format: format, index))_\(self.baseFileName)"
     }
 
+    /// Returns the next log file to be written to, already prepared for use.
+    private func nextFile() -> LXLogFile? {
+        let nextFile = LXLogFile(URL: self.nextURL, shouldAppend: false)
+        assert(nextFile != nil, "The log file at URL '\(self.nextURL)' could not be opened.")
+        return nextFile
+    }
+
     /// Writes a serialized Log Entry string to the currently selected file.
     public func write(string: String) {
         if let data = string.dataUsingEncoding(NSUTF8StringEncoding) {
             //TODO: might pass test but file fills before write
-            if let nextFile = self.rotateToFileBeforeWritingDataWithLength(data.length) {
-                rotateTo(nextFile)
+            if self.shouldRotateBeforeWritingDataWithLength(data.length), let nextFile = self.nextFile() {
+                self.rotateToFile(nextFile)
             }
             self.currentFile?.writeData(data)
         } else {
@@ -312,8 +313,20 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         }
     }
 
+    /// Clears the currently selected file and begins writing again at its beginning.
+    public func resetCurrentFile() {
+        self.currentFile?.reset()
+    }
+
+    /// Instructs the Endpoint to rotate to the next log file in its sequence.
+    public func rotate() {
+        if let nextFile = self.nextFile() {
+            self.rotateToFile(nextFile)
+        }
+    }
+
     /// Sets the current file to the next index and notifies about rotation
-    private func rotateTo(nextFile: LXLogFile) {
+    private func rotateToFile(nextFile: LXLogFile) {
         //TODO: Move these notifications into property observers, if the properties can be made non-lazy.
         //TODO: Getting `nextURL` from `nextFile`, instead of calculating it again, might be more robust.
         NSNotificationCenter.defaultCenter().postNotificationName(
@@ -339,76 +352,23 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         )
     }
 
-    /// Clears the currently selected file and begins writing again at its beginning.
-    public func resetCurrentFile() {
-        self.currentFile?.reset()
-    }
-
     /// This method provides an opportunity to determine whether a new log file should be selected before writing the
     /// next Log Entry.
     ///
     /// - parameter length: The length of the data (number of bytes) that will be written next.
     ///
-    /// - returns: A new log file to write this data to, or `nil` if the Endpoint should continue using the existing
-    ///            file.
-    private func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
-        switch self.currentFile?.sizeInBytes {
-        case .Some(let size) where size + UIntMax(length) > self.maxFileSizeBytes:  // Won't fit in current file
+    /// - returns: A boolean indicating whether a new log file should be selected.
+    private func shouldRotateBeforeWritingDataWithLength(length: Int) -> Bool {
+        switch (self.maxFileSizeBytes, self.currentFile?.sizeInBytes) {
+        case (.Some(let maxSize), .Some(let size)) where size + UIntMax(length) > maxSize: // Won't fit
             fallthrough
-        case .None:                                                                 // Can't determine size of current file
-            return LXLogFile(URL: self.nextURL, shouldAppend: false)
-        case .Some:                                                                 // Will fit in current file
-            return nil
+        case (.Some, .None):                                                               // Can't determine current size
+            return true
+        case (.None, .None), (.None, .Some), (.Some, .Some):                               // No limit or will fit
+            return false
         }
     }
 
-}
-
-
-//MARK: Manually Rotated File Endpoint
-
-/**
-A version of LXRotatingFileEndpoint which can be manually rotated. Setting the max file size to 0 causes it to only rotate when
-told to do so.
-*/
-public class LXManuallyRotatingFileEndpoint: LXRotatingFileEndpoint {
-
-    // Same as super initializer, except that the default file size is 0 (don't rotate)
-    public override init?(
-        baseURL: NSURL? = defaultLogFileURL,
-        numberOfFiles: UInt = 5,
-        maxFileSizeKiB: UInt = 0,
-        minimumPriorityLevel: LXPriorityLevel = .All,
-        dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
-        entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
-    ) {
-        super.init(baseURL: baseURL, numberOfFiles: numberOfFiles, maxFileSizeKiB: maxFileSizeKiB, minimumPriorityLevel: minimumPriorityLevel, dateFormatter: dateFormatter, entryFormatter: entryFormatter)
-        /// Listen for rotation notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotateNotification:", name: LXFileEndpointCauseRotationNotification, object: nil)
-    }
-    
-    @objc private func rotateNotification(notification: NSNotification){
-        rotate()
-    }
-
-    /**
-    Attempt to rotate to the next file in the cycle.
-    */
-    public func rotate() {
-        //TODO: Should it throw if unable to rotate?
-        if let nextFile = LXLogFile(URL: self.nextURL, shouldAppend: false) {
-            rotateTo(nextFile)
-        }
-    }
-
-    /// Don't rotate before writing if the maximum file size is non-positive
-    override private func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
-        if self.maxFileSizeBytes <= 0 {
-            return nil
-        }else{
-            return super.rotateToFileBeforeWritingDataWithLength(length)
-        }
-    }
 }
 
 
@@ -441,7 +401,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
         super.init(
             baseURL: fileURL,
             numberOfFiles: 1,
-            maxFileSizeKiB: 0,
+            maxFileSizeKiB: nil,
             minimumPriorityLevel: minimumPriorityLevel,
             dateFormatter: dateFormatter,
             entryFormatter: entryFormatter
@@ -456,9 +416,12 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
         return self.baseFileName
     }
 
-    /// This Endpoint will never rotate files.
-    private override func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
-        return nil
+    /// Does nothing. File Endpoint does not rotate.
+    public override func rotate() {}
+
+    /// This endpoint will never rotate files.
+    private override func shouldRotateBeforeWritingDataWithLength(length: Int) -> Bool {
+        return false
     }
 
 }
@@ -499,7 +462,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
         super.init(
             baseURL: baseURL,
             numberOfFiles: 1,
-            maxFileSizeKiB: 0,
+            maxFileSizeKiB: nil,
             minimumPriorityLevel: minimumPriorityLevel,
             dateFormatter: dateFormatter,
             entryFormatter: entryFormatter
@@ -511,16 +474,21 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
         return "\(self.nameFormatter.stringFromDate(NSDate()))_\(self.baseFileName)"
     }
 
-    /// Returns `nil` if the current file still corresponds to today's date, or a new log file if the date has changed.
-    private override func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
+    /// Does nothing. Dated File Endpoint only rotates by date.
+    public override func rotate() {}
+
+    /// Returns `true` if the current date no longer matches the log file's date. Disregards the `length` parameter.
+    private override func shouldRotateBeforeWritingDataWithLength(length: Int) -> Bool {
         switch self.currentFile?.modificationDate {
         case .Some(let modificationDate) where !UTCCalendar.isDateSameAsToday(modificationDate):    // Wrong date
             fallthrough
         case .None:                                                                                 // Can't determine the date
-            return LXLogFile(URL: self.nextURL, shouldAppend: false)
+            return true
         case .Some:                                                                                 // Correct date
-            return nil
+            return false
         }
     }
+
+    //TODO: Cap the max number trailing log files.
 
 }
