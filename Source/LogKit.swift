@@ -117,7 +117,10 @@ A tuple of any device IDs available.
 
 In OS X, only the `vendor` ID is available.
 
-In iOS, the `advertising` ID honors the `advertisingTrackingEnabled` flag, and is only returned if that flag is true.
+In iOS, the `advertising` ID is only included if both the LKADTRACKINGENABLED compiler flag is set
+(by adding `-DLKADTRACKINGENABLED` "Other Swift Flags" in the "Swift Compiler - Custom Flags" section
+of the build settings), and the `advertisingTrackingEnabled` flag is set. The compiler flag is to avoid
+Apple detecting IDFA tracking code usage in apps that are not using it.
 
 Other OSes currently return empty strings.
 */
@@ -132,8 +135,12 @@ internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
     return (nsuuid.UUIDString, "")
 #elseif os(iOS) || os(tvOS)
     let vendorID = UIDevice.currentDevice().identifierForVendor?.UUIDString ?? ""
+#if LKADTRACKINGENABLED
     let adManager = ASIdentifierManager.sharedManager()
     let advertisingID = adManager.advertisingTrackingEnabled ? adManager.advertisingIdentifier.UUIDString : ""
+#else
+    let advertisingID = ""
+#endif
     return (vendorID, advertisingID)
 #else
     return ("", "")
