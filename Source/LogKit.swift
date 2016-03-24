@@ -113,13 +113,25 @@ internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion:
 
 
 /**
-A tuple of any device IDs available.
+A collection of any available device IDs.
 
 In OS X, only the `vendor` ID is available.
 
-In iOS, the `advertising` ID honors the `advertisingTrackingEnabled` flag, and is only returned if that flag is true.
+In iOS and tvOS, the `advertising` ID is available as well, but disabled by default. To enable, see the note below.
 
-Other OSes currently return empty strings.
+Other OSes currently return empty strings for both IDs.
+
+- important: LogKit honors the iOS/tvOS `ASIdentifierManager.advertisingTrackingEnabled` flag. If an end user has
+             disabled advertising tracking on their device, LogKit will substitute an empty string for the
+             `advertising` ID.
+- note: The iOS/tvOS advertising ID is disabled by default to prevent triggering [IDFA requirements][idfa] in apps
+        that do not require an advertising ID. To enable the `advertising` ID, the `-DLXAdTrackingIDDisabled`
+        compiler flag must be removed from the LogKit Project build settings. The flag is found in the "Swift
+        Compiler - Custom Flags" section of the Build Settings page, under "Other Swift Flags". Be sure to search in
+        the *LogKit Project* build settings, not your app's project settings. Additionally, be sure to add/remove
+        the flag from the LogKit *Project* global build settings, not one of LogKit's OS-specific targets.
+
+[idfa]: https://developer.apple.com/library/ios/documentation/LanguagesUtilities/Conceptual/iTunesConnect_Guide/Chapters/SubmittingTheApp.html#//apple_ref/doc/uid/TP40011225-CH33-SW8
 */
 internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
 #if os(OSX)
@@ -132,8 +144,12 @@ internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
     return (nsuuid.UUIDString, "")
 #elseif os(iOS) || os(tvOS)
     let vendorID = UIDevice.currentDevice().identifierForVendor?.UUIDString ?? ""
-    let adManager = ASIdentifierManager.sharedManager()
-    let advertisingID = adManager.advertisingTrackingEnabled ? adManager.advertisingIdentifier.UUIDString : ""
+    #if LXAdTrackingIDDisabled
+        let advertisingID = ""
+    #else
+        let adManager = ASIdentifierManager.sharedManager()
+        let advertisingID = adManager.advertisingTrackingEnabled ? adManager.advertisingIdentifier.UUIDString : ""
+    #endif
     return (vendorID, advertisingID)
 #else
     return ("", "")
