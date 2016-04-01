@@ -17,5 +17,5 @@ Pod::Spec.new do |s|
     s.requires_arc = true
     s.frameworks = 'Foundation'
 
-    s.source_files = 'Source/*.swift'
+    s.source_files = 'Sources/*.swift'
 end

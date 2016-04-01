@@ -89,7 +89,7 @@ Include `LogKit.xcodeproj` within your project (second level, below your project
 >
 > Integrating the LogKit source is the only way to include LogKit in projects targeting iOS 7. When this installation method is used, skip the `import LogKit`.
 
-Add all of the `.swift` files found in the `Source` directory to your project. No other steps are necessary for installation.
+Add all of the `.swift` files found in the `Sources` directory to your project. No other steps are necessary for installation.
 
 
 ## Migrating from LogKit 1
