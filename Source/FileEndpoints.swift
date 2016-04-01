@@ -18,26 +18,24 @@
 import Foundation
 
 
-/**
-This notification is posted whenever a FileEndpoint-family Endpoint instance is about to rotate to a new log file.
-
-The notification's `object` is the actual Endpoint instance that is rotating files. The `userInfo` dictionary contains
-the current and next URLs, at the `LXFileEndpointRotationCurrentURLKey` and `LXFileEndpointRotationNextURLKey` keys,
-respectively.
-
-This notification is send _before_ the rotation occurs.
-*/
+/// This notification is posted whenever a FileEndpoint-family Endpoint instance is about to rotate to a new log file.
+///
+/// The notification's `object` is the actual Endpoint instance that is rotating files. The `userInfo` dictionary
+/// contains the current and next URLs, at the `LXFileEndpointRotationCurrentURLKey` and
+/// `LXFileEndpointRotationNextURLKey` keys, respectively.
+///
+/// This notification is send _before_ the rotation occurs.
 public let LXFileEndpointWillRotateFilesNotification: String = "info.logkit.endpoint.fileEndpoint.willRotateFiles"
 
-/**
-This notification is posted whenever a FileEndpoint-family Endpoint instance has completed rotating to a new log file.
-
-The notification's `object` is the actual Endpoint instance that is rotating files. The `userInfo` dictionary contains
-the current and previous URLs, at the `LXFileEndpointRotationCurrentURLKey` and `LXFileEndpointRotationPreviousURLKey` keys,
-respectively.
-
-This notification is send _after_ the rotation occurs, but _before_ any pending Log Entries have been written to the new file.
-*/
+/// This notification is posted whenever a FileEndpoint-family Endpoint instance has completed rotating to a new log
+/// file.
+///
+/// The notification's `object` is the actual Endpoint instance that is rotating files. The `userInfo` dictionary
+/// contains the current and previous URLs, at the `LXFileEndpointRotationCurrentURLKey` and
+/// `LXFileEndpointRotationPreviousURLKey` keys, respectively.
+///
+/// This notification is send _after_ the rotation occurs, but _before_ any pending Log Entries have been written to
+/// the new file.
 public let LXFileEndpointDidRotateFilesNotification:  String = "info.logkit.endpoint.fileEndpoint.didRotateFiles"
 
 /// The value found at this key is the `NSURL` of the sender's previous log file.
@@ -64,15 +62,13 @@ private let UTCCalendar: NSCalendar = {
 
 private extension NSFileManager {
 
-    /**
-    Attempts to read a given file's metadata and convert it to an `LXFileProperties` instance.
-
-    - parameter path: The path of the file to be examined.
-
-    - throws: If the attributes of file cannot be read.
-
-    - returns: An `LXFileProperties` instance if successful.
-    */
+    /// Attempts to read a given file's metadata and convert it to an `LXFileProperties` instance.
+    ///
+    /// - parameter path: The path of the file to be examined.
+    ///
+    /// - returns: An `LXFileProperties` instance if successful.
+    ///
+    /// - throws: If the attributes of file cannot be read.
     private func propertiesOfFileAtPath(path: String) throws -> LXFileProperties {
         let attributes = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
         return LXFileProperties(
@@ -84,12 +80,10 @@ private extension NSFileManager {
 }
 
 
-/**
-A collection of properties representing file metadata.
-
-- parameter size: The size of the file in bytes.
-- parameter modified: An `NSTimeInterval` representing the file's modification timestamp.
-*/
+/// A collection of properties representing file metadata.
+///
+/// - parameter size:     The size of the file in bytes.
+/// - parameter modified: An `NSTimeInterval` representing the file's modification timestamp.
 private struct LXFileProperties {
     let size: UIntMax?
     let modified: NSTimeInterval?
@@ -107,13 +101,11 @@ private class LXLogFile {
     private var privateByteCounter: UIntMax?
     private var privateModificationTracker: NSTimeInterval?
 
-    /**
-    Initialize a log file. May return `nil` if the file cannot be accessed.
-
-    - parameter URL: The URL of the log file.
-    - parameter shouldAppend: Indicates whether new data should be appended to existing data in the file, or if the file should
-    be truncated when opened.
-    */
+    /// Initialize a log file. May return `nil` if the file cannot be accessed.
+    ///
+    /// - parameter URL:          The URL of the log file.
+    /// - parameter shouldAppend: Indicates whether new data should be appended to existing data in the file, or if
+    ///                           the file should be truncated when opened.
     init?(URL: NSURL, shouldAppend: Bool) {
         guard NSFileManager.defaultManager().ensureFileAtURL(URL, withIntermediateDirectories: true),
         let path = URL.path, handle = NSFileHandle(forWritingAtPath: path) else {
@@ -190,11 +182,11 @@ private class LXLogFile {
 
 //MARK: Rotating File Endpoint
 
-/**
-An Endpoint that writes Log Entries to a set of numbered files. Once a file has reached its maximum file size, the Endpoint
-automatically rotates to the next file in the set. The notifications `LXFileEndpointWillRotateFilesNotification` and
-`LXFileEndpointDidRotateFilesNotification` are sent to the default notification center directly before and after rotating files.
-*/
+/// An Endpoint that writes Log Entries to a set of numbered files. Once a file has reached its maximum file size,
+/// the Endpoint automatically rotates to the next file in the set.
+///
+/// The notifications `LXFileEndpointWillRotateFilesNotification` and `LXFileEndpointDidRotateFilesNotification`
+/// are sent to the default notification center directly before and after rotating log files.
 public class LXRotatingFileEndpoint: LXEndpoint {
     /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
     public var minimumPriorityLevel: LXPriorityLevel
@@ -215,9 +207,9 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     private let numberOfFiles: UInt
     /// The index of the current file from the rotating set.
     private lazy var currentIndex: UInt = {
-        /* The goal here is to find the file in the set that was last modified (has the largest `modified` time interval). If no
-        file returns a `modified` property, it's probably because no files in this set exist yet, in which case we'll just return
-        index 1. */
+        /* The goal here is to find the file in the set that was last modified (has the largest `modified` time
+        interval). If no file returns a `modified` property, it's probably because no files in this set exist yet,
+        in which case we'll just return index 1. */
         let startingFile: (index: UInt, modified: NSTimeInterval) = Array(1...self.numberOfFiles).reduce((index: 1, modified: 0), combine: { lastModified, targetIndex in
             if let path = self.URLForIndex(targetIndex).path {
                 do {
@@ -240,22 +232,23 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         return file
     }()
 
-    /**
-    Initialize a rotating file endpoint. If the specified file cannot be opened, or if the index-prepended URL evaluates to `nil`,
-    the initializer may fail.
-
-    - parameter baseURL: (optional) The URL used to build the rotating file set’s file URLs. Each file's index number will be
-    prepended to the last path component of this URL. Defaults to `Application Support/{bundleID}/logs/{number}_log.txt`.
-    - parameter numberOfFiles: (optional) The number of files to be used in the rotation. Defaults to `5`.
-    - parameter maxFileSizeKiB: (optional) The maximum file size of each file in the rotation, specified in kilobytes. Defaults
-    to `1024`.
-    - parameter minimumPriorityLevel: (optional) The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
-    Defaults to `.All`.
-    - parameter dateFormatter: (optional) The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a
-    string. Defaults to `.standardFormatter()`.
-    - parameter entryFormatter: (optional) The formatter used by this Endpoint to serialize each Log Entry to a string. Defaults
-    to `.standardFormatter()`.
-    */
+    /// Initialize a Rotating File Endpoint.
+    ///
+    /// If the specified file cannot be opened, or if the index-prepended URL evaluates to `nil`, the initializer may
+    /// fail.
+    ///
+    /// - parameter              baseURL: The URL used to build the rotating file set’s file URLs. Each file's index
+    ///                                   number will be prepended to the last path component of this URL. Defaults
+    ///                                   to `Application Support/{bundleID}/logs/{number}_log.txt`.
+    /// - parameter        numberOfFiles: The number of files to be used in the rotation. Defaults to `5`.
+    /// - parameter       maxFileSizeKiB: The maximum file size of each file in the rotation, specified in kilobytes.
+    ///                                   Defaults to `1024`.
+    /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
+    ///                                   Endpoint. Defaults to `.All`.
+    /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
+    ///                                   property to a string. Defaults to `.standardFormatter()`.
+    /// - parameter       entryFormatter: The formatter used by this Endpoint to serialize each Log Entry to a string.
+    ///                                   Defaults to `.standardFormatter()`.
     public init?(
         baseURL: NSURL? = defaultLogFileURL,
         numberOfFiles: UInt = 5,
@@ -339,13 +332,13 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         self.currentFile?.reset()
     }
 
-    /**
-    This method provides an opportunity to determine whether a new log file should be selected before writing the next Log Entry.
-
-    - parameter length: The length of the data (number of bytes) that will be written next.
-
-    - returns: A new log file to write this data to, or `nil` if the endpoint should continue using the existing file.
-    */
+    /// This method provides an opportunity to determine whether a new log file should be selected before writing the
+    /// next Log Entry.
+    ///
+    /// - parameter length: The length of the data (number of bytes) that will be written next.
+    ///
+    /// - returns: A new log file to write this data to, or `nil` if the Endpoint should continue using the existing
+    ///            file.
     private func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
         switch self.currentFile?.sizeInBytes {
         case .Some(let size) where size + UIntMax(length) > self.maxFileSizeBytes:  // Won't fit in current file
@@ -365,20 +358,20 @@ public class LXRotatingFileEndpoint: LXEndpoint {
 /// An Endpoint that writes Log Entries to a specified file.
 public class LXFileEndpoint: LXRotatingFileEndpoint {
 
-    /**
-    Initialize a File Endpoint. If the specified file cannot be opened, or if the URL evaluates to `nil`, the initializer may
-    fail.
-
-    - parameter fileURL: (optional) The URL of the log file. Defaults to `Application Support/{bundleID}/logs/log.txt`.
-    - parameter shouldAppend: (optional) Indicates whether the Endpoint should continue appending Log Entries to the end of the
-    file, or clear it and start at the beginning. Defaults to `true`.
-    - parameter minimumPriorityLevel: (optional) The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
-    Defaults to `.All`.
-    - parameter dateFormatter: (optional) The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a
-    string. Defaults to `.standardFormatter()`.
-    - parameter entryFormatter: (optional) The formatter used by this Endpoint to serialize each Log Entry to a string. Defaults
-    to `.standardFormatter()`.
-    */
+    /// Initialize a File Endpoint.
+    ///
+    /// If the specified file cannot be opened, or if the URL evaluates to `nil`, the initializer may fail.
+    ///
+    /// - parameter              fileURL: The URL of the log file.
+    ///                                   Defaults to `Application Support/{bundleID}/logs/log.txt`.
+    /// - parameter         shouldAppend: Indicates whether the Endpoint should continue appending Log Entries to the
+    ///                                   end of the file, or clear it and start at the beginning. Defaults to `true`.
+    /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
+    ///                                   Endpoint. Defaults to `.All`.
+    /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
+    ///                                   property to a string. Defaults to `.standardFormatter()`.
+    /// - parameter       entryFormatter: The formatter used by this Endpoint to serialize each Log Entry to a string.
+    ///                                   Defaults to `.standardFormatter()`.
     public init?(
         fileURL: NSURL? = defaultLogFileURL,
         shouldAppend: Bool = true,
@@ -399,12 +392,12 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
         }
     }
 
-    /// This endpoint always uses `baseFileName` as its file name.
+    /// This Endpoint always uses `baseFileName` as its file name.
     private override func fileNameForIndex(index: UInt) -> String {
         return self.baseFileName
     }
 
-    /// This endpoint will never rotate files.
+    /// This Endpoint will never rotate files.
     private override func rotateToFileBeforeWritingDataWithLength(length: Int) -> LXLogFile? {
         return nil
     }
@@ -414,29 +407,30 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
 
 //MARK: Dated File Endpoint
 
-/**
-An Endpoint that writes Log Enties to a dated file. A datestamp will be prepended to the file's name. The file rotates
-automatically at midnight UTC. The notifications `LXFileEndpointWillRotateFilesNotification` and
-`LXFileEndpointDidRotateFilesNotification` are sent to the default notification center directly before and after rotating files.
-*/
+/// An Endpoint that writes Log Enties to a dated file. A datestamp will be prepended to the file's name. The file
+/// rotates automatically at midnight UTC.
+///
+/// The notifications `LXFileEndpointWillRotateFilesNotification` and `LXFileEndpointDidRotateFilesNotification` are
+/// sent to the default notification center directly before and after rotating log files.
 public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
 
     /// The formatter used for datestamp preparation.
     private let nameFormatter = LXDateFormatter.dateOnlyFormatter()
 
-    /**
-    Initialize a Dated File Endpoint. If the specified file cannot be opened, or if the datestamp-prepended URL evaluates to
-    `nil`, the initializer may fail.
-
-    - parameter baseURL: (optional) The URL used to build the date files’ URLs. Today's date will be prepended to the last path
-    component of this URL. Defaults to `Application Support/{bundleID}/logs/{datestamp}_log.txt`.
-    - parameter minimumPriorityLevel: (optional) The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
-    Defaults to `.All`.
-    - parameter dateFormatter: (optional) The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a
-    string. Defaults to `.standardFormatter()`.
-    - parameter entryFormatter: (optional) The formatter used by this Endpoint to serialize each Log Entry to a string. Defaults
-    to `.standardFormatter()`.
-    */
+    /// Initialize a Dated File Endpoint.
+    ///
+    /// If the specified file cannot be opened, or if the datestamp-prepended URL evaluates to `nil`, the initializer
+    /// may fail.
+    ///
+    /// - parameter              baseURL: The URL used to build the date files’ URLs. Today's date will be prepended
+    ///                                   to the last path component of this URL.
+    ///                                   Defaults to `Application Support/{bundleID}/logs/{datestamp}_log.txt`.
+    /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
+    ///                                   Endpoint. Defaults to `.All`.
+    /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
+    ///                                   property to a string. Defaults to `.standardFormatter()`.
+    /// - parameter       entryFormatter: The formatter used by this Endpoint to serialize each Log Entry to a string.
+    ///                                   Defaults to `.standardFormatter()`.
     public init?(
         baseURL: NSURL? = defaultLogFileURL,
         minimumPriorityLevel: LXPriorityLevel = .All,

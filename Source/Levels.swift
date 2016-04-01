@@ -16,19 +16,18 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
-/**
-Logging Priority Levels are described below, in order of lowest-to-highest priority:
-
-- `All`: Special value that includes all priority levels
-- `Debug`: Programmer debugging
-- `Info`: Programmer information
-- `Notice`: General notice
-- `Warning`: Event may affect user experience at some point, if not corrected
-- `Error`: Event will definitely affect user experience
-- `Critical`: Event may crash application
-- `None`: Special value that excludes all priority levels
-*/
+/// Logging Priority Levels are described below, in order of lowest-to-highest priority:
+///
+/// - `All`     : Special value that includes all priority levels
+/// - `Debug`   : Programmer debugging
+/// - `Info`    : Programmer information
+/// - `Notice`  : General notice
+/// - `Warning` : Event may affect user experience at some point, if not corrected
+/// - `Error`   : Event will definitely affect user experience
+/// - `Critical`: Event may crash application
+/// - `None`    : Special value that excludes all priority levels
 public enum LXPriorityLevel: Int, Comparable, CustomStringConvertible {
+
     // These levels are designed to match ASL levels
     // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
 

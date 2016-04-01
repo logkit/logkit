@@ -85,7 +85,7 @@ internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion:
     let build = systemVersion?["ProductBuildVersion"] as? String ?? ""
     let info = NSProcessInfo.processInfo()
     let description = info.operatingSystemVersionString
-#if os(OSX) // Ugly hack, see issue #7
+#if os(OSX) //FIXME: Ugly hack, see issue #7
     if #available(OSX 10.10, OSXApplicationExtension 10.10, *) {
         let version = info.operatingSystemVersion
         return (description, version.majorVersion, version.minorVersion, version.patchVersion, build)
@@ -113,27 +113,25 @@ internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion:
 }()
 
 
-/**
-A collection of any available device IDs.
-
-In OS X, only the `vendor` ID is available.
-
-In iOS and tvOS, the `advertising` ID is available as well, but disabled by default. To enable, see the note below.
-
-Other OSes currently return empty strings for both IDs.
-
-- important: LogKit honors the iOS/tvOS `ASIdentifierManager.advertisingTrackingEnabled` flag. If an end user has
-             disabled advertising tracking on their device, LogKit will substitute an empty string for the
-             `advertising` ID.
-- note: The iOS/tvOS advertising ID is disabled by default to prevent triggering [IDFA requirements][idfa] in apps
-        that do not require an advertising ID. To enable the `advertising` ID, the `-DLXAdTrackingIDDisabled`
-        compiler flag must be removed from the LogKit Project build settings. The flag is found in the "Swift
-        Compiler - Custom Flags" section of the Build Settings page, under "Other Swift Flags". Be sure to search in
-        the *LogKit Project* build settings, not your app's project settings. Additionally, be sure to add/remove
-        the flag from the LogKit *Project* global build settings, not one of LogKit's OS-specific targets.
-
-[idfa]: https://developer.apple.com/library/ios/documentation/LanguagesUtilities/Conceptual/iTunesConnect_Guide/Chapters/SubmittingTheApp.html#//apple_ref/doc/uid/TP40011225-CH33-SW8
-*/
+/// A collection of any available device IDs.
+///
+/// In OS X, only the `vendor` ID is available.
+///
+/// In iOS and tvOS, the `advertising` ID is available as well, but disabled by default. To enable, see the note below.
+///
+/// Other OSes currently return empty strings for both IDs.
+///
+/// - important: LogKit honors the iOS/tvOS `ASIdentifierManager.advertisingTrackingEnabled` flag. If an end user has
+///              disabled advertising tracking on their device, LogKit will substitute an empty string for the
+///              `advertising` ID.
+/// - note: The iOS/tvOS advertising ID is disabled by default to prevent triggering [IDFA requirements][idfa] in apps
+///         that do not require an advertising ID. To enable the `advertising` ID, the `-DLXAdTrackingIDDisabled`
+///         compiler flag must be removed from the LogKit Project build settings. The flag is found in the "Swift
+///         Compiler - Custom Flags" section of the Build Settings page, under "Other Swift Flags". Be sure to search in
+///         the *LogKit Project* build settings, not your app's project settings. Additionally, be sure to add/remove
+///         the flag from the LogKit *Project* global build settings, not one of LogKit's OS-specific targets.
+///
+/// [idfa]: https://developer.apple.com/library/ios/documentation/LanguagesUtilities/Conceptual/iTunesConnect_Guide/Chapters/SubmittingTheApp.html#//apple_ref/doc/uid/TP40011225-CH33-SW8
 internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
 #if os(OSX)
     var timeSpec = timespec(tv_sec: 0, tv_nsec: 0)
@@ -162,15 +160,13 @@ internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
 
 internal extension NSFileManager {
 
-    /**
-    This method attempts to ensure that a file is available at the specified URL. It will attempt to create an empty file if
-    one does not already exist at that location.
-
-    - parameter withIntermediateDirectories: Indicates whether intermediate directories should be created if necessary, before
-    checking for the file.
-
-    - returns: A `Bool` indicating whether the file is available or not.
-    */
+    /// This method attempts to ensure that a file is available at the specified URL. It will attempt to create an
+    /// empty file if one does not already exist at that location.
+    ///
+    /// - parameter withIntermediateDirectories: Indicates whether intermediate directories should be created if
+    ///                                          necessary, before checking for the file.
+    ///
+    /// - returns: A `Bool` indicating whether the file is available or not.
     internal func ensureFileAtURL(URL: NSURL, withIntermediateDirectories shouldCreateDirs: Bool) -> Bool {
         if let dirURL = URL.URLByDeletingLastPathComponent, path = URL.path {
             do {
@@ -190,7 +186,8 @@ internal extension NSFileManager {
 
 internal extension NSCalendar {
 
-    /// Returns whether the given date is the same date as "today". Exists as a compatibility shim for older operating systems.
+    /// Returns whether the given date is the same date as "today".
+    /// Exists as a compatibility shim for older operating systems.
     internal func isDateSameAsToday(date: NSDate) -> Bool {
         if self.respondsToSelector("isDateInToday:") {
             return self.isDateInToday(date)

@@ -42,22 +42,20 @@ public class LXConsoleEndpoint: LXEndpoint {
     /// The actual output engine.
     private let writer: LXConsoleWriter
 
-    /**
-    Initialize a Console Endpoint.
-
-    A synchronous Console Endpoint will write each Entry to the console before continuing with application execution, which makes
-    debugging much easier. An asynchronous Console Endpoint may continue execution before every Entry is written to the console,
-    which will improve performance.
-
-    - parameter synchronous: (optional) Indicates whether the application should wait for each Entry to be printed to the
-    console before continuing execution. Defaults to `true`.
-    - parameter minimumPriorityLevel: (optional) The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
-    Defaults to `.All`.
-    - parameter dateFormatter: (optional) The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a
-    string. Defaults to `.standardFormatter()`.
-    - parameter entryFormatter: (optional) The formatter used by this Endpoint to serialize each Log Entry to a string. Defaults
-    to `.standardFormatter()`.
-    */
+    /// Initialize a Console Endpoint.
+    ///
+    /// A synchronous Console Endpoint will write each Entry to the console before continuing with application
+    /// execution, which makes debugging much easier. An asynchronous Console Endpoint may continue execution before
+    /// every Entry is written to the console, which will improve performance.
+    ///
+    /// - parameter synchronous:          Indicates whether the application should wait for each Entry to be printed
+    ///                                   to the console before continuing execution. Defaults to `true`.
+    /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
+    ///                                   Endpoint. Defaults to `.All`.
+    /// - parameter dateFormatter:        The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
+    ///                                   property to a string. Defaults to `.standardFormatter()`.
+    /// - parameter entryFormatter:       The formatter used by this Endpoint to serialize each Log Entry to a string.
+    ///                                   Defaults to `.standardFormatter()`.
     public init(
         synchronous: Bool = true,
         minimumPriorityLevel: LXPriorityLevel = .All,

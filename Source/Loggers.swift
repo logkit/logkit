@@ -20,17 +20,16 @@ import Foundation
 
 /// The main logging API for application code. An instance of this class distributes Log Entries to Endpoints for writing.
 public final class LXLogger {
+
     /// The collection of Endpoints that successfully initialized.
     private let endpoints: [LXEndpoint]
 
-    /**
-    Initialize a Logger. Any Endpoints that fail initialization are discarded.
-
-    - parameter endpoints: An array of Endpoints to dispatch Log Entries to.
-    */
+    /// Initialize a Logger. Any Endpoints that fail initialization are discarded.
+    ///
+    /// - parameter endpoints: An array of Endpoints to dispatch Log Entries to.
     public init(endpoints: [LXEndpoint?]) {
         self.endpoints = endpoints.filter({ $0 != nil }).map({ $0! })
-        assert(!self.endpoints.isEmpty, "A logger instance has been initialized, but no valid endpoints were provided.")
+        assert(!self.endpoints.isEmpty, "A logger instance has been initialized, but no valid Endpoints were provided.")
     }
 
     /// Initialize a basic Logger that writes to the console (`stderr`) with default settings.
@@ -38,15 +37,13 @@ public final class LXLogger {
         self.init(endpoints: [LXConsoleEndpoint()])
     }
 
-    /**
-    Delivers Log Entries to Endpoints.
-
-    This function filters Endpoints based on their `minimumPriorityLevel` property to deliver Entries only to qualified Endpoints.
-    If no Endpoint qualifies, most of the work is skipped.
-
-    After identifying qualified Endpoints, the Log Entry is serialized to a string based on each Endpoint's individual settings.
-    Then, it is dispatched to the Endpoint for writing.
-    */
+    /// Delivers Log Entries to Endpoints.
+    ///
+    /// This function filters Endpoints based on their `minimumPriorityLevel` property to deliver Entries only to
+    /// qualified Endpoints. If no Endpoint qualifies, most of the work is skipped.
+    ///
+    /// After identifying qualified Endpoints, the Log Entry is serialized to a string based on each Endpoint's
+    /// individual settings. Then, it is dispatched to the Endpoint for writing.
     private func log(
         messageBlock: () -> String,
         userInfo: [String: AnyObject],
@@ -85,12 +82,10 @@ public final class LXLogger {
         }
     }
 
-    /**
-    Log a `Debug` entry.
-
-    - parameter message: The message to log.
-    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
-    */
+    /// Log a `Debug` entry.
+    ///
+    /// - parameter message:  The message to log.
+    /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func debug(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
@@ -102,12 +97,10 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Debug, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /**
-    Log an `Info` entry.
-
-    - parameter message: The message to log.
-    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
-    */
+    /// Log an `Info` entry.
+    ///
+    /// - parameter message:  The message to log.
+    /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func info(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
@@ -119,12 +112,10 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Info, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /**
-    Log a `Notice` entry.
-
-    - parameter message: The message to log.
-    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
-    */
+    /// Log a `Notice` entry.
+    ///
+    /// - parameter message:  The message to log.
+    /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func notice(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
@@ -136,12 +127,10 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Notice, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /**
-    Log a `Warning` entry.
-
-    - parameter message: The message to log.
-    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
-    */
+    /// Log a `Warning` entry.
+    ///
+    /// - parameter message:  The message to log.
+    /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func warning(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
@@ -153,12 +142,10 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Warning, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /**
-    Log an `Error` entry.
-
-    - parameter message: The message to log.
-    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
-    */
+    /// Log an `Error` entry.
+    ///
+    /// - parameter message:  The message to log.
+    /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func error(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
@@ -170,12 +157,10 @@ public final class LXLogger {
         self.log(message, userInfo: userInfo, level: .Error, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
-    /**
-    Log a `Critical` entry.
-
-    - parameter message: The message to log.
-    - parameter userInfo: (optional) A dictionary of additional values for endpoints to consider.
-    */
+    /// Log a `Critical` entry.
+    ///
+    /// - parameter message:  The message to log.
+    /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func critical(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],

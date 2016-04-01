@@ -24,11 +24,10 @@ private let defaultSuccessCodes = Set([200, 201, 202, 204])
 
 //MARK: Persisted Cache
 
-/**
-This utility class holds data until the endpoint is ready to upload it. The data is also persisted to a file, in case the
-upload does not succeed while the application is running. We always read the file on startup to see if there are any left-over
-uploads to complete.
-*/
+/// This utility class holds data until the Endpoint is ready to upload it.
+///
+/// The data is also persisted to a file, in case the upload does not succeed while the application is running.
+/// We always read the file on startup to see if there are any left-over uploads to complete.
 private class LXPersistedCache {
     private let lock: dispatch_queue_t = dispatch_queue_create("persistedCacheQueue", DISPATCH_QUEUE_SERIAL)
     private let file: NSFileHandle?
@@ -37,15 +36,13 @@ private class LXPersistedCache {
     private let timeoutInterval: NSTimeInterval
     private var currentMaxID: UInt
 
-    /**
-    Initialize a persistent cache instance.
-
-    - parameter timeoutInterval: The amount of time data will remain reserved before assuming the upload failed, and allowing
-    the data to be tried again.
-    - parameter fileName: The cache file's name. This file will be created in the directory indicated by
-    `LK_DEFAULT_LOG_DIRECTORY`.
-    */
-    init(timeoutInterval: NSTimeInterval, fileName: String) {
+    /// Initialize a persistent cache instance.
+    ///
+    /// - parameter timeoutInterval: The amount of time data will remain reserved before assuming the upload failed,
+    ///                              and allowing the data to be tried again.
+    /// - parameter fileName:        The cache file's name. This file will be created in the directory indicated
+    ///                              by `LK_DEFAULT_LOG_DIRECTORY`.
+    private init(timeoutInterval: NSTimeInterval, fileName: String) {
         self.timeoutInterval = timeoutInterval
         if let fileURL = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent(fileName, isDirectory: false) {
             NSFileManager.defaultManager().ensureFileAtURL(fileURL, withIntermediateDirectories: true)
@@ -91,19 +88,17 @@ private class LXPersistedCache {
         })
     }
 
-    /**
-    Reserve data for upload. Once data has been reserved, it will not be reserved again until its reservation ends.
-
-    Users should track each ID number associated with the data they reserve. Once an upload succeeds, the user should call
-    `completeProgressOnIDs(:)` with each of the ID numbers of the data that successfully uploaded, so that the cache can discard
-    that data. If an upload fails, user should call `cancelProgressOnIDs(:)` with the relevant IDs, so that the cache can allow
-    that data to be reserved again.
-
-    If the cache does not recieve either signal by the end of the reservation interval, it will automatically make the data
-    available for reservation again.
-
-    - returns: A dictionary of ID numbers and data.
-    */
+    /// Reserve data for upload. Once data has been reserved, it will not be reserved again until its reservation ends.
+    ///
+    /// Users should track each ID number associated with the data they reserve. Once an upload succeeds, the user
+    /// should call `completeProgressOnIDs(:)` with each of the ID numbers of the data that successfully uploaded, so
+    /// that the cache can discard that data. If an upload fails, user should call `cancelProgressOnIDs(:)` with the
+    /// relevant IDs, so that the cache can allow that data to be reserved again.
+    ///
+    /// If the cache does not recieve either signal by the end of the reservation interval, it will automatically make
+    /// the data available for reservation again.
+    ///
+    /// - returns: A dictionary of ID numbers and data.
     func reserveData() -> [UInt: NSData] {
         var toReserve: [UInt: NSData]?
         dispatch_sync(self.lock, {
@@ -140,10 +135,8 @@ private class LXPersistedCache {
         })
     }
 
-    /**
-    Call this method when data has failed to upload. The cache will end the data's reservation and allow a subsequent attempt
-    to upload the data again.
-    */
+    /// Call this method when data has failed to upload. The cache will end the data's reservation and allow a
+    /// subsequent attempt to upload the data again.
     func cancelProgressOnIDs(ids: [UInt]) {
         dispatch_async(self.lock, {
             for id in ids {
@@ -162,10 +155,10 @@ private class LXPersistedCache {
 
 //MARK: HTTP Endpoint
 
-/**
-An Endpoint that uploads Log Entries to an HTTP service in plaintext format. Upload and retry management are handled automatically
-by this Endpoint. Attempts to upload Log Entries in order, but makes no guarantee.
-*/
+/// An Endpoint that uploads Log Entries to an HTTP service in plaintext format.
+///
+/// Upload and retry management are handled automatically by this Endpoint. It attempts to upload Log Entries in order,
+/// but makes no guarantees.
 public class LXHTTPEndpoint: LXEndpoint {
     /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
     public var minimumPriorityLevel: LXPriorityLevel
@@ -188,21 +181,19 @@ public class LXHTTPEndpoint: LXEndpoint {
         return timer
     }()
 
-    /**
-    Initialize an HTTP endpoint.
-
-    - parameter request: The request that will be used when submitting uploads.
-    - parameter successCodes: (optional) The set of HTTP status codes the server might respond with to indicate a successful
-    upload. Defaults to `{200, 201, 202, 204}`.
-    - parameter sessionConfiguration: (optional) The configuration to be used when initializating this Endpoint's URL session.
-    Defaults to `.defaultSessionConfiguration()`.
-    - parameter minimumPriorityLevel: (optional) The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
-    Defaults to `.All`.
-    - parameter dateFormatter: (optional) The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a
-    string. Defaults to `.standardFormatter()`.
-    - parameter entryFormatter: (optional) The formatter used by this Endpoint to serialize each Log Entry to a string. Defaults
-    to `.standardFormatter()`.
-    */
+    /// Initialize an HTTP Endpoint.
+    ///
+    /// - parameter              request: The request that will be used when submitting uploads.
+    /// - parameter         successCodes: The set of HTTP status codes the server might respond with to indicate a
+    ///                                   successful upload. Defaults to `{200, 201, 202, 204}`.
+    /// - parameter sessionConfiguration: The configuration to be used when initializating this Endpoint's URL session.
+    ///                                   Defaults to `.defaultSessionConfiguration()`.
+    /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
+    ///                                   Endpoint. Defaults to `.All`.
+    /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
+    ///                                   property to a string. Defaults to `.standardFormatter()`.
+    /// - parameter       entryFormatter: The formatter used by this Endpoint to serialize each Log Entry to a string.
+    ///                                   Defaults to `.standardFormatter()`.
     public init(
         request: NSURLRequest,
         successCodes: Set<Int> = defaultSuccessCodes,
@@ -222,22 +213,20 @@ public class LXHTTPEndpoint: LXEndpoint {
         self.timer.fire()
     }
 
-    /**
-    Initialize an HTTP endpoint.
-
-    - parameter URL: The URL to upload Log Entries to.
-    - parameter HTTPMethod: The HTTP request method to be used when uploading Log Entries.
-    - parameter successCodes: (optional) The set of HTTP status codes the server might respond with to indicate a successful
-    upload. Defaults to `{200, 201, 202, 204}`.
-    - parameter sessionConfiguration: (optional) The configuration to be used when initializating this Endpoint's URL session.
-    Defaults to `.defaultSessionConfiguration()`.
-    - parameter minimumPriorityLevel: (optional) The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
-    Defaults to `.All`.
-    - parameter dateFormatter: (optional) The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a
-    string. Defaults to `.standardFormatter()`.
-    - parameter entryFormatter: (optional) The formatter used by this Endpoint to serialize each Log Entry to a string. Defaults
-    to `.standardFormatter()`.
-    */
+    /// Initialize an HTTP Endpoint.
+    ///
+    /// - parameter                  URL: The URL to upload Log Entries to.
+    /// - parameter           HTTPMethod: The HTTP request method to be used when uploading Log Entries.
+    /// - parameter         successCodes: The set of HTTP status codes the server might respond with to indicate a
+    ///                                   successful upload. Defaults to `{200, 201, 202, 204}`.
+    /// - parameter sessionConfiguration: The configuration to be used when initializating this Endpoint's URL session.
+    ///                                   Defaults to `.defaultSessionConfiguration()`.
+    /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
+    ///                                   Endpoint. Defaults to `.All`.
+    /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
+    ///                                   property to a string. Defaults to `.standardFormatter()`.
+    /// - parameter       entryFormatter: The formatter used by this Endpoint to serialize each Log Entry to a string.
+    ///                                   Defaults to `.standardFormatter()`.
     public convenience init(
         URL: NSURL,
         HTTPMethod: String,
@@ -299,27 +288,25 @@ public class LXHTTPEndpoint: LXEndpoint {
 
 //MARK: HTTP JSON Endpoint
 
-/**
-An Endpoint that uploads Log Entries to an HTTP service in JSON format. Upload and retry management are handled automatically
-by this Endpoint. Attempts to upload Log Entries in order, but makes no guarantee.
-*/
+/// An Endpoint that uploads Log Entries to an HTTP service in JSON format.
+///
+/// Upload and retry management are handled automatically by this Endpoint. It attempts to upload Log Entries in order,
+/// but makes no guarantees.
 public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
 
     private override var cacheName: String { return ".json_endpoint_cache.txt" }
 
-    /**
-    Initialize an HTTP JSON Endpoint. Log Entries will be converted to JSON automatically.
-
-    - parameter request: The request that will be used when submitting uploads.
-    - parameter successCodes: (optional) The set of HTTP status codes the server might respond with to indicate a successful
-    upload. Defaults to `{200, 201, 202, 204}`.
-    - parameter sessionConfiguration: (optional) The configuration to be used when initializating this Endpoint's URL session.
-    Defaults to `.defaultSessionConfiguration()`.
-    - parameter minimumPriorityLevel: (optional) The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
-    Defaults to `.All`.
-    - parameter dateFormatter: (optional) The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a
-    string. Defaults to `.standardFormatter()`.
-    */
+    /// Initialize an HTTP JSON Endpoint. Log Entries will be converted to JSON automatically.
+    ///
+    /// - parameter              request: The request that will be used when submitting uploads.
+    /// - parameter         successCodes: The set of HTTP status codes the server might respond with to indicate a
+    ///                                   successful upload. Defaults to `{200, 201, 202, 204}`.
+    /// - parameter sessionConfiguration: The configuration to be used when initializating this Endpoint's URL session.
+    ///                                   Defaults to `.defaultSessionConfiguration()`.
+    /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
+    ///                                   Endpoint. Defaults to `.All`.
+    /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
+    ///                                   property to a string. Defaults to `.standardFormatter()`.
     public init(
         request: NSURLRequest,
         successCodes: Set<Int> = defaultSuccessCodes,
@@ -337,20 +324,18 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
         )
     }
 
-    /**
-    Initialize an HTTP JSON Endpoint. Log Entries will be converted to JSON automatically.
-
-    - parameter URL: The URL to upload Log Entries to.
-    - parameter HTTPMethod: The HTTP request method to be used when uploading Log Entries.
-    - parameter successCodes: (optional) The set of HTTP status codes the server might respond with to indicate a successful
-    upload. Defaults to `{200, 201, 202, 204}`.
-    - parameter sessionConfiguration: (optional) The configuration to be used when initializating this Endpoint's URL session.
-    Defaults to `.defaultSessionConfiguration()`.
-    - parameter minimumPriorityLevel: (optional) The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
-    Defaults to `.All`.
-    - parameter dateFormatter: (optional) The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a
-    string. Defaults to `.standardFormatter()`.
-    */
+    /// Initialize an HTTP JSON Endpoint. Log Entries will be converted to JSON automatically.
+    ///
+    /// - parameter                  URL: The URL to upload Log Entries to.
+    /// - parameter           HTTPMethod: The HTTP request method to be used when uploading Log Entries.
+    /// - parameter         successCodes: The set of HTTP status codes the server might respond with to indicate a
+    ///                                   successful upload. Defaults to `{200, 201, 202, 204}`.
+    /// - parameter sessionConfiguration: The configuration to be used when initializating this Endpoint's URL session.
+    ///                                   Defaults to `.defaultSessionConfiguration()`.
+    /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
+    ///                                   Endpoint. Defaults to `.All`.
+    /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
+    ///                                   property to a string. Defaults to `.standardFormatter()`.
     public convenience init(
         URL: NSURL,
         HTTPMethod: String,

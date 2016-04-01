@@ -20,10 +20,8 @@ import Foundation
 
 //MARK: Date Formatter
 
-/**
-Instances of `LXDateFormatter` create string representations of `NSDate` objects. There are several built-in formats available, or
-a custom format can be specified in the same format as in `NSDateFormatter` objects.
-*/
+/// Instances of `LXDateFormatter` create string representations of `NSDate` objects. There are several built-in
+/// formats available, or a custom format can be specified in the same format as in `NSDateFormatter` objects.
 public class LXDateFormatter {
 
     /// Converts `NSDate` objects into datetime strings in the format `yyyy-MM-dd HH:mm:ss.SSS`, using the UTC timezone.
@@ -38,27 +36,23 @@ public class LXDateFormatter {
     /// The internal formatting engine.
     private let dateFormatter: NSDateFormatter
 
-    /**
-    Creates a new `LXDateFormatter` instance.
-
-    - parameter formatString: The desired format string used to convert dates to strings. Uses the same format string as
-    `NSDateFormatter.dateFormat`.
-    - parameter timezone: (optional) An `NSTimeZone` instance representing the desired time zone of the date string output. Defaults
-    to UTC.
-    */
+    /// Creates a new `LXDateFormatter` instance.
+    ///
+    /// - parameter formatString: The desired format string used to convert dates to strings. Uses the same format
+    ///                           string as `NSDateFormatter.dateFormat`.
+    /// - parameter timezone:     An `NSTimeZone` instance representing the desired time zone of the date
+    ///                           string output. Defaults to UTC.
     public required init(formatString: String, timeZone: NSTimeZone = NSTimeZone(forSecondsFromGMT: 0)) {
         self.dateFormatter = NSDateFormatter()
         self.dateFormatter.timeZone = timeZone
         self.dateFormatter.dateFormat = formatString
     }
 
-    /**
-    Converts an `NSDate` object into a string using the date formatter's settings.
-
-    - parameter date: The `NSDate` instance to be converted.
-
-    - returns: A string representation of the date, based on the formatter's settings.
-    */
+    /// Converts an `NSDate` object into a string using the date formatter's settings.
+    ///
+    /// - parameter date: The `NSDate` instance to be converted.
+    ///
+    /// - returns: A string representation of the date, based on the formatter's settings.
     internal func stringFromDate(date: NSDate) -> String {
         return self.dateFormatter.stringFromDate(date)
     }
@@ -68,10 +62,8 @@ public class LXDateFormatter {
 
 //MARK: Entry Formatter
 
-/**
-Instances of LXEntryFormatter create string representations of `LXLogEntry` objects. There are several built-in formats available,
-or a custom format can be specified as a closure of the type `(LXLogEntry) -> String`.
-*/
+/// Instances of LXEntryFormatter create string representations of `LXLogEntry` objects. There are several built-in
+/// formats available, or a custom format can be specified as a closure of the type `(LXLogEntry) -> String`.
 public class LXEntryFormatter {
 
     /// Converts `LXLogEntry` objects into strings in a standard format that contains basic debugging information.
@@ -86,25 +78,21 @@ public class LXEntryFormatter {
     /// The internal formatting engine.
     private let entryFormatter: (entry: LXLogEntry) -> String
 
-    /**
-    Creates a new `LXEntryFormatter` instance.
-
-    - parameters:
-      - _ A closure that accepts an `LXLogEntry` and returns a `String`.
-    */
+    /// Creates a new `LXEntryFormatter` instance.
+    ///
+    /// - parameters:
+    ///   - _ A closure that accepts an `LXLogEntry` and returns a `String`.
     public required init(_ closure: (LXLogEntry) -> String) {
         self.entryFormatter = closure
     }
 
-    /**
-    Converts an `LXLogEntry` object into a string using the entry formatter's settings.
-
-    - parameter entry: The `LXLogEntry` instance to be converted.
-    - parameter appendNewline: Indicates whether a newline character should be appended to the ending of the converted Entry's
-    string.
-
-    - returns: A string representation of the Log Entry, based on the formatter's settings.
-    */
+    /// Converts an `LXLogEntry` object into a string using the entry formatter's settings.
+    ///
+    /// - parameter entry:         The `LXLogEntry` instance to be converted.
+    /// - parameter appendNewline: Indicates whether a newline character should be appended to the ending of the
+    ///                            converted Entry's string.
+    ///
+    /// - returns: A string representation of the Log Entry, based on the formatter's settings.
     internal func stringFromEntry(entry: LXLogEntry, appendNewline: Bool) -> String {
         return appendNewline ? entryFormatter(entry: entry) + "\n" : entryFormatter(entry: entry)
     }
