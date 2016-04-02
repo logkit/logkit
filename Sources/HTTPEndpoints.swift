@@ -76,11 +76,11 @@ private class LXPersistedCache {
     /// Add data to the cache; the data can be retrieved for upload later.
     func addData(data: NSData) {
         dispatch_async(self.lock, {
-            let id = ++self.currentMaxID
-            self.cache[id] = data
+            self.currentMaxID += 1
+            self.cache[self.currentMaxID] = data
 
             self.file?.seekToEndOfFile() // Do we need to do this?
-            guard let outData = self.dataString(data, withID: id).dataUsingEncoding(NSUTF8StringEncoding) else {
+            guard let outData = self.dataString(data, withID: self.currentMaxID).dataUsingEncoding(NSUTF8StringEncoding) else {
                 assertionFailure("Failure to encode data for temporary storage")
                 return
             }
@@ -176,7 +176,7 @@ public class LXHTTPEndpoint: LXEndpoint {
     private var cacheName: String { return ".http_endpoint_cache.txt" }
     private lazy var cache: LXPersistedCache = LXPersistedCache(timeoutInterval: 50, fileName: self.cacheName)
     private lazy var timer: NSTimer = {
-        let timer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: "upload:", userInfo: nil, repeats: true)
+        let timer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: #selector(upload(_:)), userInfo: nil, repeats: true)
         timer.tolerance = 10
         return timer
     }()

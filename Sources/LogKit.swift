@@ -98,7 +98,7 @@ internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion:
         return (description, major, minor, patch, build)
     }
 #else
-    if info.respondsToSelector("operatingSystemVersion") {
+    if info.respondsToSelector(Selector("operatingSystemVersion")) {
         let version = info.operatingSystemVersion
         return (description, version.majorVersion, version.minorVersion, version.patchVersion, build)
     } else {
@@ -189,7 +189,7 @@ internal extension NSCalendar {
     /// Returns whether the given date is the same date as "today".
     /// Exists as a compatibility shim for older operating systems.
     internal func isDateSameAsToday(date: NSDate) -> Bool {
-        if self.respondsToSelector("isDateInToday:") {
+        if self.respondsToSelector(#selector(isDateInToday(_:))) {
             return self.isDateInToday(date)
         } else {
             let today = NSDate()
