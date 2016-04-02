@@ -89,10 +89,10 @@ public final class LXLogger {
     public func debug(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
-        functionName: String = __FUNCTION__,
-        filePath: String = __FILE__,
-        lineNumber: Int = __LINE__,
-        columnNumber: Int = __COLUMN__
+        functionName: String = #function,
+        filePath: String = #file,
+        lineNumber: Int = #line,
+        columnNumber: Int = #column
     ) {
         self.log(message, userInfo: userInfo, level: .Debug, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
@@ -104,10 +104,10 @@ public final class LXLogger {
     public func info(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
-        functionName: String = __FUNCTION__,
-        filePath: String = __FILE__,
-        lineNumber: Int = __LINE__,
-        columnNumber: Int = __COLUMN__
+        functionName: String = #function,
+        filePath: String = #file,
+        lineNumber: Int = #line,
+        columnNumber: Int = #column
     ) {
         self.log(message, userInfo: userInfo, level: .Info, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
@@ -119,10 +119,10 @@ public final class LXLogger {
     public func notice(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
-        functionName: String = __FUNCTION__,
-        filePath: String = __FILE__,
-        lineNumber: Int = __LINE__,
-        columnNumber: Int = __COLUMN__
+        functionName: String = #function,
+        filePath: String = #file,
+        lineNumber: Int = #line,
+        columnNumber: Int = #column
     ) {
         self.log(message, userInfo: userInfo, level: .Notice, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
@@ -134,10 +134,10 @@ public final class LXLogger {
     public func warning(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
-        functionName: String = __FUNCTION__,
-        filePath: String = __FILE__,
-        lineNumber: Int = __LINE__,
-        columnNumber: Int = __COLUMN__
+        functionName: String = #function,
+        filePath: String = #file,
+        lineNumber: Int = #line,
+        columnNumber: Int = #column
     ) {
         self.log(message, userInfo: userInfo, level: .Warning, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
@@ -149,10 +149,10 @@ public final class LXLogger {
     public func error(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
-        functionName: String = __FUNCTION__,
-        filePath: String = __FILE__,
-        lineNumber: Int = __LINE__,
-        columnNumber: Int = __COLUMN__
+        functionName: String = #function,
+        filePath: String = #file,
+        lineNumber: Int = #line,
+        columnNumber: Int = #column
     ) {
         self.log(message, userInfo: userInfo, level: .Error, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
@@ -164,10 +164,10 @@ public final class LXLogger {
     public func critical(
         @autoclosure(escaping) message: () -> String,
         userInfo: [String: AnyObject] = [:],
-        functionName: String = __FUNCTION__,
-        filePath: String = __FILE__,
-        lineNumber: Int = __LINE__,
-        columnNumber: Int = __COLUMN__
+        functionName: String = #function,
+        filePath: String = #file,
+        lineNumber: Int = #line,
+        columnNumber: Int = #column
     ) {
         self.log(message, userInfo: userInfo, level: .Critical, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
