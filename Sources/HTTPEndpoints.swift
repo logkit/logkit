@@ -76,7 +76,7 @@ private class LXPersistedCache {
     /// Add data to the cache; the data can be retrieved for upload later.
     func addData(data: NSData) {
         dispatch_async(self.lock, {
-            let id = ++self.currentMaxID
+			let id: UInt = UInt(self.currentMaxID += 1)
             self.cache[id] = data
 
             self.file?.seekToEndOfFile() // Do we need to do this?
@@ -176,7 +176,7 @@ public class LXHTTPEndpoint: LXEndpoint {
     private var cacheName: String { return ".http_endpoint_cache.txt" }
     private lazy var cache: LXPersistedCache = LXPersistedCache(timeoutInterval: 50, fileName: self.cacheName)
     private lazy var timer: NSTimer = {
-        let timer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: "upload:", userInfo: nil, repeats: true)
+        let timer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: #selector(LXHTTPEndpoint.upload(_:)), userInfo: nil, repeats: true)
         timer.tolerance = 10
         return timer
     }()
