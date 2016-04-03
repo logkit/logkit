@@ -22,24 +22,23 @@ import XCTest
 
 class PriorityLevelTests: XCTestCase {
 
-//    override func setUp() {
-//        super.setUp()
-//    }
-//
-//    override func tearDown() {
-//        super.tearDown()
-//    }
-
     func testPriorities() {
-        XCTAssertEqual(LXPriorityLevel.Error, LXPriorityLevel.Error, "LXPriorityLevel Comparable conformance: .Error != .Error")
-        XCTAssertGreaterThan(LXPriorityLevel.Warning, LXPriorityLevel.Debug, "LXPriorityLevel Comparable conformance: .Warning !> .Debug")
-        XCTAssertLessThan(LXPriorityLevel.Info, LXPriorityLevel.Notice, "LXPriorityLevel Comparable conformance: .Info !< .Notice")
+        XCTAssertEqual(LXPriorityLevel.Error, LXPriorityLevel.Error, "LXPriorityLevel: .Error != .Error")
+        XCTAssertNotEqual(LXPriorityLevel.Info, LXPriorityLevel.Notice, "LXPriorityLevel: .Info == .Notice")
+        XCTAssertEqual(
+            min(LXPriorityLevel.All, LXPriorityLevel.Debug, LXPriorityLevel.Info, LXPriorityLevel.Notice,
+                LXPriorityLevel.Warning, LXPriorityLevel.Error, LXPriorityLevel.Critical, LXPriorityLevel.None),
+            LXPriorityLevel.All, "LXPriorityLevel: .All is not minimum")
+        XCTAssertLessThan(LXPriorityLevel.Debug, LXPriorityLevel.Info, "LXPriorityLevel: .Debug !< .Info")
+        XCTAssertLessThan(LXPriorityLevel.Info, LXPriorityLevel.Notice, "LXPriorityLevel: .Info !< .Notice")
+        XCTAssertLessThan(LXPriorityLevel.Notice, LXPriorityLevel.Warning, "LXPriorityLevel: .Notice !< .Warning")
+        XCTAssertLessThan(LXPriorityLevel.Warning, LXPriorityLevel.Error, "LXPriorityLevel: .Warning !< .Error")
+        XCTAssertLessThan(LXPriorityLevel.Info, LXPriorityLevel.Critical, "LXPriorityLevel: .Error !< .Critical")
+        XCTAssertEqual(
+            max(LXPriorityLevel.All, LXPriorityLevel.Debug, LXPriorityLevel.Info, LXPriorityLevel.Notice,
+                LXPriorityLevel.Warning, LXPriorityLevel.Error, LXPriorityLevel.Critical, LXPriorityLevel.None),
+            LXPriorityLevel.None, "LXPriorityLevel: .None is not maximum")
     }
-
-//    func testPerformanceExample() {
-//        self.measureBlock() {
-//        }
-//    }
 
 }
 
