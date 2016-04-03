@@ -230,7 +230,9 @@ public class LXRotatingFileEndpoint: LXEndpoint {
             assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
             return nil
         }
+        #if !os(watchOS)
         setxattr(file.path, self.extendedAttributeKey, LK_LOGKIT_VERSION, LK_LOGKIT_VERSION.utf8.count, 0, 0)
+        #endif
         return file
     }()
 
@@ -303,7 +305,9 @@ public class LXRotatingFileEndpoint: LXEndpoint {
             assertionFailure("The log file at URL '\(self.nextURL)' could not be opened.")
             return nil
         }
+        #if !os(watchOS)
         setxattr(nextFile.path, self.extendedAttributeKey, LK_LOGKIT_VERSION, LK_LOGKIT_VERSION.utf8.count, 0, 0)
+        #endif
         return nextFile
     }
 
