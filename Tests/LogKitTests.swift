@@ -16,8 +16,8 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 import Foundation
-import LogKit
 import XCTest
+@testable import LogKit
 
 
 class PriorityLevelTests: XCTestCase {
@@ -56,15 +56,108 @@ class ConsoleEndpointTests: XCTestCase {
 
 class FileEndpointTests: XCTestCase {
 
-    let endpoint = LXFileEndpoint(
-        fileURL: NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).URLByAppendingPathComponent("info.logkit.FileEndpointTests.txt", isDirectory: false)
-    )
+    var endpoint: LXFileEndpoint?
+    let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test.endpoint.file", isDirectory: false)
+
+    override func setUp() {
+        self.endpoint = LXFileEndpoint(fileURL: self.endpointURL, shouldAppend: false)
+        XCTAssertNotNil(self.endpoint, "Could not create Endpoint")
+    }
+
+    override func tearDown() {
+//        self.endpoint = nil //TODO: do we need an endpoint close method?
+//        try! NSFileManager.defaultManager().removeItemAtURL(self.endpointURL)
+        //FIXME: crashes because Endpoint has not deinitialized yet
+    }
+
+    func testRotation() {
+        let startURL = self.endpoint?.currentURL
+        XCTAssertEqual(self.endpointURL, startURL, "Endpoint opened with unexpected URL")
+        self.endpoint?.rotate()
+        XCTAssertEqual(self.endpoint?.currentURL, startURL, "File Endpoint should not rotate files")
+    }
+
+    func testXAttr() {
+        let key = "info.logkit.endpoint.file"
+        let path = self.endpoint?.currentURL.path
+        XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
+        XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
+    }
 
     func testWrite() {
-        print(NSTemporaryDirectory())
         self.endpoint?.write("Hello from the File Endpoint!")
     }
 
+}
+
+class RotatingFileEndpointTests: XCTestCase {
+
+    var endpoint: LXRotatingFileEndpoint?
+    let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test.endpoint.rotatingFile", isDirectory: false)
+
+    override func setUp() {
+        self.endpoint = LXRotatingFileEndpoint(baseURL: self.endpointURL, numberOfFiles: 5)
+        XCTAssertNotNil(self.endpoint, "Could not create Endpoint")
+    }
+
+    func testRotation() {
+        let startURL = self.endpoint?.currentURL
+        self.endpoint?.rotate()
+        XCTAssertNotEqual(self.endpoint?.currentURL, startURL, "URLs should not match after just one rotation")
+        self.endpoint?.rotate()
+        self.endpoint?.rotate()
+        self.endpoint?.rotate()
+        self.endpoint?.rotate()
+        XCTAssertEqual(self.endpoint?.currentURL, startURL, "URLs don't match after full rotation cycle")
+    }
+
+    func testXAttr() {
+        let key = "info.logkit.endpoint.rotatingFile"
+        var path = self.endpoint?.currentURL.path
+        XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
+        XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
+        self.endpoint?.rotate()
+        path = self.endpoint?.currentURL.path
+        XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
+        XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
+    }
+
+    func testWrite() {
+        self.endpoint?.write("Hello from the Rotating File Endpoint!")
+    }
+
+}
+
+class DatedFileEndpointTests: XCTestCase {
+
+    var endpoint: LXDatedFileEndpoint?
+    let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test.endpoint.datedFile", isDirectory: false)
+
+    override func setUp() {
+        self.endpoint = LXDatedFileEndpoint(baseURL: self.endpointURL)
+        XCTAssertNotNil(self.endpoint, "Could not create Endpoint")
+    }
+
+    func testRotation() {
+        let startURL = self.endpoint?.currentURL
+        self.endpoint?.rotate()
+        XCTAssertEqual(self.endpoint?.currentURL, startURL, "Dated File Endpoint should not manually rotate files")
+    }
+
+    func testXAttr() {
+        let key = "info.logkit.endpoint.datedFile"
+        let path = self.endpoint?.currentURL.path
+        XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
+        XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
+    }
+
+    func testWrite() {
+        self.endpoint?.write("Hello from the Dated File Endpoint!")
+    }
+    
 }
 
 class HTTPEndpointTests: XCTestCase {

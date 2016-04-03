@@ -188,6 +188,7 @@ private class LXLogFile {
 /// The notifications `LXFileEndpointWillRotateFilesNotification` and `LXFileEndpointDidRotateFilesNotification`
 /// are sent to the default notification center directly before and after rotating log files.
 public class LXRotatingFileEndpoint: LXEndpoint {
+
     /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
     public var minimumPriorityLevel: LXPriorityLevel
     /// The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a string.
@@ -229,6 +230,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
             assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
             return nil
         }
+        setxattr(file.path, self.extendedAttributeKey, LK_LOGKIT_VERSION, LK_LOGKIT_VERSION.utf8.count, 0, 0)
         return file
     }()
 
@@ -275,6 +277,8 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         self.baseFileName = filename
     }
 
+    /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
+    private var extendedAttributeKey: String { return "info.logkit.endpoint.rotatingFile" }
     /// The index of the next file in the rotation.
     private var nextIndex: UInt { return self.currentIndex + 1 > self.numberOfFiles ? 1 : self.currentIndex + 1 }
     /// The URL of the log file currently in use. Manually modifying this file is _not_ recommended.
@@ -295,8 +299,11 @@ public class LXRotatingFileEndpoint: LXEndpoint {
 
     /// Returns the next log file to be written to, already prepared for use.
     private func nextFile() -> LXLogFile? {
-        let nextFile = LXLogFile(URL: self.nextURL, shouldAppend: false)
-        assert(nextFile != nil, "The log file at URL '\(self.nextURL)' could not be opened.")
+        guard let nextFile = LXLogFile(URL: self.nextURL, shouldAppend: false) else {
+            assertionFailure("The log file at URL '\(self.nextURL)' could not be opened.")
+            return nil
+        }
+        setxattr(nextFile.path, self.extendedAttributeKey, LK_LOGKIT_VERSION, LK_LOGKIT_VERSION.utf8.count, 0, 0)
         return nextFile
     }
 
@@ -411,6 +418,9 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
         }
     }
 
+    /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
+    private override var extendedAttributeKey: String { return "info.logkit.endpoint.file" }
+
     /// This Endpoint always uses `baseFileName` as its file name.
     private override func fileNameForIndex(index: UInt) -> String {
         return self.baseFileName
@@ -468,6 +478,9 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
             entryFormatter: entryFormatter
         )
     }
+
+    /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
+    private override var extendedAttributeKey: String { return "info.logkit.endpoint.datedFile" }
 
     /// The name for the file with today's date.
     private override func fileNameForIndex(index: UInt) -> String {
