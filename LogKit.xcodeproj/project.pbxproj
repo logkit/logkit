@@ -174,9 +174,9 @@
 				D00B8CBD1B2E3BC3003E5FED /* LogKit OSX Tests.xctest */,
 				D00B8C921B2E3B8F003E5FED /* LogKit.framework */,
 				D00B8C9D1B2E3B8F003E5FED /* LogKit iOS Tests.xctest */,
-				D0F8DD291B4B1ADC00D0865A /* LogKit.framework */,
 				D0C6180B1BD01917008BF5F2 /* LogKit.framework */,
 				D0C618141BD01918008BF5F2 /* LogKit tvOS Tests.xctest */,
+				D0F8DD291B4B1ADC00D0865A /* LogKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -445,9 +445,9 @@
 				D00B8CBC1B2E3BC3003E5FED /* LogKit OSX Tests */,
 				D00B8C911B2E3B8F003E5FED /* LogKit iOS */,
 				D00B8C9C1B2E3B8F003E5FED /* LogKit iOS Tests */,
-				D0F8DD281B4B1ADC00D0865A /* LogKit watchOS */,
 				D0C6180A1BD01917008BF5F2 /* LogKit tvOS */,
 				D0C618131BD01918008BF5F2 /* LogKit tvOS Tests */,
+				D0F8DD281B4B1ADC00D0865A /* LogKit watchOS */,
 			);
 		};
 /* End PBXProject section */

@@ -243,7 +243,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     ///
     /// - parameter              baseURL: The URL used to build the rotating file set’s file URLs. Each file's index
     ///                                   number will be prepended to the last path component of this URL. Defaults
-    ///                                   to `Application Support/{bundleID}/logs/{number}_log.txt`.
+    ///                                   to `Application Support/{bundleID}/logs/{number}_log.txt`. Must not be `nil`.
     /// - parameter        numberOfFiles: The number of files to be used in the rotation. Defaults to `5`.
     /// - parameter       maxFileSizeKiB: The maximum file size of each file in the rotation, specified in kilobytes.
     ///                                   Passing `nil` results in no limit, and no automatic rotation. Defaults
@@ -393,7 +393,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
     /// If the specified file cannot be opened, or if the URL evaluates to `nil`, the initializer may fail.
     ///
     /// - parameter              fileURL: The URL of the log file.
-    ///                                   Defaults to `Application Support/{bundleID}/logs/log.txt`.
+    ///                                   Defaults to `Application Support/{bundleID}/logs/log.txt`. Must not be `nil`.
     /// - parameter         shouldAppend: Indicates whether the Endpoint should continue appending Log Entries to the
     ///                                   end of the file, or clear it and start at the beginning. Defaults to `true`.
     /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
@@ -459,7 +459,7 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
     /// may fail.
     ///
     /// - parameter              baseURL: The URL used to build the date files’ URLs. Today's date will be prepended
-    ///                                   to the last path component of this URL.
+    ///                                   to the last path component of this URL. Must not be `nil`.
     ///                                   Defaults to `Application Support/{bundleID}/logs/{datestamp}_log.txt`.
     /// - parameter minimumPriorityLevel: The minimum Priority Level a Log Entry must meet to be accepted by this
     ///                                   Endpoint. Defaults to `.All`.

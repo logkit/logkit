@@ -2,12 +2,12 @@
 
 [http://www.logkit.info/][website]
 
-LogKit is a logging framework built to be **simple** to get started with, **efficient** to execute, **safe** for shipping code, and **extensible** for flexibility. It is written in pure Swift and is suitable for OS X, iOS, watchOS, and tvOS application logging. For a developer looking for more power than `print()`, LogKit takes just a moment to get started with, and comes ready to log to the console, a file, an HTTP service, or all three. Need to log to somewhere else? Defining your own Endpoint is easy too.
+LogKit is a logging framework built to be **simple** to get started with, **efficient** to execute, **safe** for shipping code, and **extensible** for flexibility. It is written in pure Swift and is suitable for OS X, iOS, tvOS, and watchOS application logging. For a developer looking for more power than `print()`, LogKit takes just a moment to get started with, and comes ready to log to the console, a file, an HTTP service, or all three. Need to log to somewhere else? Defining your own Endpoint is easy too.
 
 This readme contains just a few tips to get you started with LogKit. To learn everything else, check the [project website][website].
 
 [![Build Status](https://travis-ci.org/logkit/logkit.svg?branch=master)](https://travis-ci.org/logkit/logkit)
-[![CocoaPods](https://img.shields.io/badge/pod-2.2.0-blue.svg)](https://cocoapods.org/pods/LogKit)
+[![CocoaPods](https://img.shields.io/badge/pod-2.3.0-blue.svg)](https://cocoapods.org/pods/LogKit)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 
@@ -40,7 +40,7 @@ This readme contains just a few tips to get you started with LogKit. To learn ev
 
 ## Requirements
 
-* Project targeting OS X 10.9+, iOS 7+, watchOS 2+, or tvOS 9+
+* Project targeting OS X 10.9+, iOS 7+, tvOS 9+, or watchOS 2+
 * Xcode 7.1 and Swift 2.1
 
 > Note: Please check the [swift-1.2 branch](https://github.com/logkit/logkit/tree/swift-1.2) for a version compatible with Xcode 6 and Swift 1.2.
@@ -54,38 +54,38 @@ There are a few ways to install LogKit. Below are some tips, but for full detail
 
 ### CocoaPods
 
-> Supports iOS 8+, OS X 10.9+, watchOS 2+, tvOS 9+
+> Supports iOS 8+, OS X 10.9+, tvOS 9+, watchOS 2+
 
 Include LogKit in your Podfile:
 
 ```ruby
 use_frameworks!
-pod 'LogKit', '~> 2.2'
+pod 'LogKit', '~> 2.3'
 ```
 
 For more information on getting started with CocoaPods, read the [guide][cocoapods].
 
 ### Carthage
 
-> Supports iOS 8+, OS X 10.9+, watchOS 2+, tvOS 9+
+> Supports iOS 8+, OS X 10.9+, tvOS 9+, watchOS 2+
 
 Include LogKit in your Cartfile:
 
 ```
-github "logkit/logkit" ~> 2.2
+github "logkit/logkit" ~> 2.3
 ```
 
 For more information on getting started with Carthage, visit the [repo][carthage].
 
 ### Embedded Framework
 
-> Supports iOS 8+, OS X 10.9+, watchOS 2+, tvOS 9+
+> Supports iOS 8+, OS X 10.9+, tvOS 9+, watchOS 2+
 
 Include `LogKit.xcodeproj` within your project (second level, below your project root, as a sub-project). Select your target, and add LogKit as an Embedded Binary in the General tab. Pick the appropriate LogKit framework for your target’s OS. Be sure to select the framework, not the tests.
 
 ### Source
 
-> Supports iOS 7+, OS X 10.9+, watchOS 2+, tvOS 9+
+> Supports iOS 7+, OS X 10.9+, tvOS 9+, watchOS 2+
 >
 > Integrating the LogKit source is the only way to include LogKit in projects targeting iOS 7. When this installation method is used, skip the `import LogKit`.
 
@@ -184,16 +184,16 @@ LogKit welcomes contributions! Please see [CONTRIBUTING.md][contrib] for more in
 
 ## License
 
-LogKit is licensed under the permissive [ISC License][license] (a member of the [BSD License family][bsd]).
+LogKit is licensed under the permissive [ISC License][license].
 
 
 [website]: http://www.logkit.info/
-[docs]: http://www.logkit.info/docs/2.2/
-[install]: http://www.logkit.info/docs/2.2/installation/
-[usage]: http://www.logkit.info/docs/2.2/usage/
-[endpoints]: http://www.logkit.info/docs/2.2/endpoints/
-[formatting]: http://www.logkit.info/docs/2.2/formatting/
-[migration]: http://www.logkit.info/docs/2.2/migration/
+[docs]: http://www.logkit.info/docs/2.3/
+[install]: http://www.logkit.info/docs/2.3/installation/
+[usage]: http://www.logkit.info/docs/2.3/usage/
+[endpoints]: http://www.logkit.info/docs/2.3/endpoints/
+[formatting]: http://www.logkit.info/docs/2.3/formatting/
+[migration]: http://www.logkit.info/docs/2.3/migration/
 
 [changelog]: https://github.com/logkit/logkit/blob/master/CHANGELOG.md
 [contrib]: https://github.com/logkit/logkit/blob/master/CONTRIBUTING.md
@@ -201,4 +201,3 @@ LogKit is licensed under the permissive [ISC License][license] (a member of the 
 
 [cocoapods]: https://guides.cocoapods.org/using/using-cocoapods.html
 [carthage]: https://github.com/Carthage/Carthage
-[bsd]: http://choosealicense.com/licenses/#isc

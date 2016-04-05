@@ -1,6 +1,26 @@
 # Change Log
 
 
+### [2.3.0](https://github.com/logkit/logkit/releases/tag/2.3.0)
+
+New APIs, IDFA fix, Swift 2.2, more tests!
+
+### Updated
+
+* Now with Swift 2.2 (#18 thanks @JackoPlane)
+
+### Added
+
+* Support for manually rotating `LXRotatingFileEndpoint` instances (#15 thanks @rabidaudio)
+* More test targets for Travis (iOS, tvOS, watchOS)
+* More unit tests
+* Initial support for Swift Package Manager
+
+#### Fixed
+
+* Disabled Advertising ID by default to eliminate IDFA requirements (#16 #17 thanks @rabidaudio)
+
+
 ### [2.2.0](https://github.com/logkit/logkit/releases/tag/2.2.0)
 
 New API for accessing the log file URLs used by the family of File Endpoints. All changes are backward-compatible.
