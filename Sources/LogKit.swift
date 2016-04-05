@@ -125,7 +125,7 @@ internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion:
 ///              disabled advertising tracking on their device, LogKit will substitute an empty string for the
 ///              `advertising` ID.
 /// - note: The iOS/tvOS advertising ID is disabled by default to prevent triggering [IDFA requirements][idfa] in apps
-///         that do not require an advertising ID. To enable the `advertising` ID, the `-DLogKitAdTrackingIDDisabled`
+///         that do not require an advertising ID. To enable the `advertising` ID, the `-DLogKitAdvertisingIDDisabled`
 ///         compiler flag must be removed from the LogKit Project build settings. The flag is found in the "Swift
 ///         Compiler - Custom Flags" section of the Build Settings page, under "Other Swift Flags". Be sure to search in
 ///         the *LogKit Project* build settings, not your app's project settings. Additionally, be sure to add/remove
@@ -143,7 +143,7 @@ internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
     return (nsuuid.UUIDString, "")
 #elseif os(iOS) || os(tvOS)
     let vendorID = UIDevice.currentDevice().identifierForVendor?.UUIDString ?? ""
-    #if LogKitAdTrackingIDDisabled
+    #if LogKitAdvertisingIDDisabled
         let advertisingID = ""
     #else
         let adManager = ASIdentifierManager.sharedManager()
