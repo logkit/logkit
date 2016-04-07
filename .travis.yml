@@ -28,7 +28,7 @@ script:
     fi
 
   # Fetch LogKit and build with Carthage
-  - if [ $TOOL == "CARTHAGE" ]; then echo 'github "logkit/logkit"' > Cartfile; carthage update logkit; fi
+  - if [ $TOOL == "CARTHAGE" ]; then echo 'github "logkit/logkit" "master"' > Cartfile; carthage update logkit; fi
 
   # Validate Podspec
   - if [ $TOOL == "COCOAPODS" ]; then pod lib lint; fi
