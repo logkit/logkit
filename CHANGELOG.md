@@ -1,15 +1,28 @@
 # Change Log
 
 
+### [2.3.1](https://github.com/logkit/logkit/releases/tag/2.3.1)
+
+Fix for Carthage builds on OSX and iOS.
+
+#### Added
+
+* New automated testing to ensure Carthage builds and CocoaPods lints successfully
+
+#### Fixed
+
+* Carthage builds, due to incorrect OSX and iOS scheme settings (#20 #21 thanks @mark-anders)
+
+
 ### [2.3.0](https://github.com/logkit/logkit/releases/tag/2.3.0)
 
 New APIs, IDFA fix, Swift 2.2, more tests!
 
-### Updated
+#### Updated
 
 * Now with Swift 2.2 (#18 thanks @JackoPlane)
 
-### Added
+#### Added
 
 * Support for manually rotating `LXRotatingFileEndpoint` instances (#15 thanks @rabidaudio)
 * More test targets for Travis (iOS, tvOS, watchOS)

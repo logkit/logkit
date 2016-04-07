@@ -7,7 +7,7 @@ LogKit is a logging framework built to be **simple** to get started with, **effi
 This readme contains just a few tips to get you started with LogKit. To learn everything else, check the [project website][website].
 
 [![Build Status](https://travis-ci.org/logkit/logkit.svg?branch=master)](https://travis-ci.org/logkit/logkit)
-[![CocoaPods](https://img.shields.io/badge/pod-2.3.0-blue.svg)](https://cocoapods.org/pods/LogKit)
+[![CocoaPods](https://img.shields.io/badge/pod-2.3.1-blue.svg)](https://cocoapods.org/pods/LogKit)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 
@@ -41,9 +41,7 @@ This readme contains just a few tips to get you started with LogKit. To learn ev
 ## Requirements
 
 * Project targeting OS X 10.9+, iOS 7+, tvOS 9+, or watchOS 2+
-* Xcode 7.1 and Swift 2.1
-
-> Note: Please check the [swift-1.2 branch](https://github.com/logkit/logkit/tree/swift-1.2) for a version compatible with Xcode 6 and Swift 1.2.
+* Xcode 7.3 and Swift 2.2
 
 
 ## Installation
