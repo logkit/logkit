@@ -10,13 +10,25 @@ env:
     - SCHEME_WATCHOS="LogKit watchOS"
 
   matrix:
-    - DEST="arch=x86_64"                    SCHEME="$SCHEME_OSX"     ACTION="test"
-    - DEST="OS=9.3,name=iPhone 6S"          SCHEME="$SCHEME_IOS"     ACTION="test"
-    - DEST="OS=9.2,name=Apple TV 1080p"     SCHEME="$SCHEME_TVOS"    ACTION="test"
-    - DEST="OS=2.2,name=Apple Watch - 42mm" SCHEME="$SCHEME_WATCHOS" ACTION="build"
+    - DEST="arch=x86_64"                    SCHEME="$SCHEME_OSX"     ACTION="test"  TOOL="XCODE"
+    - DEST="OS=9.3,name=iPhone 6S"          SCHEME="$SCHEME_IOS"     ACTION="test"  TOOL="XCODE"
+    - DEST="OS=9.2,name=Apple TV 1080p"     SCHEME="$SCHEME_TVOS"    ACTION="test"  TOOL="XCODE"
+    - DEST="OS=2.2,name=Apple Watch - 42mm" SCHEME="$SCHEME_WATCHOS" ACTION="build" TOOL="XCODE"
+    - TOOL="CARTHAGE"     DEST="" SCHEME="" ACTION=""
+    - TOOL="COCOAPODS"    DEST="" SCHEME="" ACTION=""
 
 script:
   - set -o pipefail
   - xcodebuild -version
   - xcodebuild -showsdks
-  - xcodebuild -project "$PROJECT" -destination "$DEST" -scheme "$SCHEME" -configuration Debug ONLY_ACTIVE_ARCH=NO $ACTION | xcpretty
+
+  # Build Framework in Debug config and run unit tests
+  - if [ $TOOL == "XCODE" ]; then
+      xcodebuild -project "$PROJECT" -destination "$DEST" -scheme "$SCHEME" -configuration Debug ONLY_ACTIVE_ARCH=NO $ACTION | xcpretty;
+    fi
+
+  # Fetch LogKit and build with Carthage
+  - if [ $TOOL == "CARTHAGE" ]; then echo 'github "logkit/logkit"' > Cartfile; carthage update logkit; fi
+
+  # Validate Podspec
+  - if [ $TOOL == "COCOAPODS" ]; then pod lib lint; fi
