@@ -11,6 +11,7 @@ env:
 
   matrix:
     - DEST="arch=x86_64"                    SCHEME="$SCHEME_OSX"     ACTION="test"  TOOL="XCODE"
+    - DEST="OS=8.4,name=iPhone 5S"          SCHEME="$SCHEME_IOS"     ACTION="test"  TOOL="XCODE"
     - DEST="OS=9.3,name=iPhone 6S"          SCHEME="$SCHEME_IOS"     ACTION="test"  TOOL="XCODE"
     - DEST="OS=9.2,name=Apple TV 1080p"     SCHEME="$SCHEME_TVOS"    ACTION="test"  TOOL="XCODE"
     - DEST="OS=2.2,name=Apple Watch - 42mm" SCHEME="$SCHEME_WATCHOS" ACTION="build" TOOL="XCODE"
