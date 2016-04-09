@@ -60,36 +60,6 @@ private let UTCCalendar: NSCalendar = {
 }()
 
 
-private extension NSFileManager {
-
-    /// Attempts to read a given file's metadata and convert it to an `LXFileProperties` instance.
-    ///
-    /// - parameter path: The path of the file to be examined.
-    ///
-    /// - returns: An `LXFileProperties` instance if successful.
-    ///
-    /// - throws: If the attributes of file cannot be read.
-    private func propertiesOfFileAtPath(path: String) throws -> LXFileProperties {
-        let attributes = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
-        return LXFileProperties(
-            size: (attributes[NSFileSize] as? NSNumber)?.unsignedLongLongValue,
-            modified: (attributes[NSFileModificationDate] as? NSDate)?.timeIntervalSinceReferenceDate
-        )
-    }
-
-}
-
-
-/// A collection of properties representing file metadata.
-///
-/// - parameter size:     The size of the file in bytes.
-/// - parameter modified: An `NSTimeInterval` representing the file's modification timestamp.
-private struct LXFileProperties {
-    let size: UIntMax?
-    let modified: NSTimeInterval?
-}
-
-
 //MARK: Log File Wrapper
 
 /// A wrapper for a log file.
@@ -97,13 +67,19 @@ private class LXLogFile {
 
     private let lockQueue: dispatch_queue_t = dispatch_queue_create("logFile-Lock", DISPATCH_QUEUE_SERIAL)
     private let handle: NSFileHandle
-    private let path: String
     private var privateByteCounter: UIntMax?
     private var privateModificationTracker: NSTimeInterval?
 
+    /// Clean up.
+    deinit {
+        dispatch_barrier_sync(self.lockQueue, {
+            self.handle.synchronizeFile()
+            self.handle.closeFile()
+        })
+    }
+
     /// Open a log file.
-    private init(path: String, handle: NSFileHandle, appending: Bool) {
-        self.path = path
+    private init(URL: NSURL, handle: NSFileHandle, appending: Bool) {
         self.handle = handle
 
         if appending {
@@ -113,7 +89,10 @@ private class LXLogFile {
             self.privateByteCounter = 0
         }
 
-        self.privateModificationTracker = (try? NSFileManager.defaultManager().propertiesOfFileAtPath(path))?.modified
+        let fileAttributes = try? URL.resourceValuesForKeys([NSURLContentModificationDateKey])
+        self.privateModificationTracker = (
+            fileAttributes?[NSURLContentModificationDateKey] as? NSDate
+        )?.timeIntervalSinceReferenceDate
     }
 
     /// Initialize a log file. `throws` if the file cannot be accessed.
@@ -124,23 +103,11 @@ private class LXLogFile {
     /// - throws: `NSError` with domain `NSURLErrorDomain`
     convenience init(URL: NSURL, shouldAppend: Bool) throws {
         try NSFileManager.defaultManager().ensureFile(at: URL)
-        guard let path = URL.path else {
-            assertionFailure("Invalid path: \(URL.absoluteString)")
-            throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadURL, userInfo: [NSURLErrorKey: URL])
-        }
         guard let handle = try? NSFileHandle(forWritingToURL: URL) else {
             assertionFailure("Error opening log file at path: \(URL.absoluteString)")
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorCannotOpenFile, userInfo: [NSURLErrorKey: URL])
         }
-        self.init(path: path, handle: handle, appending: shouldAppend)
-    }
-
-    /// Clean up.
-    deinit {
-        dispatch_barrier_sync(self.lockQueue, {
-            self.handle.synchronizeFile()
-            self.handle.closeFile()
-        })
+        self.init(URL: URL, handle: handle, appending: shouldAppend)
     }
 
     /// The size of this log file in bytes.
@@ -157,14 +124,6 @@ private class LXLogFile {
         return interval == nil ? nil : NSDate(timeIntervalSinceReferenceDate: interval!)
     }
 
-//    private var properties: LXFileProperties? {
-//        var props: LXFileProperties?
-//        dispatch_sync(self.lockQueue, {
-//            do { props = try NSFileManager.defaultManager().propertiesOfFileAtPath(self.path) } catch {}
-//        })
-//        return props
-//    }
-
     /// Write data to this log file.
     func writeData(data: NSData) {
         dispatch_async(self.lockQueue, {
@@ -172,6 +131,17 @@ private class LXLogFile {
             self.privateByteCounter = (self.privateByteCounter ?? 0) + UIntMax(data.length)
             self.privateModificationTracker = CFAbsoluteTimeGetCurrent()
         })
+    }
+
+    /// Set an extended attribute on the log file.
+    ///
+    /// - note: Extended attributes are not available on watchOS.
+    func setExtendedAttribute(name name: String, value: String, options: CInt = 0) {
+    #if !os(watchOS)
+        dispatch_async(self.lockQueue, {
+            fsetxattr(self.handle.fileDescriptor, name, value, value.utf8.count, 0, options)
+        })
+    #endif
     }
 
     /// Empty this log file. Future writes will start from the the beginning of the file.
@@ -215,21 +185,15 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     private let numberOfFiles: UInt
     /// The index of the current file from the rotating set.
     private lazy var currentIndex: UInt = {
-        /* The goal here is to find the file in the set that was last modified (has the largest `modified` time
-        interval). If no file returns a `modified` property, it's probably because no files in this set exist yet,
-        in which case we'll just return index 1. */
-        let startingFile: (index: UInt, modified: NSTimeInterval) = Array(1...self.numberOfFiles).reduce((index: 1, modified: 0), combine: { lastModified, targetIndex in
-            if let path = self.URLForIndex(targetIndex).path {
-                do {
-                    let props = try NSFileManager.defaultManager().propertiesOfFileAtPath(path)
-                    if let modified = props.modified where modified >= lastModified.modified {
-                        return (index: targetIndex, modified: modified)
-                    }
-                } catch {/* No props for this file - probably doesn't exist - so just move on */}
-            }
-            return lastModified
+        /* The goal here is to find the index of the file in the set that was last modified (has the largest
+        `modified` timestamp). If no file returns a `modified` property, it's probably because no files in this
+        set exist yet, in which case we'll just return index 1. */
+        let indexDates = Array(1...self.numberOfFiles).map({ (index) -> (index: UInt, modified: NSTimeInterval?) in
+            let fileAttributes = try? self.URLForIndex(index).resourceValuesForKeys([NSURLContentModificationDateKey])
+            let modified = fileAttributes?[NSURLContentModificationDateKey] as? NSDate
+            return (index: index, modified: modified?.timeIntervalSinceReferenceDate)
         })
-        return startingFile.index
+        return (indexDates.maxElement({ $0.modified <= $1.modified && $1.modified != nil }))?.index ?? 1
     }()
     /// The file currently being written to.
     private lazy var currentFile: LXLogFile? = {
@@ -237,9 +201,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
             assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
             return nil
         }
-        #if !os(watchOS)
-        setxattr(file.path, self.extendedAttributeKey, LK_LOGKIT_VERSION, LK_LOGKIT_VERSION.utf8.count, 0, 0)
-        #endif
+        file.setExtendedAttribute(name: self.extendedAttributeKey, value: LK_LOGKIT_VERSION)
         return file
     }()
 
@@ -312,9 +274,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
             assertionFailure("The log file at URL '\(self.nextURL)' could not be opened.")
             return nil
         }
-        #if !os(watchOS)
-        setxattr(nextFile.path, self.extendedAttributeKey, LK_LOGKIT_VERSION, LK_LOGKIT_VERSION.utf8.count, 0, 0)
-        #endif
+        nextFile.setExtendedAttribute(name: self.extendedAttributeKey, value: LK_LOGKIT_VERSION)
         return nextFile
     }
 

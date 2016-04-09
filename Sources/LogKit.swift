@@ -163,7 +163,7 @@ internal extension NSFileManager {
     /// This method attempts to ensure that a file is available at the specified URL. It will attempt to create an
     /// empty file if one does not already exist at that location.
     ///
-    /// - parameter                at: The URL of the file to ensure availability.
+    /// - parameter                at: The URL of the file to ensure availability of.
     /// - parameter createDirectories: Indicates whether intermediate directories should be created if
     ///                                necessary, before creating the file, if is does not exist.
     ///
