@@ -28,6 +28,9 @@ private let defaultSuccessCodes = Set([200, 201, 202, 204])
 ///
 /// The data is also persisted to a file, in case the upload does not succeed while the application is running.
 /// We always read the file on startup to see if there are any left-over uploads to complete.
+///
+/// - note: If the file cannot be opened, the cache will still function in memory, but will obviously not persist
+///         data once it's evicted from memory.
 private class LXPersistedCache {
     private let lock: dispatch_queue_t = dispatch_queue_create("persistedCacheQueue", DISPATCH_QUEUE_SERIAL)
     private let file: NSFileHandle?
@@ -45,8 +48,10 @@ private class LXPersistedCache {
     private init(timeoutInterval: NSTimeInterval, fileName: String) {
         self.timeoutInterval = timeoutInterval
         if let fileURL = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent(fileName, isDirectory: false) {
-            NSFileManager.defaultManager().ensureFileAtURL(fileURL, withIntermediateDirectories: true)
-            do { try self.file = NSFileHandle(forUpdatingURL: fileURL) } catch { self.file = nil }
+            do { //TODO: This is a mess.
+                try NSFileManager.defaultManager().ensureFile(at: fileURL)
+                self.file = try? NSFileHandle(forUpdatingURL: fileURL)
+            } catch { self.file = nil }
         } else {
             self.file = nil
         }

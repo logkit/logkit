@@ -163,22 +163,35 @@ internal extension NSFileManager {
     /// This method attempts to ensure that a file is available at the specified URL. It will attempt to create an
     /// empty file if one does not already exist at that location.
     ///
-    /// - parameter withIntermediateDirectories: Indicates whether intermediate directories should be created if
-    ///                                          necessary, before checking for the file.
+    /// - parameter                at: The URL of the file to ensure availability.
+    /// - parameter createDirectories: Indicates whether intermediate directories should be created if
+    ///                                necessary, before creating the file, if is does not exist.
     ///
-    /// - returns: A `Bool` indicating whether the file is available or not.
-    internal func ensureFileAtURL(URL: NSURL, withIntermediateDirectories shouldCreateDirs: Bool) -> Bool {
-        if let dirURL = URL.URLByDeletingLastPathComponent, path = URL.path {
-            do {
-                let manager = NSFileManager.defaultManager()
-                try manager.createDirectoryAtURL(dirURL, withIntermediateDirectories: shouldCreateDirs, attributes: nil)
-                return manager.fileExistsAtPath(path) ? true : manager.createFileAtPath(path, contents: nil, attributes: nil)
-            } catch {
-                assertionFailure("File system error (maybe access denied) at path: '\(path)'")
+    /// - throws: `NSError` with domain `NSURLErrorDomain`
+    internal func ensureFile(at URL: NSURL, createDirectories: Bool = true) throws {
+        assert(URL.fileURL, "URL must be a file system URL")
+
+        guard let dirPath = URL.URLByDeletingLastPathComponent?.path, filePath = URL.path else {
+            assertionFailure("Invalid path: \(URL.absoluteString)")
+            throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadURL, userInfo: [NSURLErrorKey: URL])
+        }
+
+        do { try NSFileManager.defaultManager().createDirectoryAtPath(dirPath,
+                                                                      withIntermediateDirectories: createDirectories,
+                                                                      attributes: nil)
+        } catch let error {
+            assertionFailure("Could not create directory (maybe access denied?) at path: \(dirPath)")
+            throw error
+        }
+
+        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) { // Must check first to avoid overwriting.
+            guard NSFileManager.defaultManager().createFileAtPath(filePath, contents: nil, attributes: nil) else {
+                assertionFailure("Could not create file (maybe access denied?) at path: \(filePath)")
+                throw NSError(domain: NSURLErrorDomain,
+                              code: NSURLErrorCannotCreateFile,
+                              userInfo: [NSURLErrorKey: URL])
             }
         }
-        assertionFailure("Invalid file path '\(URL.absoluteString)'")
-        return false
     }
 
 }

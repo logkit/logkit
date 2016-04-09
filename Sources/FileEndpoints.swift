@@ -101,31 +101,38 @@ private class LXLogFile {
     private var privateByteCounter: UIntMax?
     private var privateModificationTracker: NSTimeInterval?
 
-    /// Initialize a log file. May return `nil` if the file cannot be accessed.
-    ///
-    /// - parameter URL:          The URL of the log file.
-    /// - parameter shouldAppend: Indicates whether new data should be appended to existing data in the file, or if
-    ///                           the file should be truncated when opened.
-    init?(URL: NSURL, shouldAppend: Bool) {
-        guard NSFileManager.defaultManager().ensureFileAtURL(URL, withIntermediateDirectories: true),
-        let path = URL.path, handle = NSFileHandle(forWritingAtPath: path) else {
-            assertionFailure("Error opening log file at URL '\(URL.absoluteString)'; is URL valid?")
-            self.path = ""
-            self.handle = NSFileHandle.fileHandleWithNullDevice()
-            self.handle.closeFile()
-            return nil
-        }
+    /// Open a log file.
+    private init(path: String, handle: NSFileHandle, appending: Bool) {
         self.path = path
         self.handle = handle
-        if shouldAppend {
+
+        if appending {
             self.privateByteCounter = UIntMax(self.handle.seekToEndOfFile())
         } else {
             self.handle.truncateFileAtOffset(0)
             self.privateByteCounter = 0
         }
-        do {
-            try self.privateModificationTracker = NSFileManager.defaultManager().propertiesOfFileAtPath(path).modified
-        } catch {}
+
+        self.privateModificationTracker = (try? NSFileManager.defaultManager().propertiesOfFileAtPath(path))?.modified
+    }
+
+    /// Initialize a log file. `throws` if the file cannot be accessed.
+    ///
+    /// - parameter URL:          The URL of the log file.
+    /// - parameter shouldAppend: Indicates whether new data should be appended to existing data in the file, or if
+    ///                           the file should be truncated when opened.
+    /// - throws: `NSError` with domain `NSURLErrorDomain`
+    convenience init(URL: NSURL, shouldAppend: Bool) throws {
+        try NSFileManager.defaultManager().ensureFile(at: URL)
+        guard let path = URL.path else {
+            assertionFailure("Invalid path: \(URL.absoluteString)")
+            throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadURL, userInfo: [NSURLErrorKey: URL])
+        }
+        guard let handle = try? NSFileHandle(forWritingToURL: URL) else {
+            assertionFailure("Error opening log file at path: \(URL.absoluteString)")
+            throw NSError(domain: NSURLErrorDomain, code: NSURLErrorCannotOpenFile, userInfo: [NSURLErrorKey: URL])
+        }
+        self.init(path: path, handle: handle, appending: shouldAppend)
     }
 
     /// Clean up.
@@ -226,7 +233,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
     }()
     /// The file currently being written to.
     private lazy var currentFile: LXLogFile? = {
-        guard let file = LXLogFile(URL: self.currentURL, shouldAppend: true) else {
+        guard let file = try? LXLogFile(URL: self.currentURL, shouldAppend: true) else {
             assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
             return nil
         }
@@ -301,7 +308,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
 
     /// Returns the next log file to be written to, already prepared for use.
     private func nextFile() -> LXLogFile? {
-        guard let nextFile = LXLogFile(URL: self.nextURL, shouldAppend: false) else {
+        guard let nextFile = try? LXLogFile(URL: self.nextURL, shouldAppend: false) else {
             assertionFailure("The log file at URL '\(self.nextURL)' could not be opened.")
             return nil
         }
