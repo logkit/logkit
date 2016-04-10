@@ -137,7 +137,7 @@ private class LXLogFile {
     ///
     /// - note: Extended attributes are not available on watchOS.
     func setExtendedAttribute(name name: String, value: String, options: CInt = 0) {
-    #if !os(watchOS)
+    #if !os(watchOS) // watchOS 2 does not support extended attributes
         dispatch_async(self.lockQueue, {
             fsetxattr(self.handle.fileDescriptor, name, value, value.utf8.count, 0, options)
         })
@@ -345,6 +345,13 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         case (.None, .None), (.None, .Some), (.Some, .Some):                               // No limit or will fit
             return false
         }
+    }
+
+    /// A utility method that will not return until all previously scheduled writes have completed. Useful for testing.
+    ///
+    /// - returns: Timestamp of last write (scheduled before barrier).
+    internal func barrier() -> NSTimeInterval? {
+        return self.currentFile?.modificationDate?.timeIntervalSinceReferenceDate
     }
 
 }

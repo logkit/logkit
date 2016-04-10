@@ -57,17 +57,25 @@ class FileEndpointTests: XCTestCase {
 
     var endpoint: LXFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
         .URLByAppendingPathComponent("info.logkit.test.endpoint.file", isDirectory: false)
 
     override func setUp() {
+        super.setUp()
         self.endpoint = LXFileEndpoint(fileURL: self.endpointURL, shouldAppend: false)
         XCTAssertNotNil(self.endpoint, "Could not create Endpoint")
     }
 
     override func tearDown() {
+        self.endpoint?.resetCurrentFile()
 //        self.endpoint = nil //TODO: do we need an endpoint close method?
 //        try! NSFileManager.defaultManager().removeItemAtURL(self.endpointURL)
         //FIXME: crashes because Endpoint has not deinitialized yet
+        super.tearDown()
+    }
+
+    func testFileURLOutput() {
+        print("\(self.dynamicType) temporary file URL: \(self.endpointURL.absoluteString)")
     }
 
     func testRotation() {
@@ -77,15 +85,23 @@ class FileEndpointTests: XCTestCase {
         XCTAssertEqual(self.endpoint?.currentURL, startURL, "File Endpoint should not rotate files")
     }
 
+    #if !os(watchOS) // watchOS 2 does not support extended attributes
     func testXAttr() {
         let key = "info.logkit.endpoint.file"
         let path = self.endpoint?.currentURL.path
         XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
         XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
     }
+    #endif
 
     func testWrite() {
-        self.endpoint?.write("Hello from the File Endpoint!")
+        let testString = "Hello 👮🏾 from the File Endpoint!"
+        let writeCount = Array(1...4)
+        writeCount.forEach({ _ in self.endpoint?.write(testString) })
+        let bytes = writeCount.flatMap({ _ in testString.utf8 })
+        let canonical = NSData(bytes: bytes, length: bytes.count)
+        let _ = self.endpoint?.barrier() // Doesn't return until the writes are finished.
+        XCTAssert(NSData(contentsOfURL: self.endpoint!.currentURL)!.isEqualToData(canonical))
     }
 
 }
@@ -94,11 +110,18 @@ class RotatingFileEndpointTests: XCTestCase {
 
     var endpoint: LXRotatingFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
         .URLByAppendingPathComponent("info.logkit.test.endpoint.rotatingFile", isDirectory: false)
 
     override func setUp() {
+        super.setUp()
         self.endpoint = LXRotatingFileEndpoint(baseURL: self.endpointURL, numberOfFiles: 5)
         XCTAssertNotNil(self.endpoint, "Could not create Endpoint")
+    }
+
+    override func tearDown() {
+        self.endpoint?.resetCurrentFile()
+        super.tearDown()
     }
 
     func testRotation() {
@@ -112,6 +135,7 @@ class RotatingFileEndpointTests: XCTestCase {
         XCTAssertEqual(self.endpoint?.currentURL, startURL, "URLs don't match after full rotation cycle")
     }
 
+    #if !os(watchOS) // watchOS 2 does not support extended attributes
     func testXAttr() {
         let key = "info.logkit.endpoint.rotatingFile"
         var path = self.endpoint?.currentURL.path
@@ -122,9 +146,17 @@ class RotatingFileEndpointTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
         XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
     }
+    #endif
 
     func testWrite() {
-        self.endpoint?.write("Hello from the Rotating File Endpoint!")
+        self.endpoint?.resetCurrentFile()
+        let testString = "Hello 🎅🏽 from the Rotating File Endpoint!"
+        let writeCount = Array(1...4)
+        writeCount.forEach({ _ in self.endpoint?.write(testString) })
+        let bytes = writeCount.flatMap({ _ in testString.utf8 })
+        let canonical = NSData(bytes: bytes, length: bytes.count)
+        let _ = self.endpoint?.barrier() // Doesn't return until the writes are finished.
+        XCTAssert(NSData(contentsOfURL: self.endpoint!.currentURL)!.isEqualToData(canonical))
     }
 
 }
@@ -133,11 +165,18 @@ class DatedFileEndpointTests: XCTestCase {
 
     var endpoint: LXDatedFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
         .URLByAppendingPathComponent("info.logkit.test.endpoint.datedFile", isDirectory: false)
 
     override func setUp() {
+        super.setUp()
         self.endpoint = LXDatedFileEndpoint(baseURL: self.endpointURL)
         XCTAssertNotNil(self.endpoint, "Could not create Endpoint")
+    }
+
+    override func tearDown() {
+        self.endpoint?.resetCurrentFile()
+        super.tearDown()
     }
 
     func testRotation() {
@@ -146,15 +185,24 @@ class DatedFileEndpointTests: XCTestCase {
         XCTAssertEqual(self.endpoint?.currentURL, startURL, "Dated File Endpoint should not manually rotate files")
     }
 
+    #if !os(watchOS) // watchOS 2 does not support extended attributes
     func testXAttr() {
         let key = "info.logkit.endpoint.datedFile"
         let path = self.endpoint?.currentURL.path
         XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
         XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
     }
+    #endif
 
     func testWrite() {
-        self.endpoint?.write("Hello from the Dated File Endpoint!")
+        self.endpoint?.resetCurrentFile()
+        let testString = "Hello 👷🏼 from the Dated File Endpoint!"
+        let writeCount = Array(1...4)
+        writeCount.forEach({ _ in self.endpoint?.write(testString) })
+        let bytes = writeCount.flatMap({ _ in testString.utf8 })
+        let canonical = NSData(bytes: bytes, length: bytes.count)
+        let _ = self.endpoint?.barrier() // Doesn't return until the writes are finished.
+        XCTAssert(NSData(contentsOfURL: self.endpoint!.currentURL)!.isEqualToData(canonical))
     }
     
 }
@@ -171,15 +219,43 @@ class HTTPEndpointTests: XCTestCase {
 
 class LoggerTests: XCTestCase {
 
-    let log = LXLogger()
+    var log: LXLogger?
+    var fileEndpoint: LXFileEndpoint?
+    let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test.logger", isDirectory: false)
+    let entryFormatter = LXEntryFormatter({ e in "[\(e.level.uppercaseString)] \(e.message)" }) // Nothing variable.
+
+    override func setUp() {
+        super.setUp()
+        self.fileEndpoint = LXFileEndpoint(fileURL: self.endpointURL, shouldAppend: false, entryFormatter: self.entryFormatter)
+        XCTAssertNotNil(self.fileEndpoint, "Failed to init File Endpoint")
+        self.log = LXLogger(endpoints: [ self.fileEndpoint, ])
+        XCTAssertNotNil(self.log, "Failed to init Logger")
+    }
+
+    override func tearDown() {
+        self.fileEndpoint?.resetCurrentFile()
+        super.tearDown()
+    }
 
     func testLog() {
-        self.log.debug("debug")
-        self.log.info("info")
-        self.log.notice("notice")
-        self.log.warning("warning")
-        self.log.error("error")
-        self.log.critical("critical")
+        self.log?.debug("debug")
+        self.log?.info("info")
+        self.log?.notice("notice")
+        self.log?.warning("warning")
+        self.log?.error("error")
+        self.log?.critical("critical")
+
+        let targetContent = [
+            "[DEBUG] debug", "[INFO] info", "[NOTICE] notice", "[WARNING] warning", "[ERROR] error", "[CRITICAL] critical",
+        ].joinWithSeparator("\n") + "\n"
+        
+        self.fileEndpoint?.barrier() // Doesn't return until the writes are finished.
+
+        let actualContent = try! String(contentsOfURL: self.fileEndpoint!.currentURL, encoding: NSUTF8StringEncoding)
+
+        XCTAssertEqual(actualContent, targetContent, "Output does not match expected output")
     }
 
 }
