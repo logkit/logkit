@@ -80,7 +80,7 @@ internal let LK_DEVICE_TYPE: String = {
 
 
 /// A tuple describing OS this device is running.
-internal let LK_DEVICE_OS: (decription: String, majorVersion: Int, minorVersion: Int, patchVersion: Int, buildVersion: String) = {
+internal let LK_DEVICE_OS: (description: String, majorVersion: Int, minorVersion: Int, patchVersion: Int, buildVersion: String) = {
     let systemVersion = NSDictionary(contentsOfFile: "/System/Library/CoreServices/SystemVersion.plist")
     let build = systemVersion?["ProductBuildVersion"] as? String ?? ""
     let info = NSProcessInfo.processInfo()

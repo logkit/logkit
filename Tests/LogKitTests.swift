@@ -87,7 +87,7 @@ class FileEndpointTests: XCTestCase {
 
     #if !os(watchOS) // watchOS 2 does not support extended attributes
     func testXAttr() {
-        let key = "info.logkit.endpoint.file"
+        let key = "info.logkit.endpoint.FileEndpoint"
         let path = self.endpoint?.currentURL.path
         XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
         XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
@@ -137,7 +137,7 @@ class RotatingFileEndpointTests: XCTestCase {
 
     #if !os(watchOS) // watchOS 2 does not support extended attributes
     func testXAttr() {
-        let key = "info.logkit.endpoint.rotatingFile"
+        let key = "info.logkit.endpoint.RotatingFileEndpoint"
         var path = self.endpoint?.currentURL.path
         XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
         XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
@@ -187,7 +187,7 @@ class DatedFileEndpointTests: XCTestCase {
 
     #if !os(watchOS) // watchOS 2 does not support extended attributes
     func testXAttr() {
-        let key = "info.logkit.endpoint.datedFile"
+        let key = "info.logkit.endpoint.DatedFileEndpoint"
         let path = self.endpoint?.currentURL.path
         XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
         XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")

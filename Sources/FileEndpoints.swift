@@ -164,7 +164,7 @@ private class LXLogFile {
 ///
 /// The notifications `LXFileEndpointWillRotateFilesNotification` and `LXFileEndpointDidRotateFilesNotification`
 /// are sent to the default notification center directly before and after rotating log files.
-public class LXRotatingFileEndpoint: LXEndpoint {
+public class RotatingFileEndpoint: LXEndpoint {
 
     /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
     public var minimumPriorityLevel: LXPriorityLevel
@@ -204,6 +204,8 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         file.setExtendedAttribute(name: self.extendedAttributeKey, value: LK_LOGKIT_VERSION)
         return file
     }()
+    /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
+    private lazy var extendedAttributeKey: String = { return "info.logkit.endpoint.\(self.dynamicType)" }()
 
     /// Initialize a Rotating File Endpoint.
     ///
@@ -248,8 +250,6 @@ public class LXRotatingFileEndpoint: LXEndpoint {
         self.baseFileName = filename
     }
 
-    /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
-    private var extendedAttributeKey: String { return "info.logkit.endpoint.rotatingFile" }
     /// The index of the next file in the rotation.
     private var nextIndex: UInt { return self.currentIndex + 1 > self.numberOfFiles ? 1 : self.currentIndex + 1 }
     /// The URL of the log file currently in use. Manually modifying this file is _not_ recommended.
@@ -360,7 +360,7 @@ public class LXRotatingFileEndpoint: LXEndpoint {
 //MARK: File Endpoint
 
 /// An Endpoint that writes Log Entries to a specified file.
-public class LXFileEndpoint: LXRotatingFileEndpoint {
+public class FileEndpoint: RotatingFileEndpoint {
 
     /// Initialize a File Endpoint.
     ///
@@ -396,9 +396,6 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
         }
     }
 
-    /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
-    private override var extendedAttributeKey: String { return "info.logkit.endpoint.file" }
-
     /// This Endpoint always uses `baseFileName` as its file name.
     private override func fileNameForIndex(index: UInt) -> String {
         return self.baseFileName
@@ -422,7 +419,7 @@ public class LXFileEndpoint: LXRotatingFileEndpoint {
 ///
 /// The notifications `LXFileEndpointWillRotateFilesNotification` and `LXFileEndpointDidRotateFilesNotification` are
 /// sent to the default notification center directly before and after rotating log files.
-public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
+public class DatedFileEndpoint: RotatingFileEndpoint {
 
     /// The formatter used for datestamp preparation.
     private let nameFormatter = LXDateFormatter.dateOnlyFormatter()
@@ -457,9 +454,6 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
         )
     }
 
-    /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
-    private override var extendedAttributeKey: String { return "info.logkit.endpoint.datedFile" }
-
     /// The name for the file with today's date.
     private override func fileNameForIndex(index: UInt) -> String {
         return "\(self.nameFormatter.stringFromDate(NSDate()))_\(self.baseFileName)"
@@ -483,3 +477,33 @@ public class LXDatedFileEndpoint: LXRotatingFileEndpoint {
     //TODO: Cap the max number trailing log files.
 
 }
+
+
+// ======================================================================== //
+// MARK: Aliases
+// ======================================================================== //
+// Classes in LogKit 3.0 will drop the LX prefixes. To facilitate other 3.0
+// features, the File Endpoint family classes have been renamed early. The
+// aliases below ensure developers are not affected by this early change.
+
+//TODO: Remove unnecessary aliases in LogKit 4.0
+
+/// An Endpoint that writes Log Entries to a set of numbered files. Once a file has reached its maximum file size,
+/// the Endpoint automatically rotates to the next file in the set.
+///
+/// The notifications `LXFileEndpointWillRotateFilesNotification` and `LXFileEndpointDidRotateFilesNotification`
+/// are sent to the default notification center directly before and after rotating log files.
+/// - note: This is a LogKit 3.0 forward-compatibility typealias to `RotatingFileEndpoint`.
+public typealias LXRotatingFileEndpoint = RotatingFileEndpoint
+
+/// An Endpoint that writes Log Entries to a specified file.
+/// - note: This is a LogKit 3.0 forward-compatibility typealias to `FileEndpoint`.
+public typealias LXFileEndpoint = FileEndpoint
+
+/// An Endpoint that writes Log Enties to a dated file. A datestamp will be prepended to the file's name. The file
+/// rotates automatically at midnight UTC.
+///
+/// The notifications `LXFileEndpointWillRotateFilesNotification` and `LXFileEndpointDidRotateFilesNotification` are
+/// sent to the default notification center directly before and after rotating log files.
+/// - note: This is a LogKit 3.0 forward-compatibility typealias to `DatedFileEndpoint`.
+public typealias LXDatedFileEndpoint = DatedFileEndpoint

@@ -71,7 +71,7 @@ public struct LXLogEntry {
     /// An indicator of whether the Log Entry was created on the main thread.
     public let isMainThread: Bool
     /// A description of the operating system, including its name and version.
-    public let osVersionString: String = LK_DEVICE_OS.decription
+    public let osVersionString: String = LK_DEVICE_OS.description
     /// The major version number of the operating system.
     public let osMajorVersion: Int = LK_DEVICE_OS.majorVersion
     /// The minor version number of the operating system.
