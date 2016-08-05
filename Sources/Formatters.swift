@@ -65,13 +65,16 @@ public class LXDateFormatter {
 /// Instances of LXEntryFormatter create string representations of `LXLogEntry` objects. There are several built-in
 /// formats available, or a custom format can be specified as a closure of the type `(LXLogEntry) -> String`.
 public class LXEntryFormatter {
+    // We're using format strings here instead of string interpolation because the latter currently leaks memory. See:
+    // https://github.com/logkit/logkit/issues/26
+    // https://bugs.swift.org/browse/SR-1728
 
     /// Converts `LXLogEntry` objects into strings in a standard format that contains basic debugging information.
-    public class func standardFormatter() -> Self { return self.init { e in "\(e.dateTime) [\(e.level.uppercaseString)] \(e.functionName) <\(e.fileName):\(e.lineNumber)> \(e.message)" } }
+    public class func standardFormatter() -> Self { return self.init { e in String(format: "%@ [%@] %@ <%@:%d> %@", e.dateTime, e.level.uppercaseString, e.functionName, e.fileName, e.lineNumber, e.message) } }
     /// Converts `LXLogEntry` objects into strings in a long format that contains detailed debugging information.
-    public class func longFormatter() -> Self { return self.init { e in "\(e.dateTime) (\(e.timestamp)) [\(e.level.uppercaseString)] {thread: \(e.threadID) '\(e.threadName)' main: \(e.isMainThread)} \(e.functionName) <\(e.fileName):\(e.lineNumber).\(e.columnNumber)> \(e.message)" } }
+    public class func longFormatter() -> Self { return self.init { e in String(format: "%@ (%f) [%@] {thread: %@ '%@' main: %@} %@ <%@:%d.%d> %@", e.dateTime, e.timestamp, e.level.uppercaseString, e.threadID, e.threadName, e.isMainThread ? "true" : "false", e.functionName, e.fileName, e.lineNumber, e.columnNumber, e.message) } }
     /// Converts `LXLogEntry` objects into strings in a short format that contains minimal debugging information.
-    public class func shortFormatter() -> Self { return self.init { e in "\(e.dateTime) [\(e.level.uppercaseString)] \(e.message)" } }
+    public class func shortFormatter() -> Self { return self.init { e in String(format: "%@ [%@] %@", e.dateTime, e.level.uppercaseString, e.message) } }
     /// Converts `LXLogEntry` objects into strings in a short format that contains only the logged message.
     public class func messageOnlyFormatter() -> Self { return self.init { e in e.message } }
 
