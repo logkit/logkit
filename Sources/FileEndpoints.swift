@@ -184,7 +184,7 @@ public class RotatingFileEndpoint: LXEndpoint {
     /// The number of files to include in the rotating set.
     private let numberOfFiles: UInt
     /// The index of the current file from the rotating set.
-    private lazy var currentIndex: UInt = {
+    private lazy var currentIndex: UInt = { [unowned self] in
         /* The goal here is to find the index of the file in the set that was last modified (has the largest
         `modified` timestamp). If no file returns a `modified` property, it's probably because no files in this
         set exist yet, in which case we'll just return index 1. */
@@ -196,7 +196,7 @@ public class RotatingFileEndpoint: LXEndpoint {
         return (indexDates.maxElement({ $0.modified <= $1.modified && $1.modified != nil }))?.index ?? 1
     }()
     /// The file currently being written to.
-    private lazy var currentFile: LXLogFile? = {
+    private lazy var currentFile: LXLogFile? = { [unowned self] in
         guard let file = try? LXLogFile(URL: self.currentURL, shouldAppend: true) else {
             assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
             return nil
@@ -205,7 +205,7 @@ public class RotatingFileEndpoint: LXEndpoint {
         return file
     }()
     /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
-    private lazy var extendedAttributeKey: String = { return "info.logkit.endpoint.\(self.dynamicType)" }()
+    private lazy var extendedAttributeKey: String = { [unowned self] in return "info.logkit.endpoint.\(self.dynamicType)" }()
 
     /// Initialize a Rotating File Endpoint.
     ///

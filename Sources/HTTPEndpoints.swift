@@ -180,7 +180,7 @@ public class LXHTTPEndpoint: LXEndpoint {
 
     private var cacheName: String { return ".http_endpoint_cache.txt" }
     private lazy var cache: LXPersistedCache = LXPersistedCache(timeoutInterval: 50, fileName: self.cacheName)
-    private lazy var timer: NSTimer = {
+    private lazy var timer: NSTimer = { [unowned self] in
         let timer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: #selector(upload(_:)), userInfo: nil, repeats: true)
         timer.tolerance = 10
         return timer
