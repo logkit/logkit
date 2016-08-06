@@ -1,6 +1,16 @@
 # Change Log
 
 
+### [2.3.2](https://github.com/logkit/logkit/releases/tag/2.3.2)
+
+Fix for memory leak.
+
+#### Fixed
+
+* Memory leak in Entry Formatters (#26 thanks @rhcpfan)
+* Potential strong reference cycles in Endpoints
+
+
 ### [2.3.1](https://github.com/logkit/logkit/releases/tag/2.3.1)
 
 Fix for Carthage builds on OSX and iOS.

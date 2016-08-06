@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name = 'LogKit'
-    s.version = '2.3.1'
+    s.version = '2.3.2'
     s.authors = 'Justin Pawela', 'The LogKit Project'
     s.license = { :type => 'BSD', :file => 'LICENSE.txt' }
     s.summary = 'An efficient logging library for OS X, iOS, tvOS, and watchOS – written in Swift.'
