@@ -259,7 +259,7 @@ public class RotatingFileEndpoint: LXEndpoint {
 
     /// The URL for the file at a given index.
     private func URLForIndex(index: UInt) -> NSURL {
-        return self.directoryURL.URLByAppendingPathComponent(self.fileNameForIndex(index), isDirectory: false)
+        return self.directoryURL.URLByAppendingPathComponent(self.fileNameForIndex(index), isDirectory: false)!
     }
 
     /// The name for the file at a given index.

@@ -111,10 +111,11 @@ private class LXAsynchronousConsoleWriter: LXConsoleWriter {
 
     /// Writes the data to the console (`stderr`).
     private func writeData(data: NSData) {
-        guard let dispatchData = dispatch_data_create(data.bytes, data.length, nil, nil) else {
-            assertionFailure("Failure to create data from entry string")
-            return
-        }
+//        guard let dispatchData = dispatch_data_create(data.bytes, data.length, nil, nil) else {
+//            assertionFailure("Failure to create data from entry string")
+//            return
+//        }
+        let dispatchData = dispatch_data_create(data.bytes, data.length, nil, nil)
         dispatch_write(STDERR_FILENO, dispatchData, LK_LOGKIT_QUEUE, { _, _ in })
     }
 
