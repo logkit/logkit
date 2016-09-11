@@ -23,21 +23,21 @@ import XCTest
 class PriorityLevelTests: XCTestCase {
 
     func testPriorities() {
-        XCTAssertEqual(LXPriorityLevel.Error, LXPriorityLevel.Error, "LXPriorityLevel: .Error != .Error")
-        XCTAssertNotEqual(LXPriorityLevel.Info, LXPriorityLevel.Notice, "LXPriorityLevel: .Info == .Notice")
+        XCTAssertEqual(LXPriorityLevel.error, LXPriorityLevel.error, "LXPriorityLevel: .Error != .Error")
+        XCTAssertNotEqual(LXPriorityLevel.info, LXPriorityLevel.notice, "LXPriorityLevel: .Info == .Notice")
         XCTAssertEqual(
-            min(LXPriorityLevel.All, LXPriorityLevel.Debug, LXPriorityLevel.Info, LXPriorityLevel.Notice,
-                LXPriorityLevel.Warning, LXPriorityLevel.Error, LXPriorityLevel.Critical, LXPriorityLevel.None),
-            LXPriorityLevel.All, "LXPriorityLevel: .All is not minimum")
-        XCTAssertLessThan(LXPriorityLevel.Debug, LXPriorityLevel.Info, "LXPriorityLevel: .Debug !< .Info")
-        XCTAssertLessThan(LXPriorityLevel.Info, LXPriorityLevel.Notice, "LXPriorityLevel: .Info !< .Notice")
-        XCTAssertLessThan(LXPriorityLevel.Notice, LXPriorityLevel.Warning, "LXPriorityLevel: .Notice !< .Warning")
-        XCTAssertLessThan(LXPriorityLevel.Warning, LXPriorityLevel.Error, "LXPriorityLevel: .Warning !< .Error")
-        XCTAssertLessThan(LXPriorityLevel.Info, LXPriorityLevel.Critical, "LXPriorityLevel: .Error !< .Critical")
+            min(LXPriorityLevel.all, LXPriorityLevel.debug, LXPriorityLevel.info, LXPriorityLevel.notice,
+                LXPriorityLevel.warning, LXPriorityLevel.error, LXPriorityLevel.critical, LXPriorityLevel.none),
+            LXPriorityLevel.all, "LXPriorityLevel: .All is not minimum")
+        XCTAssertLessThan(LXPriorityLevel.debug, LXPriorityLevel.info, "LXPriorityLevel: .Debug !< .Info")
+        XCTAssertLessThan(LXPriorityLevel.info, LXPriorityLevel.notice, "LXPriorityLevel: .Info !< .Notice")
+        XCTAssertLessThan(LXPriorityLevel.notice, LXPriorityLevel.warning, "LXPriorityLevel: .Notice !< .Warning")
+        XCTAssertLessThan(LXPriorityLevel.warning, LXPriorityLevel.error, "LXPriorityLevel: .Warning !< .Error")
+        XCTAssertLessThan(LXPriorityLevel.info, LXPriorityLevel.critical, "LXPriorityLevel: .Error !< .Critical")
         XCTAssertEqual(
-            max(LXPriorityLevel.All, LXPriorityLevel.Debug, LXPriorityLevel.Info, LXPriorityLevel.Notice,
-                LXPriorityLevel.Warning, LXPriorityLevel.Error, LXPriorityLevel.Critical, LXPriorityLevel.None),
-            LXPriorityLevel.None, "LXPriorityLevel: .None is not maximum")
+            max(LXPriorityLevel.all, LXPriorityLevel.debug, LXPriorityLevel.info, LXPriorityLevel.notice,
+                LXPriorityLevel.warning, LXPriorityLevel.error, LXPriorityLevel.critical, LXPriorityLevel.none),
+            LXPriorityLevel.none, "LXPriorityLevel: .None is not maximum")
     }
 
 }
@@ -56,9 +56,9 @@ class ConsoleEndpointTests: XCTestCase {
 class FileEndpointTests: XCTestCase {
 
     var endpoint: LXFileEndpoint?
-    let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test.endpoint.file", isDirectory: false)
+    let endpointURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .appendingPathComponent("info.logkit.test", isDirectory: true)
+        .appendingPathComponent("info.logkit.test.endpoint.file", isDirectory: false)
 
     override func setUp() {
         super.setUp()
@@ -75,7 +75,7 @@ class FileEndpointTests: XCTestCase {
     }
 
     func testFileURLOutput() {
-        print("\(self.dynamicType) temporary file URL: \(self.endpointURL.absoluteString)")
+        print("\(type(of: self)) temporary file URL: \(self.endpointURL.absoluteString)")
     }
 
     func testRotation() {
@@ -99,9 +99,9 @@ class FileEndpointTests: XCTestCase {
         let writeCount = Array(1...4)
         writeCount.forEach({ _ in self.endpoint?.write(testString) })
         let bytes = writeCount.flatMap({ _ in testString.utf8 })
-        let canonical = NSData(bytes: bytes, length: bytes.count)
+        let canonical = Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count)
         let _ = self.endpoint?.barrier() // Doesn't return until the writes are finished.
-        XCTAssert(NSData(contentsOfURL: self.endpoint!.currentURL)!.isEqualToData(canonical))
+        XCTAssert((try! Data(contentsOf: self.endpoint!.currentURL)) == canonical)
     }
 
 }
@@ -109,9 +109,9 @@ class FileEndpointTests: XCTestCase {
 class RotatingFileEndpointTests: XCTestCase {
 
     var endpoint: LXRotatingFileEndpoint?
-    let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test.endpoint.rotatingFile", isDirectory: false)
+    let endpointURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .appendingPathComponent("info.logkit.test", isDirectory: true)
+        .appendingPathComponent("info.logkit.test.endpoint.rotatingFile", isDirectory: false)
 
     override func setUp() {
         super.setUp()
@@ -154,9 +154,9 @@ class RotatingFileEndpointTests: XCTestCase {
         let writeCount = Array(1...4)
         writeCount.forEach({ _ in self.endpoint?.write(testString) })
         let bytes = writeCount.flatMap({ _ in testString.utf8 })
-        let canonical = NSData(bytes: bytes, length: bytes.count)
+        let canonical = Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count)
         let _ = self.endpoint?.barrier() // Doesn't return until the writes are finished.
-        XCTAssert(NSData(contentsOfURL: self.endpoint!.currentURL)!.isEqualToData(canonical))
+        XCTAssert((try! Data(contentsOf: self.endpoint!.currentURL)) == canonical)
     }
 
 }
@@ -164,9 +164,9 @@ class RotatingFileEndpointTests: XCTestCase {
 class DatedFileEndpointTests: XCTestCase {
 
     var endpoint: LXDatedFileEndpoint?
-    let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test.endpoint.datedFile", isDirectory: false)
+    let endpointURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .appendingPathComponent("info.logkit.test", isDirectory: true)
+        .appendingPathComponent("info.logkit.test.endpoint.datedFile", isDirectory: false)
 
     override func setUp() {
         super.setUp()
@@ -200,16 +200,16 @@ class DatedFileEndpointTests: XCTestCase {
         let writeCount = Array(1...4)
         writeCount.forEach({ _ in self.endpoint?.write(testString) })
         let bytes = writeCount.flatMap({ _ in testString.utf8 })
-        let canonical = NSData(bytes: bytes, length: bytes.count)
+        let canonical = Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count)
         let _ = self.endpoint?.barrier() // Doesn't return until the writes are finished.
-        XCTAssert(NSData(contentsOfURL: self.endpoint!.currentURL)!.isEqualToData(canonical))
+        XCTAssert((try! Data(contentsOf: self.endpoint!.currentURL)) == canonical)
     }
     
 }
 
 class HTTPEndpointTests: XCTestCase {
 
-    let endpoint = LXHTTPEndpoint(URL: NSURL(string: "https://httpbin.org/post/")!, HTTPMethod: "POST")
+    let endpoint = LXHTTPEndpoint(URL: URL(string: "https://httpbin.org/post/")!, HTTPMethod: "POST")
 
     func testWrite() {
         self.endpoint.write("Hello from the HTTP Endpoint!")
@@ -221,10 +221,10 @@ class LoggerTests: XCTestCase {
 
     var log: LXLogger?
     var fileEndpoint: LXFileEndpoint?
-    let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test.logger", isDirectory: false)
-    let entryFormatter = LXEntryFormatter({ e in "[\(e.level.uppercaseString)] \(e.message)" }) // Nothing variable.
+    let endpointURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .appendingPathComponent("info.logkit.test", isDirectory: true)
+        .appendingPathComponent("info.logkit.test.logger", isDirectory: false)
+    let entryFormatter = LXEntryFormatter({ e in "[\(e.level.uppercased())] \(e.message)" }) // Nothing variable.
 
     override func setUp() {
         super.setUp()
@@ -249,11 +249,11 @@ class LoggerTests: XCTestCase {
 
         let targetContent = [
             "[DEBUG] debug", "[INFO] info", "[NOTICE] notice", "[WARNING] warning", "[ERROR] error", "[CRITICAL] critical",
-        ].joinWithSeparator("\n") + "\n"
+        ].joined(separator: "\n") + "\n"
         
-        self.fileEndpoint?.barrier() // Doesn't return until the writes are finished.
+        _ = self.fileEndpoint?.barrier() // Doesn't return until the writes are finished.
 
-        let actualContent = try! String(contentsOfURL: self.fileEndpoint!.currentURL, encoding: NSUTF8StringEncoding)
+        let actualContent = try! String(contentsOf: self.fileEndpoint!.currentURL, encoding: String.Encoding.utf8)
 
         XCTAssertEqual(actualContent, targetContent, "Output does not match expected output")
     }
