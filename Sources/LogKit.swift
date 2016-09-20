@@ -40,7 +40,7 @@ internal let LK_LOGKIT_QUEUE: dispatch_queue_t = dispatch_get_global_queue(DISPA
 internal let LK_DEFAULT_LOG_DIRECTORY: NSURL? = {
     if let appSupportURL = NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask).first {
         let bundleID = NSBundle.mainBundle().bundleIdentifier ?? "info.logkit.LogKit"
-        return appSupportURL.URLByAppendingPathComponent(bundleID, isDirectory: true).URLByAppendingPathComponent("logs", isDirectory: true)
+        return appSupportURL.URLByAppendingPathComponent(bundleID, isDirectory: true)!.URLByAppendingPathComponent("logs", isDirectory: true)
     } else {
         assertionFailure("Unable to build default log file URL from main bundle ID and Application Support directory")
         return nil
