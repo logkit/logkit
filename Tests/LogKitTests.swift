@@ -57,7 +57,7 @@ class FileEndpointTests: XCTestCase {
 
     var endpoint: LXFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)!
         .URLByAppendingPathComponent("info.logkit.test.endpoint.file", isDirectory: false)
 
     override func setUp() {
@@ -75,7 +75,7 @@ class FileEndpointTests: XCTestCase {
     }
 
     func testFileURLOutput() {
-        print("\(self.dynamicType) temporary file URL: \(self.endpointURL.absoluteString)")
+        print("\(self.dynamicType) temporary file URL: \(self.endpointURL!.absoluteString)")
     }
 
     func testRotation() {
@@ -110,7 +110,7 @@ class RotatingFileEndpointTests: XCTestCase {
 
     var endpoint: LXRotatingFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)!
         .URLByAppendingPathComponent("info.logkit.test.endpoint.rotatingFile", isDirectory: false)
 
     override func setUp() {
@@ -165,7 +165,7 @@ class DatedFileEndpointTests: XCTestCase {
 
     var endpoint: LXDatedFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)!
         .URLByAppendingPathComponent("info.logkit.test.endpoint.datedFile", isDirectory: false)
 
     override func setUp() {
@@ -222,7 +222,7 @@ class LoggerTests: XCTestCase {
     var log: LXLogger?
     var fileEndpoint: LXFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)
+        .URLByAppendingPathComponent("info.logkit.test", isDirectory: true)!
         .URLByAppendingPathComponent("info.logkit.test.logger", isDirectory: false)
     let entryFormatter = LXEntryFormatter({ e in "[\(e.level.uppercaseString)] \(e.message)" }) // Nothing variable.
 
