@@ -29,18 +29,24 @@ import WatchKit
 //MARK: Global Constants
 
 /// The version of the LogKit framework currently in use.
-internal let LK_LOGKIT_VERSION = NSBundle(identifier: "info.logkit.LogKit")?.infoDictionary?["CFBundleShortVersionString"] as? String ?? "2.3.2"
+internal let LK_LOGKIT_VERSION = Bundle(identifier: "info.logkit.LogKit")?.infoDictionary?["CFBundleShortVersionString"] as? String ?? "2.3.2"
 
 
 /// The default queue used throughout the framework for background tasks.
-internal let LK_LOGKIT_QUEUE: dispatch_queue_t = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+internal let LK_LOGKIT_QUEUE: DispatchQueue = {
+    if #available(iOS 8.0, OSX 10.10, *) {
+        return DispatchQueue.global()
+    } else {
+        return DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)
+    }
+}()
 
 
 /// The default log file directory; `Application Support/{bundleID}/logs/`.
-internal let LK_DEFAULT_LOG_DIRECTORY: NSURL? = {
-    if let appSupportURL = NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask).first {
-        let bundleID = NSBundle.mainBundle().bundleIdentifier ?? "info.logkit.LogKit"
-        return appSupportURL.URLByAppendingPathComponent(bundleID, isDirectory: true)!.URLByAppendingPathComponent("logs", isDirectory: true)
+internal let LK_DEFAULT_LOG_DIRECTORY: URL? = {
+    if let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+        let bundleID = Bundle.main.bundleIdentifier ?? "info.logkit.LogKit"
+        return appSupportURL.appendingPathComponent(bundleID, isDirectory: true).appendingPathComponent("logs", isDirectory: true)
     } else {
         assertionFailure("Unable to build default log file URL from main bundle ID and Application Support directory")
         return nil
@@ -49,16 +55,16 @@ internal let LK_DEFAULT_LOG_DIRECTORY: NSURL? = {
 
 
 /// The bundle ID of the currently running host application, _not_ the LogKit framework.
-internal let LK_BUNDLE_ID: String = NSBundle.mainBundle().bundleIdentifier ?? ""
+internal let LK_BUNDLE_ID: String = Bundle.main.bundleIdentifier ?? ""
 
 
 /// The model of this device.
 internal let LK_DEVICE_MODEL: String = {
     var len: size_t = 0
     if sysctlbyname("hw.model", nil, &len, nil, 0) == 0 {
-        var result = Array<CChar>(count: len, repeatedValue: 0)
+        var result = Array<CChar>(repeating: 0, count: len)
         if sysctlbyname("hw.model", &result, &len, nil, 0) == 0 {
-            return String.fromCString(result) ?? ""
+            return String(cString: result)
         }
     }
     return ""
@@ -70,9 +76,9 @@ internal let LK_DEVICE_TYPE: String = {
 #if os(OSX)
     return "Mac"
 #elseif os(iOS) || os(tvOS)
-    return UIDevice.currentDevice().model
+    return UIDevice.current.model
 #elseif os(watchOS)
-    return WKInterfaceDevice.currentDevice().model
+    return WKInterfaceDevice.current().model
 #else
     return ""
 #endif
@@ -83,7 +89,7 @@ internal let LK_DEVICE_TYPE: String = {
 internal let LK_DEVICE_OS: (description: String, majorVersion: Int, minorVersion: Int, patchVersion: Int, buildVersion: String) = {
     let systemVersion = NSDictionary(contentsOfFile: "/System/Library/CoreServices/SystemVersion.plist")
     let build = systemVersion?["ProductBuildVersion"] as? String ?? ""
-    let info = NSProcessInfo.processInfo()
+    let info = ProcessInfo.processInfo
     let description = info.operatingSystemVersionString
 #if os(OSX) //FIXME: Ugly hack, see issue #7
     if #available(OSX 10.10, OSXApplicationExtension 10.10, *) {
@@ -91,19 +97,19 @@ internal let LK_DEVICE_OS: (description: String, majorVersion: Int, minorVersion
         return (description, version.majorVersion, version.minorVersion, version.patchVersion, build)
     } else {
         let version = systemVersion?["ProductVersion"] as? String
-        let parts = version?.characters.split(".") ?? []
+        let parts = version?.characters.split(separator: ".") ?? []
         let major = parts.count > 0 ? Int(String(parts[0])) ?? -1 : -1
         let minor = parts.count > 1 ? Int(String(parts[1])) ?? -1 : -1
         let patch = parts.count > 2 ? Int(String(parts[2])) ?? -1 : -1
         return (description, major, minor, patch, build)
     }
 #else
-    if info.respondsToSelector(Selector("operatingSystemVersion")) {
+    if info.responds(to: #selector(getter: ProcessInfo.operatingSystemVersion)) {
         let version = info.operatingSystemVersion
         return (description, version.majorVersion, version.minorVersion, version.patchVersion, build)
     } else {
         let version = systemVersion?["ProductVersion"] as? String
-        let parts = version?.characters.split(".") ?? []
+        let parts = version?.characters.split(separator: ".") ?? []
         let major = parts.count > 0 ? Int(String(parts[0])) ?? -1 : -1
         let minor = parts.count > 1 ? Int(String(parts[1])) ?? -1 : -1
         let patch = parts.count > 2 ? Int(String(parts[2])) ?? -1 : -1
@@ -135,19 +141,19 @@ internal let LK_DEVICE_OS: (description: String, majorVersion: Int, minorVersion
 internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
 #if os(OSX)
     var timeSpec = timespec(tv_sec: 0, tv_nsec: 0)
-    var bytes = Array<CUnsignedChar>(count: 16, repeatedValue: 0)
+    var bytes = Array<CUnsignedChar>(repeating: 0, count: 16)
     guard gethostuuid(&bytes, &timeSpec) == 0 else {
         return ("", "")
     }
-    let nsuuid = NSUUID(UUIDBytes: bytes)
-    return (nsuuid.UUIDString, "")
+    let nsuuid = NSUUID(uuidBytes: bytes)
+    return (nsuuid.uuidString, "")
 #elseif os(iOS) || os(tvOS)
-    let vendorID = UIDevice.currentDevice().identifierForVendor?.UUIDString ?? ""
+    let vendorID = UIDevice.current.identifierForVendor?.uuidString ?? ""
     #if LogKitAdvertisingIDDisabled
         let advertisingID = ""
     #else
-        let adManager = ASIdentifierManager.sharedManager()
-        let advertisingID = adManager.advertisingTrackingEnabled ? adManager.advertisingIdentifier.UUIDString : ""
+        let adManager = ASIdentifierManager.shared()
+        let advertisingID = (adManager?.isAdvertisingTrackingEnabled)! ? adManager?.advertisingIdentifier.uuidString : ""
     #endif
     return (vendorID, advertisingID)
 #else
@@ -158,7 +164,7 @@ internal let LK_DEVICE_IDS: (vendor: String, advertising: String) = {
 
 //MARK: Shared Extensions
 
-internal extension NSFileManager {
+internal extension FileManager {
 
     /// This method attempts to ensure that a file is available at the specified URL. It will attempt to create an
     /// empty file if one does not already exist at that location.
@@ -168,15 +174,17 @@ internal extension NSFileManager {
     ///                                necessary, before creating the file, if is does not exist.
     ///
     /// - throws: `NSError` with domain `NSURLErrorDomain`
-    internal func ensureFile(at URL: NSURL, createDirectories: Bool = true) throws {
-        assert(URL.fileURL, "URL must be a file system URL")
+    internal func ensureFile(at URL: Foundation.URL, createDirectories: Bool = true) throws {
+        assert(URL.isFileURL, "URL must be a file system URL")
 
-        guard let dirPath = URL.URLByDeletingLastPathComponent?.path, filePath = URL.path else {
+        let dirPath = URL.deletingLastPathComponent().path
+        let filePath = URL.path
+        guard dirPath.characters.count > 0 && filePath.characters.count > 0 else {
             assertionFailure("Invalid path: \(URL.absoluteString)")
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadURL, userInfo: [NSURLErrorKey: URL])
         }
 
-        do { try NSFileManager.defaultManager().createDirectoryAtPath(dirPath,
+        do { try FileManager.default.createDirectory(atPath: dirPath,
                                                                       withIntermediateDirectories: createDirectories,
                                                                       attributes: nil)
         } catch let error {
@@ -184,8 +192,8 @@ internal extension NSFileManager {
             throw error
         }
 
-        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) { // Must check first to avoid overwriting.
-            guard NSFileManager.defaultManager().createFileAtPath(filePath, contents: nil, attributes: nil) else {
+        if !FileManager.default.fileExists(atPath: filePath) { // Must check first to avoid overwriting.
+            guard FileManager.default.createFile(atPath: filePath, contents: nil, attributes: nil) else {
                 assertionFailure("Could not create file (maybe access denied?) at path: \(filePath)")
                 throw NSError(domain: NSURLErrorDomain,
                               code: NSURLErrorCannotCreateFile,
@@ -197,19 +205,19 @@ internal extension NSFileManager {
 }
 
 
-internal extension NSCalendar {
+internal extension Calendar {
 
     /// Returns whether the given date is the same date as "today".
     /// Exists as a compatibility shim for older operating systems.
-    internal func isDateSameAsToday(date: NSDate) -> Bool {
-        if self.respondsToSelector(#selector(isDateInToday(_:))) {
+    internal func isDateSameAsToday(_ date: Date) -> Bool {
+        if #available(iOS 8.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *) {
             return self.isDateInToday(date)
-        } else {
-            let today = NSDate()
-            let todayDay = self.ordinalityOfUnit(.Day, inUnit: .Year, forDate: today)
-            let todayYear = self.ordinalityOfUnit(.Year, inUnit: .Era, forDate: today)
-            let dateDay = self.ordinalityOfUnit(.Day, inUnit: .Year, forDate: date)
-            let dateYear = self.ordinalityOfUnit(.Year, inUnit: .Era, forDate: date)
+        }else{
+            let today = Date()
+            let todayDay = (self as NSCalendar).ordinality(of: .day, in: .year, for: today)
+            let todayYear = (self as NSCalendar).ordinality(of: .year, in: .era, for: today)
+            let dateDay = (self as NSCalendar).ordinality(of: .day, in: .year, for: date)
+            let dateYear = (self as NSCalendar).ordinality(of: .year, in: .era, for: date)
             return todayYear == dateYear && todayDay == dateDay
         }
     }

@@ -31,6 +31,6 @@ public protocol LXEndpoint {
     /// Writes a serialized Log Entry string to the final destination this Endpoint represents.
     ///
     /// - parameter string: The Log Entry, after being serialized to a string by the `entryFormatter`.
-    func write(string: String) -> Void
+    func write(_ string: String) -> Void
 
 }
