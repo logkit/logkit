@@ -58,7 +58,7 @@ private class LXPersistedCache {
         self.file?.seek(toFileOffset: 0) // Do we need to do this?
         self.cache = [:]
         let encoded = self.file?.readDataToEndOfFile() ?? Data()
-        if let decoded = NSString(data: encoded, encoding: String.Encoding.utf8.rawValue) as? String {
+        if let decoded = String(data: encoded, encoding: String.Encoding.utf8) {
             for lines in decoded.components(separatedBy: "\n") {
                 let line = lines.components(separatedBy: " ")
                 if line.count == 2, let id = UInt(line[0]), let data = Data(base64Encoded: line[1], options: []) {
