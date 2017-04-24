@@ -32,40 +32,40 @@ public enum LXPriorityLevel: Int, Comparable, CustomStringConvertible {
     // https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/LoggingErrorsAndWarnings.html
 
     /// A special value that includes all Priority Levels.
-    case All      =  100
+    case all      =  100
     /// Programmer debugging
-    case Debug    =    7
+    case debug    =    7
     /// Programmer information
-    case Info     =    6
+    case info     =    6
     /// General notice
-    case Notice   =    5
+    case notice   =    5
     /// Event may affect user experience at some point, if not corrected
-    case Warning  =    4
+    case warning  =    4
     /// Event will definitely affect user experience
-    case Error    =    3
+    case error    =    3
     /// Event may crash application
-    case Critical =    2
+    case critical =    2
     /// A special value that excludes all Priority Levels
-    case None     = -100
+    case none     = -100
 
     /// A string representation of the Priority Level.
     public var description: String {
         switch self {
-        case .All:
+        case .all:
             return "All"
-        case .Debug:
+        case .debug:
             return "Debug"
-        case .Info:
+        case .info:
             return "Info"
-        case .Notice:
+        case .notice:
             return "Notice"
-        case .Warning:
+        case .warning:
             return "Warning"
-        case .Error:
+        case .error:
             return "Error"
-        case .Critical:
+        case .critical:
             return "Critical"
-        case .None:
+        case .none:
             return "None"
         }
     }
