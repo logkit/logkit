@@ -37,7 +37,7 @@ open class LXConsoleEndpoint: LXEndpoint {
     /// The formatter used by this Endpoint to serialize each Log Entry to a string.
     open var entryFormatter: LXEntryFormatter
     /// This Endpoint requires a newline character appended to each serialized Log Entry string.
-    open let requiresNewlines: Bool = true
+    public let requiresNewlines: Bool = true
 
     /// The actual output engine.
     fileprivate let writer: LXConsoleWriter
@@ -113,7 +113,7 @@ private class LXAsynchronousConsoleWriter: LXConsoleWriter {
     fileprivate func writeData(_ data: Data) {
         data.withUnsafeBytes { (body: UnsafePointer<UInt8>) in
             let dataBuffer = UnsafeBufferPointer(start: body, count: data.count)
-            let dispatchData = DispatchData(bytes: dataBuffer)
+            let dispatchData = DispatchData(bytes: UnsafeRawBufferPointer(dataBuffer))
             DispatchIO.write(toFileDescriptor: STDERR_FILENO, data: dispatchData, runningHandlerOn: LK_LOGKIT_QUEUE, handler: { _, _ in })
         }
     }
