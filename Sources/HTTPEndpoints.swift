@@ -19,7 +19,7 @@ import Foundation
 
 
 /// A default selection of HTTP status codes that will be interpreted as a successful upload.
-private let defaultSuccessCodes = Set([200, 201, 202, 204])
+public let defaultSuccessCodes = Set([200, 201, 202, 204])
 
 
 //MARK: Persisted Cache
@@ -32,12 +32,12 @@ private let defaultSuccessCodes = Set([200, 201, 202, 204])
 /// - note: If the file cannot be opened, the cache will still function in memory, but will obviously not persist
 ///         data once it's evicted from memory.
 private class LXPersistedCache {
-    private let lock: dispatch_queue_t = dispatch_queue_create("persistedCacheQueue", DISPATCH_QUEUE_SERIAL)
-    private let file: NSFileHandle?
-    private var cache: [UInt: NSData]
-    private var reserved: [UInt: NSTimeInterval] = [:]
-    private let timeoutInterval: NSTimeInterval
-    private var currentMaxID: UInt
+    fileprivate let lock: DispatchQueue = DispatchQueue(label: "persistedCacheQueue", attributes: [])
+    fileprivate let file: FileHandle?
+    fileprivate var cache: [UInt: Data]
+    fileprivate var reserved: [UInt: TimeInterval] = [:]
+    fileprivate let timeoutInterval: TimeInterval
+    fileprivate var currentMaxID: UInt
 
     /// Initialize a persistent cache instance.
     ///
@@ -45,51 +45,51 @@ private class LXPersistedCache {
     ///                              and allowing the data to be tried again.
     /// - parameter fileName:        The cache file's name. This file will be created in the directory indicated
     ///                              by `LK_DEFAULT_LOG_DIRECTORY`.
-    private init(timeoutInterval: NSTimeInterval, fileName: String) {
+    fileprivate init(timeoutInterval: TimeInterval, fileName: String) {
         self.timeoutInterval = timeoutInterval
-        if let fileURL = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent(fileName, isDirectory: false) {
+        if let fileURL = LK_DEFAULT_LOG_DIRECTORY?.appendingPathComponent(fileName, isDirectory: false) {
             do { //TODO: This is a mess.
-                try NSFileManager.defaultManager().ensureFile(at: fileURL)
-                self.file = try? NSFileHandle(forUpdatingURL: fileURL)
+                try FileManager.default.ensureFile(at: fileURL)
+                self.file = try? FileHandle(forUpdating: fileURL)
             } catch { self.file = nil }
         } else {
             self.file = nil
         }
-        self.file?.seekToFileOffset(0) // Do we need to do this?
+        self.file?.seek(toFileOffset: 0) // Do we need to do this?
         self.cache = [:]
-        let encoded = self.file?.readDataToEndOfFile() ?? NSData()
-        if let decoded = NSString(data: encoded, encoding: NSUTF8StringEncoding) as? String {
-            for lines in decoded.componentsSeparatedByString("\n") {
-                let line = lines.componentsSeparatedByString(" ")
-                if line.count == 2, let id = UInt(line[0]), data = NSData(base64EncodedString: line[1], options: []) {
+        let encoded = self.file?.readDataToEndOfFile() ?? Data()
+        if let decoded = NSString(data: encoded, encoding: String.Encoding.utf8.rawValue) as String? {
+            for lines in decoded.components(separatedBy: "\n") {
+                let line = lines.components(separatedBy: " ")
+                if line.count == 2, let id = UInt(line[0]), let data = Data(base64Encoded: line[1], options: []) {
                     self.cache[id] = data
                 } //TODO: error handling - corrupted file?
             }
         }
-        self.currentMaxID = self.cache.keys.maxElement() ?? 0
+        self.currentMaxID = self.cache.keys.max() ?? 0
         assert(self.file != nil, "HTTP Cache could not open cache file.")
     }
 
     /// Clean up
     deinit {
-        dispatch_barrier_sync(self.lock, {
+        self.lock.sync(flags: .barrier, execute: {
             self.file?.synchronizeFile()
             self.file?.closeFile()
         })
     }
 
     /// Add data to the cache; the data can be retrieved for upload later.
-    func addData(data: NSData) {
-        dispatch_async(self.lock, {
+    func addData(_ data: Data) {
+        self.lock.async(execute: {
             self.currentMaxID += 1
             self.cache[self.currentMaxID] = data
 
             self.file?.seekToEndOfFile() // Do we need to do this?
-            guard let outData = self.dataString(data, withID: self.currentMaxID).dataUsingEncoding(NSUTF8StringEncoding) else {
+            guard let outData = self.dataString(data, withID: self.currentMaxID).data(using: String.Encoding.utf8) else {
                 assertionFailure("Failure to encode data for temporary storage")
                 return
             }
-            self.file?.writeData(outData)
+            self.file?.write(outData)
         })
     }
 
@@ -104,13 +104,13 @@ private class LXPersistedCache {
     /// the data available for reservation again.
     ///
     /// - returns: A dictionary of ID numbers and data.
-    func reserveData() -> [UInt: NSData] {
-        var toReserve: [UInt: NSData]?
-        dispatch_sync(self.lock, {
+    func reserveData() -> [UInt: Data] {
+        var toReserve: [UInt: Data]?
+        self.lock.sync(execute: {
             let now = CFAbsoluteTimeGetCurrent()
             toReserve = self.cache
             let ignored = self.reserved.filter({ _, expiry in now < expiry }).map({ id, _ in id })
-            for id in ignored { toReserve!.removeValueForKey(id) }
+            for id in ignored { toReserve!.removeValue(forKey: id) }
             let expires = now + self.timeoutInterval
             for id in toReserve!.keys { self.reserved[id] = expires }
         })
@@ -118,20 +118,20 @@ private class LXPersistedCache {
     }
 
     /// Call this method when data has been successfully uploaded. The cache will discard this data.
-    func completeProgressOnIDs(ids: [UInt]) {
-        dispatch_async(self.lock, {
+    func completeProgressOnIDs(_ ids: [UInt]) {
+        self.lock.async(execute: {
             for id in ids {
-                self.cache.removeValueForKey(id)
-                self.reserved.removeValueForKey(id)
+                self.cache.removeValue(forKey: id)
+                self.reserved.removeValue(forKey: id)
             }
 
-            self.file?.truncateFileAtOffset(0)
+            self.file?.truncateFile(atOffset: 0)
             if self.cache.isEmpty {
                 self.currentMaxID = 0
             } else {
-                let output = self.cache.map({ id, data in self.dataString(data, withID: id) }).joinWithSeparator("")
-                if let fileData = output.dataUsingEncoding(NSUTF8StringEncoding) {
-                    self.file?.writeData(fileData)
+                let output = self.cache.map({ id, data in self.dataString(data, withID: id) }).joined(separator: "")
+                if let fileData = output.data(using: String.Encoding.utf8) {
+                    self.file?.write(fileData)
                 } else {
                     //TODO: what do we really want to do if encoding fails?
                     assertionFailure("Failure to encode data for temporary storage")
@@ -142,17 +142,17 @@ private class LXPersistedCache {
 
     /// Call this method when data has failed to upload. The cache will end the data's reservation and allow a
     /// subsequent attempt to upload the data again.
-    func cancelProgressOnIDs(ids: [UInt]) {
-        dispatch_async(self.lock, {
+    func cancelProgressOnIDs(_ ids: [UInt]) {
+        self.lock.async(execute: {
             for id in ids {
-                self.reserved.removeValueForKey(id)
+                self.reserved.removeValue(forKey: id)
             }
         })
     }
 
     /// Formats the data for persistent storage.
-    private func dataString(data: NSData, withID id: UInt) -> String {
-        return "\(id) \(data.base64EncodedStringWithOptions([]))\n"
+    fileprivate func dataString(_ data: Data, withID id: UInt) -> String {
+        return "\(id) \(data.base64EncodedString(options: []))\n"
     }
 
 }
@@ -164,24 +164,24 @@ private class LXPersistedCache {
 ///
 /// Upload and retry management are handled automatically by this Endpoint. It attempts to upload Log Entries in order,
 /// but makes no guarantees.
-public class LXHTTPEndpoint: LXEndpoint {
+open class LXHTTPEndpoint: LXEndpoint {
     /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
-    public var minimumPriorityLevel: LXPriorityLevel
+    open var minimumPriorityLevel: LXPriorityLevel
     /// The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a string.
-    public var dateFormatter: LXDateFormatter
+    open var dateFormatter: LXDateFormatter
     /// The formatter used by this Endpoint to serialize each Log Entry to a string.
-    public var entryFormatter: LXEntryFormatter
+    open var entryFormatter: LXEntryFormatter
     /// This Endpoint does not require a newline character appended to each serialized Log Entry string.
     public let requiresNewlines: Bool = false
 
-    private let successCodes: Set<Int>
-    private let session: NSURLSession
-    private let request: NSURLRequest
+    fileprivate let successCodes: Set<Int>
+    fileprivate let session: URLSession
+    fileprivate let request: URLRequest
 
-    private var cacheName: String { return ".http_endpoint_cache.txt" }
-    private lazy var cache: LXPersistedCache = LXPersistedCache(timeoutInterval: 50, fileName: self.cacheName)
-    private lazy var timer: NSTimer = { [unowned self] in
-        let timer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: #selector(upload(_:)), userInfo: nil, repeats: true)
+    fileprivate var cacheName: String { return ".http_endpoint_cache.txt" }
+    fileprivate lazy var cache: LXPersistedCache = LXPersistedCache(timeoutInterval: 50, fileName: self.cacheName)
+    fileprivate lazy var timer: Timer = { [unowned self] in
+        let timer = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(upload(_:)), userInfo: nil, repeats: true)
         timer.tolerance = 10
         return timer
     }()
@@ -200,10 +200,10 @@ public class LXHTTPEndpoint: LXEndpoint {
     /// - parameter       entryFormatter: The formatter used by this Endpoint to serialize each Log Entry to a string.
     ///                                   Defaults to `.standardFormatter()`.
     public init(
-        request: NSURLRequest,
+        request: URLRequest,
         successCodes: Set<Int> = defaultSuccessCodes,
-        sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumPriorityLevel: LXPriorityLevel = .All,
+        sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
+        minimumPriorityLevel: LXPriorityLevel = .all,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
@@ -212,7 +212,7 @@ public class LXHTTPEndpoint: LXEndpoint {
         self.entryFormatter = entryFormatter
 
         self.successCodes = successCodes
-        self.session = NSURLSession(configuration: sessionConfiguration)
+        self.session = URLSession(configuration: sessionConfiguration)
         self.request = request
 
         self.timer.fire()
@@ -233,19 +233,19 @@ public class LXHTTPEndpoint: LXEndpoint {
     /// - parameter       entryFormatter: The formatter used by this Endpoint to serialize each Log Entry to a string.
     ///                                   Defaults to `.standardFormatter()`.
     public convenience init(
-        URL: NSURL,
+        URL: Foundation.URL,
         HTTPMethod: String,
         successCodes: Set<Int> = defaultSuccessCodes,
-        sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumPriorityLevel: LXPriorityLevel = .All,
+        sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
+        minimumPriorityLevel: LXPriorityLevel = .all,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
     ) {
-        let request = NSMutableURLRequest(URL: URL)
-        request.HTTPMethod = HTTPMethod
+        let request = NSMutableURLRequest(url: URL)
+        request.httpMethod = HTTPMethod
         request.setValue("text/plain", forHTTPHeaderField: "Content-Type")
         self.init(
-            request: request,
+            request: request as URLRequest,
             successCodes: successCodes,
             sessionConfiguration: sessionConfiguration,
             minimumPriorityLevel: minimumPriorityLevel,
@@ -262,8 +262,8 @@ public class LXHTTPEndpoint: LXEndpoint {
     }
 
     /// Submits a serialized Log Entry string for uploading.
-    public func write(string: String) {
-        guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
+    open func write(_ string: String) {
+        guard let data = string.data(using: String.Encoding.utf8) else {
             assertionFailure("Failure to create data from entry string")
             return
         }
@@ -272,12 +272,12 @@ public class LXHTTPEndpoint: LXEndpoint {
     }
 
     /// Attempts to upload all available pending data.
-    @objc private func upload(timer: NSTimer?) {
-        dispatch_async(LK_LOGKIT_QUEUE, {
+    @objc fileprivate func upload(_ timer: Timer?) {
+        LK_LOGKIT_QUEUE.async(execute: {
             let pendingUploads = self.cache.reserveData()
             for (id, data) in pendingUploads {
-                let task = self.session.uploadTaskWithRequest(self.request, fromData: data, completionHandler: { _, response, _ in
-                    if self.successCodes.contains((response as? NSHTTPURLResponse)?.statusCode ?? -1) {
+                let task = self.session.uploadTask(with: self.request, from: data, completionHandler: { _, response, _ in
+                    if self.successCodes.contains((response as? HTTPURLResponse)?.statusCode ?? -1) {
                         self.cache.completeProgressOnIDs([id]) //TODO: more efficient releasing
                     } else {
                         self.cache.cancelProgressOnIDs([id])
@@ -297,9 +297,9 @@ public class LXHTTPEndpoint: LXEndpoint {
 ///
 /// Upload and retry management are handled automatically by this Endpoint. It attempts to upload Log Entries in order,
 /// but makes no guarantees.
-public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
+open class LXHTTPJSONEndpoint: LXHTTPEndpoint {
 
-    private override var cacheName: String { return ".json_endpoint_cache.txt" }
+    fileprivate override var cacheName: String { return ".json_endpoint_cache.txt" }
 
     /// Initialize an HTTP JSON Endpoint. Log Entries will be converted to JSON automatically.
     ///
@@ -313,10 +313,10 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
     /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
     ///                                   property to a string. Defaults to `.standardFormatter()`.
     public init(
-        request: NSURLRequest,
+        request: URLRequest,
         successCodes: Set<Int> = defaultSuccessCodes,
-        sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumPriorityLevel: LXPriorityLevel = .All,
+        sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
+        minimumPriorityLevel: LXPriorityLevel = .all,
         dateFormatter: LXDateFormatter = LXDateFormatter.ISO8601DateTimeFormatter()
     ) {
         super.init(
@@ -342,18 +342,18 @@ public class LXHTTPJSONEndpoint: LXHTTPEndpoint {
     /// - parameter        dateFormatter: The formatter used by this Endpoint to serialize a Log Entry’s `dateTime`
     ///                                   property to a string. Defaults to `.standardFormatter()`.
     public convenience init(
-        URL: NSURL,
+        URL: Foundation.URL,
         HTTPMethod: String,
         successCodes: Set<Int> = defaultSuccessCodes,
-        sessionConfiguration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        minimumPriorityLevel: LXPriorityLevel = .All,
+        sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
+        minimumPriorityLevel: LXPriorityLevel = .all,
         dateFormatter: LXDateFormatter = LXDateFormatter.ISO8601DateTimeFormatter()
     ) {
-        let request = NSMutableURLRequest(URL: URL)
-        request.HTTPMethod = HTTPMethod
+        let request = NSMutableURLRequest(url: URL)
+        request.httpMethod = HTTPMethod
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         self.init(
-            request: request,
+            request: request as URLRequest,
             successCodes: successCodes,
             sessionConfiguration: sessionConfiguration,
             minimumPriorityLevel: minimumPriorityLevel,
