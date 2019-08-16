@@ -45,30 +45,30 @@ public final class LXLogger {
     /// After identifying qualified Endpoints, the Log Entry is serialized to a string based on each Endpoint's
     /// individual settings. Then, it is dispatched to the Endpoint for writing.
     private func log(
-        messageBlock: () -> String,
+        messageBlock: String,
         userInfo: [String: AnyObject],
         level: LXPriorityLevel,
         functionName: String,
         filePath: String,
         lineNumber: Int,
         columnNumber: Int,
-        threadID: String = NSString(format: "%p", NSThread.currentThread()) as String,
-        threadName: String = NSThread.currentThread().name ?? "",
-        isMainThread: Bool = NSThread.currentThread().isMainThread
+        threadID: String = NSString(format: "%p", Thread.current) as String,
+        threadName: String = Thread.current.name ?? "",
+        isMainThread: Bool = Thread.current.isMainThread
     ) {
         let timestamp = CFAbsoluteTimeGetCurrent()
         let targetEndpoints = self.endpoints.filter({ $0.minimumPriorityLevel <= level })
         if !targetEndpoints.isEmpty {
             // Resolve the message now, just once
-            let message = messageBlock()
-            let now = NSDate(timeIntervalSinceReferenceDate: timestamp)
+            let message = messageBlock
+            let now = Date(timeIntervalSinceReferenceDate: timestamp)
             for endpoint in targetEndpoints {
-                let entryString = endpoint.entryFormatter.stringFromEntry(LXLogEntry(
+                let entryString = endpoint.entryFormatter.stringFromEntry(entry: LXLogEntry(
                     message: message,
                     userInfo: userInfo,
                     level: level.description,
                     timestamp: now.timeIntervalSince1970,
-                    dateTime: endpoint.dateFormatter.stringFromDate(now),
+                    dateTime: endpoint.dateFormatter.stringFromDate(date: now),
                     functionName: functionName,
                     filePath: filePath,
                     lineNumber: lineNumber,
@@ -77,7 +77,7 @@ public final class LXLogger {
                     threadName: threadName,
                     isMainThread: isMainThread
                 ), appendNewline: endpoint.requiresNewlines)
-                endpoint.write(entryString)
+                endpoint.write(string: entryString)
             }
         }
     }
@@ -87,14 +87,14 @@ public final class LXLogger {
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func debug(
-        @autoclosure(escaping) message: () -> String,
+        message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
         filePath: String = #file,
         lineNumber: Int = #line,
         columnNumber: Int = #column
     ) {
-        self.log(message, userInfo: userInfo, level: .Debug, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
+        self.log(messageBlock: message, userInfo: userInfo, level: .Debug, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
     /// Log an `Info` entry.
@@ -102,14 +102,14 @@ public final class LXLogger {
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func info(
-        @autoclosure(escaping) message: () -> String,
+        message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
         filePath: String = #file,
         lineNumber: Int = #line,
         columnNumber: Int = #column
     ) {
-        self.log(message, userInfo: userInfo, level: .Info, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
+        self.log(messageBlock: message, userInfo: userInfo, level: .Info, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
     /// Log a `Notice` entry.
@@ -117,14 +117,14 @@ public final class LXLogger {
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func notice(
-        @autoclosure(escaping) message: () -> String,
+        message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
         filePath: String = #file,
         lineNumber: Int = #line,
         columnNumber: Int = #column
     ) {
-        self.log(message, userInfo: userInfo, level: .Notice, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
+        self.log(messageBlock: message, userInfo: userInfo, level: .Notice, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
     /// Log a `Warning` entry.
@@ -132,14 +132,14 @@ public final class LXLogger {
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func warning(
-        @autoclosure(escaping) message: () -> String,
+        message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
         filePath: String = #file,
         lineNumber: Int = #line,
         columnNumber: Int = #column
     ) {
-        self.log(message, userInfo: userInfo, level: .Warning, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
+        self.log(messageBlock: message, userInfo: userInfo, level: .Warning, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
     /// Log an `Error` entry.
@@ -147,14 +147,14 @@ public final class LXLogger {
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func error(
-        @autoclosure(escaping) message: () -> String,
+        message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
         filePath: String = #file,
         lineNumber: Int = #line,
         columnNumber: Int = #column
     ) {
-        self.log(message, userInfo: userInfo, level: .Error, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
+        self.log(messageBlock: message, userInfo: userInfo, level: .Error, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
     /// Log a `Critical` entry.
@@ -162,14 +162,14 @@ public final class LXLogger {
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
     public func critical(
-        @autoclosure(escaping) message: () -> String,
+        message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
         filePath: String = #file,
         lineNumber: Int = #line,
         columnNumber: Int = #column
     ) {
-        self.log(message, userInfo: userInfo, level: .Critical, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
+        self.log(messageBlock: message, userInfo: userInfo, level: .Critical, functionName: functionName, filePath: filePath, lineNumber: lineNumber, columnNumber: columnNumber)
     }
 
 }

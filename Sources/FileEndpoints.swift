@@ -49,13 +49,13 @@ public let LXFileEndpointRotationNextURLKey:          String = "info.logkit.endp
 
 
 /// The default file to use when logging: `log.txt`
-private let defaultLogFileURL: NSURL? = LK_DEFAULT_LOG_DIRECTORY?.URLByAppendingPathComponent("log.txt", isDirectory: false)
+public let defaultLogFileURL: NSURL? = LK_DEFAULT_LOG_DIRECTORY?.appendingPathComponent("log.txt", isDirectory: false) as NSURL?
 
 /// A private UTC-based calendar used in date comparisons.
 private let UTCCalendar: NSCalendar = {
 //TODO: this is a cheap hack because .currentCalendar() compares dates based on local TZ
-    let cal = NSCalendar.currentCalendar().copy() as! NSCalendar
-    cal.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+    let cal = Calendar(identifier: NSCalendar.current.identifier) as NSCalendar
+    cal.timeZone = NSTimeZone(forSecondsFromGMT: 0) as TimeZone
     return cal
 }()
 
@@ -65,33 +65,34 @@ private let UTCCalendar: NSCalendar = {
 /// A wrapper for a log file.
 private class LXLogFile {
 
-    private let lockQueue: dispatch_queue_t = dispatch_queue_create("logFile-Lock", DISPATCH_QUEUE_SERIAL)
-    private let handle: NSFileHandle
-    private var privateByteCounter: UIntMax?
-    private var privateModificationTracker: NSTimeInterval?
+    //private let lockQueue: dispatch_queue_t = dispatch_queue_create("logFile-Lock", DISPATCH_QUEUE_SERIAL)
+    private let lockQueue: DispatchQueue = DispatchQueue(label: "logFile-Lock")
+    private let handle: FileHandle
+    private var privateByteCounter: UInt64?
+    private var privateModificationTracker: TimeInterval?
 
     /// Clean up.
     deinit {
-        dispatch_barrier_sync(self.lockQueue, {
+        self.lockQueue.sync {
             self.handle.synchronizeFile()
             self.handle.closeFile()
-        })
+        }
     }
 
     /// Open a log file.
-    private init(URL: NSURL, handle: NSFileHandle, appending: Bool) {
+    private init(URL: NSURL, handle: FileHandle, appending: Bool) {
         self.handle = handle
 
         if appending {
-            self.privateByteCounter = UIntMax(self.handle.seekToEndOfFile())
+            self.privateByteCounter = UInt64(self.handle.seekToEndOfFile())
         } else {
-            self.handle.truncateFileAtOffset(0)
+            self.handle.truncateFile(atOffset: 0)
             self.privateByteCounter = 0
         }
 
-        let fileAttributes = try? URL.resourceValuesForKeys([NSURLContentModificationDateKey])
+        let fileAttributes = try? URL.resourceValues(forKeys: [URLResourceKey.contentModificationDateKey])
         self.privateModificationTracker = (
-            fileAttributes?[NSURLContentModificationDateKey] as? NSDate
+            fileAttributes?[URLResourceKey.contentModificationDateKey] as? NSDate
         )?.timeIntervalSinceReferenceDate
     }
 
@@ -102,8 +103,8 @@ private class LXLogFile {
     ///                           the file should be truncated when opened.
     /// - throws: `NSError` with domain `NSURLErrorDomain`
     convenience init(URL: NSURL, shouldAppend: Bool) throws {
-        try NSFileManager.defaultManager().ensureFile(at: URL)
-        guard let handle = try? NSFileHandle(forWritingToURL: URL) else {
+        try FileManager.default.ensureFile(at: URL)
+        guard let handle = try? FileHandle(forWritingTo: URL as URL) else {
             assertionFailure("Error opening log file at path: \(URL.absoluteString)")
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorCannotOpenFile, userInfo: [NSURLErrorKey: URL])
         }
@@ -111,47 +112,47 @@ private class LXLogFile {
     }
 
     /// The size of this log file in bytes.
-    var sizeInBytes: UIntMax? {
-        var size: UIntMax?
-        dispatch_sync(self.lockQueue, { size = self.privateByteCounter })
+    var sizeInBytes: UInt64? {
+        var size: UInt64?
+        self.lockQueue.sync { size = self.privateByteCounter }
         return size
     }
 
     /// The date when this log file was last modified.
     var modificationDate: NSDate? {
-        var interval: NSTimeInterval?
-        dispatch_sync(self.lockQueue, { interval = self.privateModificationTracker })
+        var interval: TimeInterval?
+        self.lockQueue.sync { interval = self.privateModificationTracker }
         return interval == nil ? nil : NSDate(timeIntervalSinceReferenceDate: interval!)
     }
 
     /// Write data to this log file.
     func writeData(data: NSData) {
-        dispatch_async(self.lockQueue, {
-            self.handle.writeData(data)
-            self.privateByteCounter = (self.privateByteCounter ?? 0) + UIntMax(data.length)
+        self.lockQueue.async {
+            self.handle.write(data as Data)
+            self.privateByteCounter = (self.privateByteCounter ?? 0) + UInt64(data.length)
             self.privateModificationTracker = CFAbsoluteTimeGetCurrent()
-        })
+        }
     }
 
     /// Set an extended attribute on the log file.
     ///
     /// - note: Extended attributes are not available on watchOS.
-    func setExtendedAttribute(name name: String, value: String, options: CInt = 0) {
+    func setExtendedAttribute(name: String, value: String, options: CInt = 0) {
     #if !os(watchOS) // watchOS 2 does not support extended attributes
-        dispatch_async(self.lockQueue, {
+        self.lockQueue.async {
             fsetxattr(self.handle.fileDescriptor, name, value, value.utf8.count, 0, options)
-        })
+        }
     #endif
     }
 
     /// Empty this log file. Future writes will start from the the beginning of the file.
     func reset() {
-        dispatch_sync(self.lockQueue, {
+        self.lockQueue.sync {
             self.handle.synchronizeFile()
-            self.handle.truncateFileAtOffset(0)
+            self.handle.truncateFile(atOffset: 0)
             self.privateByteCounter = 0
             self.privateModificationTracker = CFAbsoluteTimeGetCurrent()
-        })
+        }
     }
 
 }
@@ -176,11 +177,11 @@ public class RotatingFileEndpoint: LXEndpoint {
     public let requiresNewlines: Bool = true
 
     /// The URL of the directory in which the set of log files is located.
-    public let directoryURL: NSURL
+    public let directoryURL: URL
     /// The base file name of the log files.
-    private let baseFileName: String
+    let baseFileName: String
     /// The maximum allowed file size in bytes. `nil` indicates no limit.
-    private let maxFileSizeBytes: UIntMax?
+    private let maxFileSizeBytes: UInt64?
     /// The number of files to include in the rotating set.
     private let numberOfFiles: UInt
     /// The index of the current file from the rotating set.
@@ -188,15 +189,21 @@ public class RotatingFileEndpoint: LXEndpoint {
         /* The goal here is to find the index of the file in the set that was last modified (has the largest
         `modified` timestamp). If no file returns a `modified` property, it's probably because no files in this
         set exist yet, in which case we'll just return index 1. */
-        let indexDates = Array(1...self.numberOfFiles).map({ (index) -> (index: UInt, modified: NSTimeInterval?) in
-            let fileAttributes = try? self.URLForIndex(index).resourceValuesForKeys([NSURLContentModificationDateKey])
-            let modified = fileAttributes?[NSURLContentModificationDateKey] as? NSDate
+        let indexDates = Array(1...self.numberOfFiles).map({ (index) -> (index: UInt, modified: TimeInterval?) in
+            let fileAttributes = try? self.URLForIndex(index: index).resourceValues(forKeys: [URLResourceKey.contentModificationDateKey])
+            let modified = fileAttributes?[URLResourceKey.contentModificationDateKey] as? NSDate
             return (index: index, modified: modified?.timeIntervalSinceReferenceDate)
         })
-        return (indexDates.maxElement({ $0.modified <= $1.modified && $1.modified != nil }))?.index ?? 1
+        return (indexDates.max(by: { (a, b) -> Bool in
+            guard let aModified = a.modified, let bModified = b.modified else {
+                return false
+            }
+            return aModified <= bModified
+        }))?.index ?? 1
+        //return (indexDates.max(by: { $0.modified != nil && $1.modified != nil && $0.modified <= $1.modified }))?.index ?? 1
     }()
     /// The file currently being written to.
-    private lazy var currentFile: LXLogFile? = { [unowned self] in
+    fileprivate lazy var currentFile: LXLogFile? = { [unowned self] in
         guard let file = try? LXLogFile(URL: self.currentURL, shouldAppend: true) else {
             assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
             return nil
@@ -205,7 +212,7 @@ public class RotatingFileEndpoint: LXEndpoint {
         return file
     }()
     /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
-    private lazy var extendedAttributeKey: String = { [unowned self] in return "info.logkit.endpoint.\(self.dynamicType)" }()
+    private lazy var extendedAttributeKey: String = { [unowned self] in return "info.logkit.endpoint.\(type(of: self))" }()
 
     /// Initialize a Rotating File Endpoint.
     ///
@@ -235,13 +242,13 @@ public class RotatingFileEndpoint: LXEndpoint {
     ) {
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
-        self.maxFileSizeBytes = maxFileSizeKiB == nil ? nil : UIntMax(maxFileSizeKiB!) * 1024
+        self.maxFileSizeBytes = maxFileSizeKiB == nil ? nil : UInt64(maxFileSizeKiB!) * 1024
         self.numberOfFiles = numberOfFiles
         //TODO: check file or directory to predict if file is accessible
-        guard let dirURL = baseURL?.URLByDeletingLastPathComponent, filename = baseURL?.lastPathComponent else {
+        guard let dirURL = baseURL?.deletingLastPathComponent, let filename = baseURL?.lastPathComponent else {
             assertionFailure("The log file URL '\(baseURL?.absoluteString ?? String())' is invalid")
             self.minimumPriorityLevel = .None
-            self.directoryURL = NSURL(string: "")!
+            self.directoryURL = URL(string: "")!
             self.baseFileName = ""
             return nil
         }
@@ -253,17 +260,17 @@ public class RotatingFileEndpoint: LXEndpoint {
     /// The index of the next file in the rotation.
     private var nextIndex: UInt { return self.currentIndex + 1 > self.numberOfFiles ? 1 : self.currentIndex + 1 }
     /// The URL of the log file currently in use. Manually modifying this file is _not_ recommended.
-    public var currentURL: NSURL { return self.URLForIndex(self.currentIndex) }
+    public var currentURL: NSURL { return self.URLForIndex(index: self.currentIndex) }
     /// The URL of the next file in the rotation.
-    private var nextURL: NSURL { return self.URLForIndex(self.nextIndex) }
+    private var nextURL: NSURL { return self.URLForIndex(index: self.nextIndex) }
 
     /// The URL for the file at a given index.
     private func URLForIndex(index: UInt) -> NSURL {
-        return self.directoryURL.URLByAppendingPathComponent(self.fileNameForIndex(index), isDirectory: false)
+        return self.directoryURL.appendingPathComponent(self.fileNameForIndex(index: index), isDirectory: false) as NSURL
     }
 
     /// The name for the file at a given index.
-    private func fileNameForIndex(index: UInt) -> String {
+    func fileNameForIndex(index: UInt) -> String {
         let format = "%0\(Int(floor(log10(Double(self.numberOfFiles)) + 1.0)))d"
         return "\(String(format: format, index))_\(self.baseFileName)"
     }
@@ -280,12 +287,12 @@ public class RotatingFileEndpoint: LXEndpoint {
 
     /// Writes a serialized Log Entry string to the currently selected file.
     public func write(string: String) {
-        if let data = string.dataUsingEncoding(NSUTF8StringEncoding) {
+        if let data = string.data(using: String.Encoding.utf8) {
             //TODO: might pass test but file fills before write
-            if self.shouldRotateBeforeWritingDataWithLength(data.length), let nextFile = self.nextFile() {
-                self.rotateToFile(nextFile)
+            if self.shouldRotateBeforeWritingDataWithLength(length: data.count), let nextFile = self.nextFile() {
+                self.rotateToFile(nextFile: nextFile)
             }
-            self.currentFile?.writeData(data)
+            self.currentFile?.writeData(data: data as NSData)
         } else {
             assertionFailure("Failure to create data from entry string")
         }
@@ -299,7 +306,7 @@ public class RotatingFileEndpoint: LXEndpoint {
     /// Instructs the Endpoint to rotate to the next log file in its sequence.
     public func rotate() {
         if let nextFile = self.nextFile() {
-            self.rotateToFile(nextFile)
+            self.rotateToFile(nextFile: nextFile)
         }
     }
 
@@ -307,8 +314,8 @@ public class RotatingFileEndpoint: LXEndpoint {
     private func rotateToFile(nextFile: LXLogFile) {
         //TODO: Move these notifications into property observers, if the properties can be made non-lazy.
         //TODO: Getting `nextURL` from `nextFile`, instead of calculating it again, might be more robust.
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            LXFileEndpointWillRotateFilesNotification,
+        NotificationCenter.default.post(
+            name: NSNotification.Name(rawValue: LXFileEndpointWillRotateFilesNotification),
             object: self,
             userInfo: [
                 LXFileEndpointRotationCurrentURLKey: self.currentURL,
@@ -320,8 +327,8 @@ public class RotatingFileEndpoint: LXEndpoint {
         self.currentFile = nextFile
         self.currentIndex = self.nextIndex
 
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            LXFileEndpointDidRotateFilesNotification,
+        NotificationCenter.default.post(
+            name: NSNotification.Name(rawValue: LXFileEndpointDidRotateFilesNotification),
             object: self,
             userInfo: [
                 LXFileEndpointRotationCurrentURLKey: self.currentURL,
@@ -336,13 +343,13 @@ public class RotatingFileEndpoint: LXEndpoint {
     /// - parameter length: The length of the data (number of bytes) that will be written next.
     ///
     /// - returns: A boolean indicating whether a new log file should be selected.
-    private func shouldRotateBeforeWritingDataWithLength(length: Int) -> Bool {
+    func shouldRotateBeforeWritingDataWithLength(length: Int) -> Bool {
         switch (self.maxFileSizeBytes, self.currentFile?.sizeInBytes) {
-        case (.Some(let maxSize), .Some(let size)) where size + UIntMax(length) > maxSize: // Won't fit
+        case (.some(let maxSize), .some(let size)) where size + UInt64(length) > maxSize: // Won't fit
             fallthrough
-        case (.Some, .None):                                                               // Can't determine current size
+        case (.some, .none):                                                               // Can't determine current size
             return true
-        case (.None, .None), (.None, .Some), (.Some, .Some):                               // No limit or will fit
+        case (.none, .none), (.none, .some), (.some, .some):                               // No limit or will fit
             return false
         }
     }
@@ -350,7 +357,7 @@ public class RotatingFileEndpoint: LXEndpoint {
     /// A utility method that will not return until all previously scheduled writes have completed. Useful for testing.
     ///
     /// - returns: Timestamp of last write (scheduled before barrier).
-    internal func barrier() -> NSTimeInterval? {
+    internal func barrier() -> TimeInterval? {
         return self.currentFile?.modificationDate?.timeIntervalSinceReferenceDate
     }
 
@@ -397,7 +404,7 @@ public class FileEndpoint: RotatingFileEndpoint {
     }
 
     /// This Endpoint always uses `baseFileName` as its file name.
-    private override func fileNameForIndex(index: UInt) -> String {
+    override func fileNameForIndex(index: UInt) -> String {
         return self.baseFileName
     }
 
@@ -405,7 +412,7 @@ public class FileEndpoint: RotatingFileEndpoint {
     public override func rotate() {}
 
     /// This endpoint will never rotate files.
-    private override func shouldRotateBeforeWritingDataWithLength(length: Int) -> Bool {
+    override func shouldRotateBeforeWritingDataWithLength(length: Int) -> Bool {
         return false
     }
 
@@ -455,21 +462,21 @@ public class DatedFileEndpoint: RotatingFileEndpoint {
     }
 
     /// The name for the file with today's date.
-    private override func fileNameForIndex(index: UInt) -> String {
-        return "\(self.nameFormatter.stringFromDate(NSDate()))_\(self.baseFileName)"
+    override func fileNameForIndex(index: UInt) -> String {
+        return "\(self.nameFormatter.stringFromDate(date: Date()))_\(self.baseFileName)"
     }
 
     /// Does nothing. Dated File Endpoint only rotates by date.
     public override func rotate() {}
 
     /// Returns `true` if the current date no longer matches the log file's date. Disregards the `length` parameter.
-    private override func shouldRotateBeforeWritingDataWithLength(length: Int) -> Bool {
+    override func shouldRotateBeforeWritingDataWithLength(length: Int) -> Bool {
         switch self.currentFile?.modificationDate {
-        case .Some(let modificationDate) where !UTCCalendar.isDateSameAsToday(modificationDate):    // Wrong date
+        case .some(let modificationDate) where !UTCCalendar.isDateSameAsToday(date: modificationDate as Date):    // Wrong date
             fallthrough
-        case .None:                                                                                 // Can't determine the date
+        case .none:                                                                                 // Can't determine the date
             return true
-        case .Some:                                                                                 // Correct date
+        case .some:                                                                                 // Correct date
             return false
         }
     }

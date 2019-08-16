@@ -22,7 +22,7 @@ import Foundation
 
 /// An internal protocol that facilitates `LXConsoleEndpoint` in operating either synchronously or asynchronously.
 private protocol LXConsoleWriter {
-    func writeData(data: NSData) -> Void
+    func writeData(data: Data) -> Void
 }
 
 
@@ -76,11 +76,11 @@ public class LXConsoleEndpoint: LXEndpoint {
 
     /// Writes a serialized Log Entry string to the console (`stderr`).
     public func write(string: String) {
-        guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
+        guard let data = string.data(using: String.Encoding.utf8) else {
             assertionFailure("Failure to create data from entry string")
             return
         }
-        self.writer.writeData(data)
+        self.writer.writeData(data: data)
     }
 
 }
@@ -92,30 +92,28 @@ public class LXConsoleEndpoint: LXEndpoint {
 private class LXSynchronousConsoleWriter: LXConsoleWriter {
 
     /// The console's (`stderr`) file handle.
-    private let handle = NSFileHandle.fileHandleWithStandardError()
+    fileprivate let handle = FileHandle.standardError
 
     /// Clean up.
     deinit { self.handle.closeFile() }
 
     /// Writes the data to the console (`stderr`).
-    private func writeData(data: NSData) {
-        self.handle.writeData(data)
+    fileprivate func writeData(data: Data) {
+        self.handle.write(data)
     }
 
 }
 
 
 /// A private console writer that facilitates asynchronous output.
-private class LXAsynchronousConsoleWriter: LXConsoleWriter {
+private class LXAsynchronousConsoleWriter: LXSynchronousConsoleWriter {
 //TODO: open a dispatch IO channel to stderr instead of one-off writes?
 
     /// Writes the data to the console (`stderr`).
-    private func writeData(data: NSData) {
-        guard let dispatchData = dispatch_data_create(data.bytes, data.length, nil, nil) else {
-            assertionFailure("Failure to create data from entry string")
-            return
+    fileprivate override func writeData(data: Data) {
+        LK_LOGKIT_QUEUE.async {
+            self.handle.write(data)
         }
-        dispatch_write(STDERR_FILENO, dispatchData, LK_LOGKIT_QUEUE, { _, _ in })
     }
 
 }
