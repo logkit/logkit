@@ -19,7 +19,7 @@ import Foundation
 
 
 /// The main logging API for application code. An instance of this class distributes Log Entries to Endpoints for writing.
-public final class LXLogger {
+@objc public final class LXLogger : NSObject {
 
     /// The collection of Endpoints that successfully initialized.
     private let endpoints: [LXEndpoint]
@@ -29,11 +29,11 @@ public final class LXLogger {
     /// - parameter endpoints: An array of Endpoints to dispatch Log Entries to.
     public init(endpoints: [LXEndpoint?]) {
         self.endpoints = endpoints.filter({ $0 != nil }).map({ $0! })
-        assert(!self.endpoints.isEmpty, "A logger instance has been initialized, but no valid Endpoints were provided.")
+        //assert(!self.endpoints.isEmpty, "A logger instance has been initialized, but no valid Endpoints were provided.")
     }
 
     /// Initialize a basic Logger that writes to the console (`stderr`) with default settings.
-    public convenience init() {
+    public convenience override init() {
         self.init(endpoints: [LXConsoleEndpoint()])
     }
 
@@ -82,6 +82,11 @@ public final class LXLogger {
         }
     }
 
+    @objc func debug(
+        message: String
+    ) {
+        self.debug(message: message, userInfo: [:])
+    }
     /// Log a `Debug` entry.
     ///
     /// - parameter message:  The message to log.
@@ -101,7 +106,7 @@ public final class LXLogger {
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    public func info(
+    @objc public func info(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
@@ -116,7 +121,7 @@ public final class LXLogger {
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    public func notice(
+    @objc public func notice(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
@@ -131,7 +136,7 @@ public final class LXLogger {
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    public func warning(
+    @objc public func warning(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
@@ -146,7 +151,7 @@ public final class LXLogger {
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    public func error(
+    @objc public func error(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
@@ -161,7 +166,7 @@ public final class LXLogger {
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    public func critical(
+    @objc public func critical(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
