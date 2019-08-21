@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B82107B9230D9CD7000B3572 /* DatabaseEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */; };
+		B82107BF230DB792000B3572 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B82107BE230DB792000B3572 /* CoreData.framework */; };
+		B82107C2230DCAD8000B3572 /* LogKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B82107C0230DCAD8000B3572 /* LogKit.xcdatamodeld */; };
 		D00B8C9E1B2E3B8F003E5FED /* LogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8C921B2E3B8F003E5FED /* LogKit.framework */; };
 		D00B8CBE1B2E3BC3003E5FED /* LogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8CB31B2E3BC3003E5FED /* LogKit.framework */; };
 		D00B8CD51B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
@@ -22,32 +25,17 @@
 		D0449EA81B4C62B100D7E1D3 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA61B4C62B100D7E1D3 /* Levels.swift */; };
 		D0449EA91B4C62B100D7E1D3 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA61B4C62B100D7E1D3 /* Levels.swift */; };
 		D0449EAB1B4C65B200D7E1D3 /* Loggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */; };
-		D0449EAC1B4C65B200D7E1D3 /* Loggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */; };
-		D0449EAD1B4C65B200D7E1D3 /* Loggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */; };
 		D0449EAF1B4C66BC00D7E1D3 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */; };
-		D0449EB01B4C66BC00D7E1D3 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */; };
-		D0449EB11B4C66BC00D7E1D3 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */; };
 		D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
-		D0449EB51B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
-		D0449EB61B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
 		D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
-		D0449EB91B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
-		D0449EBA1B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
 		D0C618151BD01918008BF5F2 /* LogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C6180B1BD01917008BF5F2 /* LogKit.framework */; };
 		D0C618221BD01A0F008BF5F2 /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D0C618231BD01A12008BF5F2 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA21B4C606900D7E1D3 /* Entries.swift */; };
 		D0C618241BD01A14008BF5F2 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
 		D0C618251BD01A17008BF5F2 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA61B4C62B100D7E1D3 /* Levels.swift */; };
-		D0C618261BD01A1A008BF5F2 /* Loggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAA1B4C65B200D7E1D3 /* Loggers.swift */; };
-		D0C618271BD01A1C008BF5F2 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */; };
-		D0C618281BD01A1F008BF5F2 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
-		D0C618291BD01A22008BF5F2 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
-		D0C6182A1BD01A25008BF5F2 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
 		D0C6182B1BD01A28008BF5F2 /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0C6182C1BD01A30008BF5F2 /* LogKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CE21B2E9457003E5FED /* LogKitTests.swift */; };
 		D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
-		D0C6C8E71B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
-		D0C6C8E81B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
 		D0F8DD311B4B1B9100D0865A /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D0F8DD321B4B1B9600D0865A /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
@@ -80,6 +68,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseEndpoints.swift; sourceTree = "<group>"; };
+		B82107BE230DB792000B3572 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		B82107C1230DCAD8000B3572 /* LogKit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LogKit.xcdatamodel; sourceTree = "<group>"; };
 		D00B8C921B2E3B8F003E5FED /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00B8C9D1B2E3B8F003E5FED /* LogKit iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "LogKit iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00B8CB31B2E3BC3003E5FED /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,6 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B82107BF230DB792000B3572 /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,12 +150,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B82107BD230DB792000B3572 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B82107BE230DB792000B3572 /* CoreData.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D00B8C881B2E3B8F003E5FED = {
 			isa = PBXGroup;
 			children = (
 				D00B8CD21B2E3FF2003E5FED /* Sources */,
 				D00B8CD31B2E3FF2003E5FED /* Tests */,
 				D00B8C931B2E3B8F003E5FED /* Products */,
+				B82107BD230DB792000B3572 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -228,6 +229,8 @@
 				D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */,
 				D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */,
 				D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */,
+				B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */,
+				B82107C0230DCAD8000B3572 /* LogKit.xcdatamodeld */,
 			);
 			name = Endpoints;
 			sourceTree = "<group>";
@@ -408,6 +411,8 @@
 				TargetAttributes = {
 					D00B8C911B2E3B8F003E5FED = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = U8934S6SQ4;
+						ProvisioningStyle = Automatic;
 					};
 					D00B8C9C1B2E3B8F003E5FED = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -511,12 +516,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0449EA31B4C606900D7E1D3 /* Entries.swift in Sources */,
+				B82107C2230DCAD8000B3572 /* LogKit.xcdatamodeld in Sources */,
 				D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
 				D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */,
 				D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
 				D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */,
 				D0449EAB1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
 				D0449EA71B4C62B100D7E1D3 /* Levels.swift in Sources */,
+				B82107B9230D9CD7000B3572 /* DatabaseEndpoints.swift in Sources */,
 				D0449EAF1B4C66BC00D7E1D3 /* Endpoints.swift in Sources */,
 				D00B8CD51B2E400E003E5FED /* LogKit.swift in Sources */,
 			);
@@ -535,13 +542,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0449EA41B4C606900D7E1D3 /* Entries.swift in Sources */,
-				D0449EB51B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
-				D0C6C8E71B64610100BD87B5 /* HTTPEndpoints.swift in Sources */,
-				D0449EB91B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
 				D0F8DD351B4B253700D0865A /* Formatters.swift in Sources */,
-				D0449EAC1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
 				D0449EA81B4C62B100D7E1D3 /* Levels.swift in Sources */,
-				D0449EB01B4C66BC00D7E1D3 /* Endpoints.swift in Sources */,
 				D00B8CD61B2E400E003E5FED /* LogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -558,14 +560,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0C618281BD01A1F008BF5F2 /* ConsoleEndpoints.swift in Sources */,
 				D0C618241BD01A14008BF5F2 /* Formatters.swift in Sources */,
-				D0C6182A1BD01A25008BF5F2 /* HTTPEndpoints.swift in Sources */,
-				D0C618291BD01A22008BF5F2 /* FileEndpoints.swift in Sources */,
 				D0C618231BD01A12008BF5F2 /* Entries.swift in Sources */,
-				D0C618261BD01A1A008BF5F2 /* Loggers.swift in Sources */,
 				D0C618251BD01A17008BF5F2 /* Levels.swift in Sources */,
-				D0C618271BD01A1C008BF5F2 /* Endpoints.swift in Sources */,
 				D0C618221BD01A0F008BF5F2 /* LogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -583,13 +580,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0449EA51B4C606900D7E1D3 /* Entries.swift in Sources */,
-				D0449EB61B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
-				D0C6C8E81B64610100BD87B5 /* HTTPEndpoints.swift in Sources */,
-				D0449EBA1B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
 				D0F8DD361B4B253700D0865A /* Formatters.swift in Sources */,
-				D0449EAD1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
 				D0449EA91B4C62B100D7E1D3 /* Levels.swift in Sources */,
-				D0449EB11B4C66BC00D7E1D3 /* Endpoints.swift in Sources */,
 				D0F8DD311B4B1B9100D0865A /* LogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -749,17 +741,23 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphonesimulator*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = U8934S6SQ4;
 				DYLIB_COMPATIBILITY_VERSION = 1.0;
 				DYLIB_CURRENT_VERSION = 1.0.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = LogKit;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -768,16 +766,22 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphonesimulator*]" = "";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = U8934S6SQ4;
 				DYLIB_COMPATIBILITY_VERSION = 1.0;
 				DYLIB_CURRENT_VERSION = 1.0.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = LogKit;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -827,6 +831,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = LogKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -848,6 +853,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = LogKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
@@ -908,6 +914,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = LogKit;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -928,6 +935,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = LogKit;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -973,6 +981,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = info.logkit.LogKit;
+				PRODUCT_NAME = LogKit;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -992,6 +1001,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = info.logkit.LogKit;
+				PRODUCT_NAME = LogKit;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -1074,6 +1084,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		B82107C0230DCAD8000B3572 /* LogKit.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				B82107C1230DCAD8000B3572 /* LogKit.xcdatamodel */,
+			);
+			currentVersion = B82107C1230DCAD8000B3572 /* LogKit.xcdatamodel */;
+			path = LogKit.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = D00B8C891B2E3B8F003E5FED /* Project object */;
 }

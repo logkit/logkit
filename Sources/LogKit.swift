@@ -19,6 +19,7 @@ import Foundation
 #if os(iOS) || os(tvOS)
 import UIKit
 import AdSupport
+import CoreData
 #elseif os(watchOS)
 import WatchKit
 #endif
