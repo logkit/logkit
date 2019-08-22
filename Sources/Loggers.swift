@@ -34,7 +34,7 @@ import Foundation
 
     /// Initialize a basic Logger that writes to the console (`stderr`) with default settings.
     public convenience override init() {
-        self.init(endpoints: [LXConsoleEndpoint()])
+        self.init(endpoints: [LXConsoleEndpoint()]) //Change to LXDataBaseEndpoint() as default
     }
 
     /// Delivers Log Entries to Endpoints.

@@ -214,5 +214,4 @@ internal extension NSCalendar {
             return todayYear == dateYear && todayDay == dateDay
         }
     }
-
 }

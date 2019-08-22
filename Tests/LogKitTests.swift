@@ -217,6 +217,11 @@ class HTTPEndpointTests: XCTestCase {
 
 }
 
+class DataBaseEndpointTests: XCTestCase{
+    
+    //TODO: implement test cases
+}
+
 class LoggerTests: XCTestCase {
 
     var log: LXLogger?
