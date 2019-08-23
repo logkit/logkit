@@ -68,7 +68,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         }
     }
     
-    func createData(){
+    func createData(data: Data){
         let managedContext = persistentContainer.viewContext
         
         //Trimming DB if it has older than "predicatedTimeStamp"
@@ -95,10 +95,26 @@ public class LXDataBaseEndpoint: LXEndpoint {
         //Inserting new log into DB
         let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
         let log = NSManagedObject(entity: logEntity, insertInto: managedContext)
-        
+        let logMsg = String(decoding: data, as: UTF8.self)
         log.setValue(currentTime, forKey: "timeStamp")
-        log.setValue("Import Log Message from LXlogger", forKey: "message")
+        log.setValue(logMsg, forKey: "message")
         log.setValue(false, forKey: "sent")
+        
+        //Check the current contents of Logs Database
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Logs")
+        request.returnsObjectsAsFaults = false
+        do {
+            let result = try managedContext.fetch(request)
+            for data in result as! [NSManagedObject] {
+                print(data.value(forKey: "timeStamp") as! Double)
+                print(data.value(forKey: "message") as! String)
+                print(data.value(forKey: "sent") as! Bool)
+            }
+            
+        } catch {
+            
+            print("Failed")
+        }
 
         do {
             try managedContext.save()
@@ -167,7 +183,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         self.minimumPriorityLevel = minimumPriorityLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
-        
+
         switch synchronous {
         case true:
             self.writer = LXSynchronousDBWriter()
@@ -175,46 +191,46 @@ public class LXDataBaseEndpoint: LXEndpoint {
             self.writer = LXAsynchronousDBWriter()
         }
     }
-    
-    /// Writes a serialized Log Entry string to the console (`stderr`).
+
+    // Writes a serialized Log Entry string to the console (`stderr`).
     public func write(string: String) {
-        guard let data = string.data(using: String.Encoding.utf8) else {
-            assertionFailure("Failure to create data from entry string")
-            return
+
+        
+        
+        LK_LOGKIT_QUEUE.async {
+            self.createData(data: data)
         }
-        self.writer.writeData(data: data)
     }
 }
 
 //MARK: DataBase Writers
 
-/// A private console writer that facilitates synchronous output.
+// A private console writer that facilitates synchronous output.
 private class LXSynchronousDBWriter: LXDBWriter {
-    
+
     /// The console's (`stderr`) file handle.
     fileprivate let handle = FileHandle.standardError
-    
+
     /// Clean up.
     deinit { self.handle.closeFile() }
-    
+
     /// Writes the data to the console (`stderr`).
     fileprivate func writeData(data: Data) {
         self.handle.write(data)
     }
-    
+
 }
 
 
-/// A private console writer that facilitates asynchronous output.
-private class LXAsynchronousDBWriter: LXSynchronousDBWriter {
-    //TODO: open a dispatch IO channel to stderr instead of one-off writes?
-    
+// A private console writer that facilitates asynchronous output.
+private class LXAsynchronousDBWriter: LXSynchronousDBWriter{
+//    TODO: open a dispatch IO channel to stderr instead of one-off writes?
     /// Writes the data to the console (`stderr`).
     fileprivate override func writeData(data: Data) {
         LK_LOGKIT_QUEUE.async {
             self.handle.write(data)
         }
     }
-    
+
 }
 
