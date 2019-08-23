@@ -194,9 +194,10 @@ public class LXDataBaseEndpoint: LXEndpoint {
 
     // Writes a serialized Log Entry string to the console (`stderr`).
     public func write(string: String) {
-
-        
-        
+        guard let data = string.data(using: String.Encoding.utf8) else {
+            assertionFailure("Failure to create data from entry string")
+            return
+        }
         LK_LOGKIT_QUEUE.async {
             self.createData(data: data)
         }
