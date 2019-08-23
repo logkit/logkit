@@ -18,14 +18,27 @@
 import Foundation
 import CoreData
 
+private protocol LXDBWriter {
+    func writeData(data: Data) -> Void
+}
+
 struct Constants {
     static let daysToSave = 7
     static let daysToSaveInMil = Double(daysToSave * 24 * 60 * 60 * 1000)
 }
 
-public class LXDataBaseEndpoint {
+public class LXDataBaseEndpoint: LXEndpoint {
     
-    //TODO: Apply HTTPEndpoints methods to send recorded logs to the server as per request
+    /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
+    public var minimumPriorityLevel: LXPriorityLevel
+    /// The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a string.
+    public var dateFormatter: LXDateFormatter
+    /// The formatter used by this Endpoint to serialize each Log Entry to a string.
+    public var entryFormatter: LXEntryFormatter
+    /// This Endpoint requires a newline character appended to each serialized Log Entry string.
+    public let requiresNewlines: Bool = true
+    
+    private let writer: LXDBWriter
     
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(identifier: "info.logkit.LogKit")
@@ -96,7 +109,7 @@ public class LXDataBaseEndpoint {
     }
     
     //changing the sent flag once it's been sent to the server
-    func UpdateData() {
+    func updateData() {
         let managedContext = persistentContainer.viewContext
         let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
         fetchRequest.predicate = NSPredicate(format: "sent = %@", "false")
@@ -118,7 +131,7 @@ public class LXDataBaseEndpoint {
         }
     }
     
-    func DeleteAllData(){
+    func deleteAllData(){
         let managedContext = persistentContainer.viewContext
         let DelAllReqVar = NSBatchDeleteRequest(fetchRequest: NSFetchRequest<NSFetchRequestResult>(entityName: "Logs"))
         do {
@@ -145,4 +158,63 @@ public class LXDataBaseEndpoint {
         
     }
     
+    public init(
+        synchronous: Bool = false,
+        minimumPriorityLevel: LXPriorityLevel = .All,
+        dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
+        entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
+        ) {
+        self.minimumPriorityLevel = minimumPriorityLevel
+        self.dateFormatter = dateFormatter
+        self.entryFormatter = entryFormatter
+        
+        switch synchronous {
+        case true:
+            self.writer = LXSynchronousDBWriter()
+        case false:
+            self.writer = LXAsynchronousDBWriter()
+        }
+    }
+    
+    /// Writes a serialized Log Entry string to the console (`stderr`).
+    public func write(string: String) {
+        guard let data = string.data(using: String.Encoding.utf8) else {
+            assertionFailure("Failure to create data from entry string")
+            return
+        }
+        self.writer.writeData(data: data)
+    }
 }
+
+//MARK: DataBase Writers
+
+/// A private console writer that facilitates synchronous output.
+private class LXSynchronousDBWriter: LXDBWriter {
+    
+    /// The console's (`stderr`) file handle.
+    fileprivate let handle = FileHandle.standardError
+    
+    /// Clean up.
+    deinit { self.handle.closeFile() }
+    
+    /// Writes the data to the console (`stderr`).
+    fileprivate func writeData(data: Data) {
+        self.handle.write(data)
+    }
+    
+}
+
+
+/// A private console writer that facilitates asynchronous output.
+private class LXAsynchronousDBWriter: LXSynchronousDBWriter {
+    //TODO: open a dispatch IO channel to stderr instead of one-off writes?
+    
+    /// Writes the data to the console (`stderr`).
+    fileprivate override func writeData(data: Data) {
+        LK_LOGKIT_QUEUE.async {
+            self.handle.write(data)
+        }
+    }
+    
+}
+
