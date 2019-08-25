@@ -18,10 +18,6 @@
 import Foundation
 import CoreData
 
-private protocol LXDBWriter {
-    func writeData(data: Data) -> Void
-}
-
 struct Constants {
     static let daysToSave = 7
     static let daysToSaveInMil = Double(daysToSave * 24 * 60 * 60 * 1000)
@@ -37,9 +33,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
     public var entryFormatter: LXEntryFormatter
     /// This Endpoint requires a newline character appended to each serialized Log Entry string.
     public let requiresNewlines: Bool = true
-    
-    private let writer: LXDBWriter
-    
+
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(identifier: "info.logkit.LogKit")
         let modelURL = messageKitBundle!.url(forResource: "LogKit", withExtension: "momd")
@@ -49,28 +43,28 @@ public class LXDataBaseEndpoint: LXEndpoint {
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 //Replace fatalError
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                NSLog("Unresolved error \(error), \(error.userInfo)")
             }
         })
         return container
     }()
     
-    func saveContext () {
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
+    func saveContext(managedContext: NSManagedObjectContext) {
+
+        if managedContext.hasChanges {
             do {
-                try context.save()
+                try managedContext.save()
             } catch {
                 let nserror = error as NSError
                 //Replace fatalError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                NSLog("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
     }
     
     func createData(data: Data){
         let managedContext = persistentContainer.viewContext
-        
+
         //Trimming DB if it has older than "predicatedTimeStamp"
         let currentTime = round(NSDate().timeIntervalSince1970 * 1000)
         let predicatedTimeStamp:Double = currentTime - Constants.daysToSaveInMil
@@ -84,44 +78,21 @@ public class LXDataBaseEndpoint: LXEndpoint {
                 managedContext.delete(logObj)
             }
         } catch {
-            print("Failed")
+            NSLog("Failed to delete old data")
         }
-        do {
-            try managedContext.save()
-        } catch {
-            print("Failed saving")
-        }
+        saveContext(managedContext: managedContext)
         
         //Inserting new log into DB
         let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
         let log = NSManagedObject(entity: logEntity, insertInto: managedContext)
         let logMsg = String(decoding: data, as: UTF8.self)
+        
         log.setValue(currentTime, forKey: "timeStamp")
         log.setValue(logMsg, forKey: "message")
         log.setValue(false, forKey: "sent")
-        
-        //Check the current contents of Logs Database
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Logs")
-        request.returnsObjectsAsFaults = false
-        do {
-            let result = try managedContext.fetch(request)
-            for data in result as! [NSManagedObject] {
-                print(data.value(forKey: "timeStamp") as! Double)
-                print(data.value(forKey: "message") as! String)
-                print(data.value(forKey: "sent") as! Bool)
-            }
-            
-        } catch {
-            
-            print("Failed")
-        }
 
-        do {
-            try managedContext.save()
-            
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-        }
+        saveContext(managedContext: managedContext)
+
     }
     
     //changing the sent flag once it's been sent to the server
@@ -135,47 +106,14 @@ public class LXDataBaseEndpoint: LXEndpoint {
             let objectUpdate = flagDown[0] as! NSManagedObject
             objectUpdate.setValue(true, forKey: "sent")
             
-            do {
-                try managedContext.save()
-            }
-            catch {
-                print(error)
-            }
+            saveContext(managedContext: managedContext)
         }
         catch {
-            print(error)
+            NSLog("Fail to update sent flags, \(error)")
         }
     }
-    
-    func deleteAllData(){
-        let managedContext = persistentContainer.viewContext
-        let DelAllReqVar = NSBatchDeleteRequest(fetchRequest: NSFetchRequest<NSFetchRequestResult>(entityName: "Logs"))
-        do {
-            try managedContext.execute(DelAllReqVar)
-        }
-        catch {
-            print(error)
-        }
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Logs")
-        request.returnsObjectsAsFaults = false
-        
-        do {
-            let result = try managedContext.fetch(request)
-            for data in result as! [NSManagedObject] {
-                print(data.value(forKey: "timeStamp") as! Double)
-                print(data.value(forKey: "message") as! String)
-                print(data.value(forKey: "sent") as! Bool)
-            }
-            
-        } catch {
-            
-            print("Failed")
-        }
-        
-    }
-    
+  
     public init(
-        synchronous: Bool = false,
         minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
@@ -183,13 +121,6 @@ public class LXDataBaseEndpoint: LXEndpoint {
         self.minimumPriorityLevel = minimumPriorityLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
-
-        switch synchronous {
-        case true:
-            self.writer = LXSynchronousDBWriter()
-        case false:
-            self.writer = LXAsynchronousDBWriter()
-        }
     }
 
     // Writes a serialized Log Entry string to the console (`stderr`).
@@ -203,35 +134,3 @@ public class LXDataBaseEndpoint: LXEndpoint {
         }
     }
 }
-
-//MARK: DataBase Writers
-
-// A private console writer that facilitates synchronous output.
-private class LXSynchronousDBWriter: LXDBWriter {
-
-    /// The console's (`stderr`) file handle.
-    fileprivate let handle = FileHandle.standardError
-
-    /// Clean up.
-    deinit { self.handle.closeFile() }
-
-    /// Writes the data to the console (`stderr`).
-    fileprivate func writeData(data: Data) {
-        self.handle.write(data)
-    }
-
-}
-
-
-// A private console writer that facilitates asynchronous output.
-private class LXAsynchronousDBWriter: LXSynchronousDBWriter{
-//    TODO: open a dispatch IO channel to stderr instead of one-off writes?
-    /// Writes the data to the console (`stderr`).
-    fileprivate override func writeData(data: Data) {
-        LK_LOGKIT_QUEUE.async {
-            self.handle.write(data)
-        }
-    }
-
-}
-
