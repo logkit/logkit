@@ -216,35 +216,35 @@ internal extension NSCalendar {
     }
 }
 
-@objc final class LogKit: NSObject {
+@objc class LogKit: NSObject {
     
-    let logger = LXLogger()
+    static let logger = LXLogger()
     
-    @objc func debug(message: String) {
-        logger.debug(message: message, functionName: getFunctionInfo())
+    @objc static func debug(message: String) {
+        LogKit.logger.debug(message: message, functionName: getFunctionInfo())
     }
     
-    @objc func info(message: String) {
-        logger.info(message: message, functionName: getFunctionInfo())
+    @objc static func info(message: String) {
+        LogKit.logger.info(message: message, functionName: getFunctionInfo())
     }
     
-    @objc func notice(message: String) {
-        logger.notice(message: message, functionName: getFunctionInfo())
+    @objc static func notice(message: String) {
+        LogKit.logger.notice(message: message, functionName: getFunctionInfo())
     }
     
-    @objc func warning(message: String) {
-        logger.warning(message: message, functionName: getFunctionInfo())
+    @objc static func warning(message: String) {
+        LogKit.logger.warning(message: message, functionName: getFunctionInfo())
     }
     
-    @objc func error(message: String) {
-        logger.error(message: message, functionName: getFunctionInfo())
+    @objc static func error(message: String) {
+        LogKit.logger.error(message: message, functionName: getFunctionInfo())
     }
     
-    @objc func critical(message: String) {
-        logger.critical(message: message, functionName: getFunctionInfo())
+    @objc static func critical(message: String) {
+        LogKit.logger.critical(message: message, functionName: getFunctionInfo())
     }
     
-    @objc func getFunctionInfo() -> String {
+    @objc static func getFunctionInfo() -> String {
         
         let sourceString: String = Thread.callStackSymbols[4] //steps
         let separatorSet :CharacterSet = CharacterSet(charactersIn: " -[]+?.,")
