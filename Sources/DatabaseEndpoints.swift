@@ -42,7 +42,6 @@ public class LXDataBaseEndpoint: LXEndpoint {
  
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                //Replace fatalError
                 NSLog("Unresolved error \(error), \(error.userInfo)")
             }
         })
@@ -56,7 +55,6 @@ public class LXDataBaseEndpoint: LXEndpoint {
                 try managedContext.save()
             } catch {
                 let nserror = error as NSError
-                //Replace fatalError
                 NSLog("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
