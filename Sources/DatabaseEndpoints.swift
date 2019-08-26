@@ -69,13 +69,13 @@ public class LXDataBaseEndpoint: LXEndpoint {
         let requestDel = NSFetchRequest<NSFetchRequestResult>(entityName: "Logs")
         let predicateDel = NSPredicate(format: "timeStamp < %d", argumentArray: [predicatedTimeStamp])
         requestDel.predicate = predicateDel
-   
+       
+        let DelAllReqVar = NSBatchDeleteRequest(fetchRequest:requestDel)
+
         do {
-            let arrLogsObj = try managedContext.fetch(requestDel)
-            for logObj in arrLogsObj as! [NSManagedObject] {
-                managedContext.delete(logObj)
-            }
-        } catch {
+            try managedContext.execute(DelAllReqVar)
+        }
+        catch {
             NSLog("Failed to delete old data")
         }
         saveContext(managedContext: managedContext)

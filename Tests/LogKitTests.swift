@@ -219,7 +219,11 @@ class HTTPEndpointTests: XCTestCase {
 
 class DataBaseEndpointTests: XCTestCase{
     
-    //TODO: implement test cases
+    let endpoint = LXDataBaseEndpoint()
+    
+    func testWrite() {
+        self.endpoint.write(string: "Hello from the DataBase Endpoint!")
+    }
 }
 
 class LoggerTests: XCTestCase {

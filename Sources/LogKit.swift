@@ -79,7 +79,6 @@ internal let LK_DEVICE_TYPE: String = {
 #endif
 }()
 
-
 /// A tuple describing OS this device is running.
 internal let LK_DEVICE_OS: (description: String, majorVersion: Int, minorVersion: Int, patchVersion: Int, buildVersion: String) = {
     let systemVersion = NSDictionary(contentsOfFile: "/System/Library/CoreServices/SystemVersion.plist")
@@ -218,6 +217,8 @@ internal extension NSCalendar {
 
 @objc class LogKit: NSObject {
     
+    private override init() {}
+    
     static let logger = LXLogger()
     
     @objc static func debug(message: String) {
@@ -257,7 +258,6 @@ internal extension NSCalendar {
         Class Caller   : array[3]
         Method Caller  : array[4]
         */
-        let infoString = "Method Caller: \(array[4])"
-        return infoString
+        return "Method Caller: \(array[4])"
     }
 }
