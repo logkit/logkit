@@ -257,8 +257,7 @@ internal extension NSCalendar {
         Class Caller   : array[3]
         Method Caller  : array[4]
         */
-        
-        let infoString = "Class Caller: \(array[3]), Method Caller: \(array[4])"
+        let infoString = "Method Caller: \(array[4])"
         return infoString
     }
 }
