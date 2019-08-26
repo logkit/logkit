@@ -246,11 +246,10 @@ internal extension NSCalendar {
     
     @objc static func getFunctionInfo() -> String {
         
-        let sourceString: String = Thread.callStackSymbols[4] //steps
+        let sourceString: String = Thread.callStackSymbols[3] //steps
         let separatorSet :CharacterSet = CharacterSet(charactersIn: " -[]+?.,")
         var array = Array(sourceString.components(separatedBy: separatorSet))
         array = array.filter { $0 != "" }
-        
         /*
         Stack          : array[0]
         Framework      : array[1]
@@ -259,7 +258,7 @@ internal extension NSCalendar {
         Method Caller  : array[4]
         */
         
-        let infoString = String(array[3])
+        let infoString = "Class Caller: \(array[3]), Method Caller: \(array[4])"
         return infoString
     }
 }

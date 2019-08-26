@@ -82,7 +82,7 @@ public final class LXLogger{
         }
     }
 
-    @objc func debug(
+    func debug(
         message: String
     ) {
         self.debug(message: message, userInfo: [:])
