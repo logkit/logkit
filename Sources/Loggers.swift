@@ -19,7 +19,7 @@ import Foundation
 
 
 /// The main logging API for application code. An instance of this class distributes Log Entries to Endpoints for writing.
-@objc public final class LXLogger : NSObject {
+public final class LXLogger{
 
     /// The collection of Endpoints that successfully initialized.
     private let endpoints: [LXEndpoint]
@@ -33,7 +33,7 @@ import Foundation
     }
 
     /// Initialize a basic Logger that writes to the console (`stderr`) with default settings.
-    public convenience override init() {
+    public convenience init() {
         self.init(endpoints: [LXDataBaseEndpoint()])
     }
 
@@ -106,7 +106,7 @@ import Foundation
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    @objc public func info(
+    public func info(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
@@ -121,7 +121,7 @@ import Foundation
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    @objc public func notice(
+    public func notice(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
@@ -136,7 +136,7 @@ import Foundation
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    @objc public func warning(
+    public func warning(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
@@ -151,7 +151,7 @@ import Foundation
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    @objc public func error(
+    public func error(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,
@@ -166,7 +166,7 @@ import Foundation
     ///
     /// - parameter message:  The message to log.
     /// - parameter userInfo: A dictionary of additional values for Endpoints to consider.
-    @objc public func critical(
+    public func critical(
         message: String,
         userInfo: [String: AnyObject] = [:],
         functionName: String = #function,

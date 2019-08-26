@@ -215,3 +215,51 @@ internal extension NSCalendar {
         }
     }
 }
+
+@objc final class LogKit: NSObject {
+    
+    let logger = LXLogger()
+    
+    @objc func debug(message: String) {
+        logger.debug(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc func info(message: String) {
+        logger.info(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc func notice(message: String) {
+        logger.notice(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc func warning(message: String) {
+        logger.warning(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc func error(message: String) {
+        logger.error(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc func critical(message: String) {
+        logger.critical(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc func getFunctionInfo() -> String {
+        
+        let sourceString: String = Thread.callStackSymbols[4] //steps
+        let separatorSet :CharacterSet = CharacterSet(charactersIn: " -[]+?.,")
+        var array = Array(sourceString.components(separatedBy: separatorSet))
+        array = array.filter { $0 != "" }
+        
+        /*
+        Stack          : array[0]
+        Framework      : array[1]
+        Memory Address : array[2]
+        Class Caller   : array[3]
+        Method Caller  : array[4]
+        */
+        
+        let infoString = String(array[3])
+        return infoString
+    }
+}

@@ -121,7 +121,6 @@ public class LXDataBaseEndpoint: LXEndpoint {
         self.entryFormatter = entryFormatter
     }
 
-    // Writes a serialized Log Entry string to the console (`stderr`).
     public func write(string: String) {
         guard let data = string.data(using: String.Encoding.utf8) else {
             assertionFailure("Failure to create data from entry string")
