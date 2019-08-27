@@ -244,13 +244,12 @@ internal extension NSCalendar {
         LogKit.logger.critical(message: message, functionName: getFunctionInfo())
     }
 
-    @objc static func pushToServer(url: NSURL, completion: (Bool) -> ()) {
+    @objc static func pushToServer(url: NSURL) {
         let push = LXDataBaseEndpoint()
         let destURL = url
         print(destURL)
         let resultLogs = push.updateData()
         print(resultLogs)
-        completion(true)
     }
     
     @objc static func getFunctionInfo() -> String {
