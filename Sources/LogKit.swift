@@ -172,7 +172,7 @@ internal extension FileManager {
         assert(URL.isFileURL, "URL must be a file system URL")
 
         guard let dirPath = URL.deletingLastPathComponent?.path, let filePath = URL.path else {
-            assertionFailure("Invalid path: \(URL.absoluteString)")
+            assertionFailure("Invalid path: \(String(describing: URL.absoluteString))")
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadURL, userInfo: [NSURLErrorKey: URL])
         }
 
