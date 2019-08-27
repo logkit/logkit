@@ -84,7 +84,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
         let log = NSManagedObject(entity: logEntity, insertInto: managedContext)
         let logMsg = String(decoding: data, as: UTF8.self)
-        
+
         log.setValue(currentTime, forKey: "timeStamp")
         log.setValue(logMsg, forKey: "message")
         log.setValue(false, forKey: "sent")
@@ -94,23 +94,32 @@ public class LXDataBaseEndpoint: LXEndpoint {
     }
     
     //changing the sent flag once it's been sent to the server
-    func updateData() {
+    func updateData() -> String {
+        
         let managedContext = persistentContainer.viewContext
         let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
         fetchRequest.predicate = NSPredicate(format: "sent = %@", "false")
-        
+        var resultString = ""
+
         do {
             let flagDown = try managedContext.fetch(fetchRequest)
-            let objectUpdate = flagDown[0] as! NSManagedObject
-            objectUpdate.setValue(true, forKey: "sent")
-            
+            for i in 0...flagDown.count - 1{
+                let objectUpdate = flagDown[i] as! NSManagedObject
+                objectUpdate.setValue(true, forKey: "sent")
+                resultString = "\(resultString) \(objectUpdate.value(forKey: "timeStamp") ?? "empty")"
+                resultString = "\(resultString) \(objectUpdate.value(forKey: "message") ?? "empty")"
+                resultString = "\(resultString) \(objectUpdate.value(forKey: "sent") ?? "empty")"
+                resultString += "\n"
+            }
             saveContext(managedContext: managedContext)
         }
         catch {
             NSLog("Fail to update sent flags, \(error)")
         }
+
+        return resultString;
     }
-  
+    
     public init(
         minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
