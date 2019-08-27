@@ -247,7 +247,7 @@ internal extension NSCalendar {
     
     @objc static func getFunctionInfo() -> String {
         
-        let sourceString: String = Thread.callStackSymbols[3] //steps
+        let sourceString: String = Thread.callStackSymbols[3]// 3 stacks prior to current
         let separatorSet :CharacterSet = CharacterSet(charactersIn: " -[]+?.,")
         var array = Array(sourceString.components(separatedBy: separatorSet))
         array = array.filter { $0 != "" }
