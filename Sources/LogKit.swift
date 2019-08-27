@@ -218,7 +218,6 @@ internal extension NSCalendar {
 @objc class LogKit: NSObject {
     
     private override init() {}
-    
     static let logger = LXLogger()
     
     @objc static func debug(message: String) {
@@ -243,6 +242,15 @@ internal extension NSCalendar {
     
     @objc static func critical(message: String) {
         LogKit.logger.critical(message: message, functionName: getFunctionInfo())
+    }
+
+    @objc static func pushToServer(url: NSURL, completion: (Bool) -> ()) {
+        let push = LXDataBaseEndpoint()
+        let destURL = url
+        print(destURL)
+        let resultLogs = push.updateData()
+        print(resultLogs)
+        completion(true)
     }
     
     @objc static func getFunctionInfo() -> String {

@@ -103,20 +103,24 @@ public class LXDataBaseEndpoint: LXEndpoint {
 
         do {
             let flagDown = try managedContext.fetch(fetchRequest)
-            for i in 0...flagDown.count - 1{
-                let objectUpdate = flagDown[i] as! NSManagedObject
-                objectUpdate.setValue(true, forKey: "sent")
-                resultString = "\(resultString) \(objectUpdate.value(forKey: "timeStamp") ?? "empty")"
-                resultString = "\(resultString) \(objectUpdate.value(forKey: "message") ?? "empty")"
-                resultString = "\(resultString) \(objectUpdate.value(forKey: "sent") ?? "empty")"
-                resultString += "\n"
+            if (flagDown.count > 0){
+                for i in 0...flagDown.count - 1{
+                    let objectUpdate = flagDown[i] as! NSManagedObject
+                    objectUpdate.setValue(true, forKey: "sent")
+                    resultString = "\(resultString) \(objectUpdate.value(forKey: "timeStamp") ?? "empty")"
+                    resultString = "\(resultString) \(objectUpdate.value(forKey: "message") ?? "empty")"
+                    resultString = "\(resultString) \(objectUpdate.value(forKey: "sent") ?? "empty")"
+                    resultString += "\n"
+                }
+                saveContext(managedContext: managedContext)
             }
-            saveContext(managedContext: managedContext)
+            else{
+                return "There is no new logs"
+            }
         }
         catch {
             NSLog("Fail to update sent flags, \(error)")
         }
-
         return resultString;
     }
     
