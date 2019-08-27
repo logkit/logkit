@@ -18,95 +18,116 @@
 import Foundation
 import CoreData
 
-public class dbEndpoint{
+struct Constants {
+    static let daysToSave = 7
+    static let daysToSaveInMil = Double(daysToSave * 24 * 60 * 60 * 1000)
+}
+
+public class LXDataBaseEndpoint: LXEndpoint {
     
+    /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
+    public var minimumPriorityLevel: LXPriorityLevel
+    /// The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a string.
+    public var dateFormatter: LXDateFormatter
+    /// The formatter used by this Endpoint to serialize each Log Entry to a string.
+    public var entryFormatter: LXEntryFormatter
+    /// This Endpoint requires a newline character appended to each serialized Log Entry string.
+    public let requiresNewlines: Bool = true
+
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(identifier: "info.logkit.LogKit")
         let modelURL = messageKitBundle!.url(forResource: "LogKit", withExtension: "momd")
         let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL!)
-        
-        
         let container = NSPersistentContainer(name: "LogKit", managedObjectModel: managedObjectModel!)
-        
-        
+ 
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                NSLog("Unresolved error \(error), \(error.userInfo)")
             }
         })
         return container
     }()
     
-    // MARK: - Core Data Saving support
-    func saveContext () {
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
+    func saveContext(managedContext: NSManagedObjectContext) {
+
+        if managedContext.hasChanges {
             do {
-                try context.save()
+                try managedContext.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                NSLog("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
     }
     
-    func createData(){
+    func createData(data: Data){
+        let managedContext = persistentContainer.viewContext
 
-        let managedContext = persistentContainer.viewContext
-        
-        let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
-        
-        let user = NSManagedObject(entity: logEntity, insertInto: managedContext)
+        //Trimming DB if it has older than "predicatedTimeStamp"
         let currentTime = round(NSDate().timeIntervalSince1970 * 1000)
-        user.setValue(currentTime, forKey: "timeStamp")
-        user.setValue("TESTING CORE DATA", forKey: "message")
-        user.setValue(false, forKey: "sent")
-        
-        do {
-            try managedContext.save()
-            
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-        }
-    }
-    
-    func DeleteAllData(){
-        let managedContext = persistentContainer.viewContext
-        let DelAllReqVar = NSBatchDeleteRequest(fetchRequest: NSFetchRequest<NSFetchRequestResult>(entityName: "Logs"))
+        let predicatedTimeStamp:Double = currentTime - Constants.daysToSaveInMil
+        let requestDel = NSFetchRequest<NSFetchRequestResult>(entityName: "Logs")
+        let predicateDel = NSPredicate(format: "timeStamp < %d", argumentArray: [predicatedTimeStamp])
+        requestDel.predicate = predicateDel
+       
+        let DelAllReqVar = NSBatchDeleteRequest(fetchRequest:requestDel)
+
         do {
             try managedContext.execute(DelAllReqVar)
         }
         catch {
-            print(error)
+            NSLog("Failed to delete old data")
         }
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Logs")
-        request.returnsObjectsAsFaults = false
+        saveContext(managedContext: managedContext)
+        
+        //Inserting new log into DB
+        let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
+        let log = NSManagedObject(entity: logEntity, insertInto: managedContext)
+        let logMsg = String(decoding: data, as: UTF8.self)
+        
+        log.setValue(currentTime, forKey: "timeStamp")
+        log.setValue(logMsg, forKey: "message")
+        log.setValue(false, forKey: "sent")
+
+        saveContext(managedContext: managedContext)
+
+    }
+    
+    //changing the sent flag once it's been sent to the server
+    func updateData() {
+        let managedContext = persistentContainer.viewContext
+        let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
+        fetchRequest.predicate = NSPredicate(format: "sent = %@", "false")
         
         do {
-            let result = try managedContext.fetch(request)
-            for data in result as! [NSManagedObject] {
-                print(data.value(forKey: "timeStamp") as! Int32)
-                print(data.value(forKey: "message") as! String)
-                print(data.value(forKey: "sent") as! Bool)
-            }
+            let flagDown = try managedContext.fetch(fetchRequest)
+            let objectUpdate = flagDown[0] as! NSManagedObject
+            objectUpdate.setValue(true, forKey: "sent")
             
-        } catch {
-            
-            print("Failed")
+            saveContext(managedContext: managedContext)
         }
-        
+        catch {
+            NSLog("Fail to update sent flags, \(error)")
+        }
+    }
+  
+    public init(
+        minimumPriorityLevel: LXPriorityLevel = .All,
+        dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
+        entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
+        ) {
+        self.minimumPriorityLevel = minimumPriorityLevel
+        self.dateFormatter = dateFormatter
+        self.entryFormatter = entryFormatter
+    }
+
+    public func write(string: String) {
+        guard let data = string.data(using: String.Encoding.utf8) else {
+            assertionFailure("Failure to create data from entry string")
+            return
+        }
+        LK_LOGKIT_QUEUE.async {
+            self.createData(data: data)
+        }
     }
 }

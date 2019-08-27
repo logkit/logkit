@@ -79,7 +79,6 @@ internal let LK_DEVICE_TYPE: String = {
 #endif
 }()
 
-
 /// A tuple describing OS this device is running.
 internal let LK_DEVICE_OS: (description: String, majorVersion: Int, minorVersion: Int, patchVersion: Int, buildVersion: String) = {
     let systemVersion = NSDictionary(contentsOfFile: "/System/Library/CoreServices/SystemVersion.plist")
@@ -214,5 +213,51 @@ internal extension NSCalendar {
             return todayYear == dateYear && todayDay == dateDay
         }
     }
+}
 
+@objc class LogKit: NSObject {
+    
+    private override init() {}
+    
+    static let logger = LXLogger()
+    
+    @objc static func debug(message: String) {
+        LogKit.logger.debug(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc static func info(message: String) {
+        LogKit.logger.info(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc static func notice(message: String) {
+        LogKit.logger.notice(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc static func warning(message: String) {
+        LogKit.logger.warning(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc static func error(message: String) {
+        LogKit.logger.error(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc static func critical(message: String) {
+        LogKit.logger.critical(message: message, functionName: getFunctionInfo())
+    }
+    
+    @objc static func getFunctionInfo() -> String {
+        
+        let sourceString: String = Thread.callStackSymbols[3] //steps
+        let separatorSet :CharacterSet = CharacterSet(charactersIn: " -[]+?.,")
+        var array = Array(sourceString.components(separatedBy: separatorSet))
+        array = array.filter { $0 != "" }
+        /*
+        Stack          : array[0]
+        Framework      : array[1]
+        Memory Address : array[2]
+        Class Caller   : array[3]
+        Method Caller  : array[4]
+        */
+        return "Method Caller: \(array[4])"
+    }
 }

@@ -3,7 +3,7 @@
     <entity name="Logs" representedClassName="Logs" syncable="YES" codeGenerationType="class" coreSpotlightDisplayNameExpression="Logs">
         <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sent" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="timeStamp" optional="YES" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="timeStamp" optional="YES" attributeType="Double" minValueString="0" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <elements>
         <element name="Logs" positionX="-54" positionY="-9" width="128" height="90"/>
