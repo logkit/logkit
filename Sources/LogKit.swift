@@ -246,6 +246,7 @@ internal extension NSCalendar {
   
     @objc static func pushToServer(url: NSURL, completion: @escaping (Bool, String) -> Void) {
         let resultLogs = LogKit.logger.getLogsData()
+        let marking = LXDataBaseEndpoint()
         //create the session object
         let session = URLSession.shared
         
@@ -272,10 +273,11 @@ internal extension NSCalendar {
                     completion(false, "invalidJSONTypeError")
                     return
                 }
-                print(json)
+                NSLog("\(json)")
                 completion(true, "Success")
+                marking.markingSent()
             } catch let error {
-                print(error.localizedDescription)
+                NSLog("\(error.localizedDescription)")
                 completion(false, error as! String)
             }
         })
