@@ -83,6 +83,9 @@ public class LXConsoleEndpoint: LXEndpoint {
         self.writer.writeData(data: data)
     }
 
+    public func getLogsFromDatabase() -> Data {
+        return NSData() as Data
+    }
 }
 
 

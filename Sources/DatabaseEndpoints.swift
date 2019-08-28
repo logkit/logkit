@@ -124,6 +124,12 @@ public class LXDataBaseEndpoint: LXEndpoint {
         return resultString;
     }
     
+    public func getLogsFromDatabase() -> Data {
+        let str = updateData()
+        let data = str.data(using: String.Encoding.utf8)
+        return data!
+    }
+    
     public init(
         minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),

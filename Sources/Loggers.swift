@@ -37,6 +37,12 @@ public final class LXLogger{
         self.init(endpoints: [LXDataBaseEndpoint()])
     }
 
+    func getLogsData() -> Data {
+        for endpoint in self.endpoints {
+            return endpoint.getLogsFromDatabase()
+        }
+        return NSData() as Data
+    }
     /// Delivers Log Entries to Endpoints.
     ///
     /// This function filters Endpoints based on their `minimumPriorityLevel` property to deliver Entries only to
