@@ -33,7 +33,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
     public var entryFormatter: LXEntryFormatter
     /// This Endpoint requires a newline character appended to each serialized Log Entry string.
     public let requiresNewlines: Bool = true
-    public var dataBin:[String] = []
+    public var lastTimeStamp:Double = 0
     
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(identifier: "info.logkit.LogKit")
@@ -107,13 +107,10 @@ public class LXDataBaseEndpoint: LXEndpoint {
             if (flagDown.count > 0){
                 for i in 0...flagDown.count - 1{
                     let objectUpdate = flagDown[i] as! NSManagedObject
-                    dataBin[i] = "\(objectUpdate.value(forKey: "timeStamp") ?? "empty")"
-                    resultString = "\(resultString) \(objectUpdate.value(forKey: "timeStamp") ?? "empty")"
                     resultString = "\(resultString) \(objectUpdate.value(forKey: "message") ?? "empty")"
-                    resultString = "\(resultString) \(objectUpdate.value(forKey: "sent") ?? "empty")"
-                    resultString += "\n"
+                    resultString.append("\n")
+                    lastTimeStamp = (objectUpdate.value(forKey: "timeStamp") as! Double)
                 }
-                saveContext(managedContext: managedContext)
             }
             else{
                 return "There is no new logs"
@@ -125,28 +122,20 @@ public class LXDataBaseEndpoint: LXEndpoint {
         return resultString;
     }
     
-    func markingSent() {
+    public func markingSent() -> Void {
         
-        let managedContext = persistentContainer.viewContext
-        let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
-        for i in 0...dataBin.count-1{
-            fetchRequest.predicate = NSPredicate(format: "timeStamp = %@", "\(dataBin[i])")
-            do {
-                let flagDown = try managedContext.fetch(fetchRequest)
-                if flagDown.count > 0{
-                    let objectUpdate = flagDown[0] as! NSManagedObject
-                    objectUpdate.setValue(true, forKey: "sent")
-                }
-                else {
-                    NSLog("There is no matching data with this timeStamp")
-                }
-            }
-            catch {
-                NSLog("Fail to update sent flags, \(error)")
-            }
+        if (lastTimeStamp > 0){
+            let updateRequest = NSBatchUpdateRequest(entityName: "Logs")
+            let predicate = NSPredicate(format: "timeStamp < %d", argumentArray: [lastTimeStamp])
+            updateRequest.predicate = predicate
+            updateRequest.propertiesToUpdate = ["sent":true]
+            lastTimeStamp = 0
         }
-        dataBin = []
-        saveContext(managedContext: managedContext)
+        else{
+            NSLog("Failed to update the sent")
+        }
+        
+        return
     }
     
     public func getLogsFromDatabase() -> Data {
@@ -163,7 +152,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         self.minimumPriorityLevel = minimumPriorityLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
-    }
+        }
 
     public func write(string: String) {
         guard let data = string.data(using: String.Encoding.utf8) else {

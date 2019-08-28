@@ -312,6 +312,10 @@ public class LXHTTPEndpoint: LXEndpoint {
     public func getLogsFromDatabase() -> Data {
         return NSData() as Data
     }
+    
+    public func markingSent() -> Void {
+        return
+    }
 }
 
 

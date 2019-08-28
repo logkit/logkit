@@ -34,4 +34,5 @@ public protocol LXEndpoint {
     func write(string: String) -> Void
 
     func getLogsFromDatabase() -> Data
+    func markingSent() -> Void
 }

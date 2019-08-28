@@ -43,6 +43,12 @@ public final class LXLogger{
         }
         return NSData() as Data
     }
+    
+    func sentSuccessful() -> Void {
+        for endpoint in self.endpoints {
+            return endpoint.markingSent()
+        }
+    }
     /// Delivers Log Entries to Endpoints.
     ///
     /// This function filters Endpoints based on their `minimumPriorityLevel` property to deliver Entries only to

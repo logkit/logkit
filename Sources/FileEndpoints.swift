@@ -364,6 +364,10 @@ public class RotatingFileEndpoint: LXEndpoint {
     public func getLogsFromDatabase() -> Data {
         return NSData() as Data
     }
+    
+    public func markingSent() -> Void {
+        return
+    }
 }
 
 
