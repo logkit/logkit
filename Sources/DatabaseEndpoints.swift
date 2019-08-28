@@ -24,7 +24,7 @@ struct Constants {
 }
 
 public class LXDataBaseEndpoint: LXEndpoint {
-    
+
     /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
     public var minimumPriorityLevel: LXPriorityLevel
     /// The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a string.
@@ -33,7 +33,8 @@ public class LXDataBaseEndpoint: LXEndpoint {
     public var entryFormatter: LXEntryFormatter
     /// This Endpoint requires a newline character appended to each serialized Log Entry string.
     public let requiresNewlines: Bool = true
-
+    public var dataBin:[String] = []
+    
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(identifier: "info.logkit.LogKit")
         let modelURL = messageKitBundle!.url(forResource: "LogKit", withExtension: "momd")
@@ -106,7 +107,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
             if (flagDown.count > 0){
                 for i in 0...flagDown.count - 1{
                     let objectUpdate = flagDown[i] as! NSManagedObject
-                    objectUpdate.setValue(true, forKey: "sent")
+                    dataBin[i] = "\(objectUpdate.value(forKey: "timeStamp") ?? "empty")"
                     resultString = "\(resultString) \(objectUpdate.value(forKey: "timeStamp") ?? "empty")"
                     resultString = "\(resultString) \(objectUpdate.value(forKey: "message") ?? "empty")"
                     resultString = "\(resultString) \(objectUpdate.value(forKey: "sent") ?? "empty")"
@@ -119,9 +120,33 @@ public class LXDataBaseEndpoint: LXEndpoint {
             }
         }
         catch {
-            NSLog("Fail to update sent flags, \(error)")
+            NSLog("Failed to retrieve data, \(error)")
         }
         return resultString;
+    }
+    
+    func markingSent() {
+        
+        let managedContext = persistentContainer.viewContext
+        let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
+        for i in 0...dataBin.count-1{
+            fetchRequest.predicate = NSPredicate(format: "timeStamp = %@", "\(dataBin[i])")
+            do {
+                let flagDown = try managedContext.fetch(fetchRequest)
+                if flagDown.count > 0{
+                    let objectUpdate = flagDown[0] as! NSManagedObject
+                    objectUpdate.setValue(true, forKey: "sent")
+                }
+                else {
+                    NSLog("There is no matching data with this timeStamp")
+                }
+            }
+            catch {
+                NSLog("Fail to update sent flags, \(error)")
+            }
+        }
+        dataBin = []
+        saveContext(managedContext: managedContext)
     }
     
     public func getLogsFromDatabase() -> Data {
