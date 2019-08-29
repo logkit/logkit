@@ -107,8 +107,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
             if (flagDown.count > 0){
                 for i in 0...flagDown.count - 1{
                     let objectUpdate = flagDown[i] as! NSManagedObject
-                    resultString = "\(resultString) \(objectUpdate.value(forKey: "message") ?? "empty")"
-                    resultString.append("\n")
+                    resultString.append("\(objectUpdate.value(forKey: "message") ?? "empty") \n")
                     lastTimeStamp = (objectUpdate.value(forKey: "timeStamp") as! Double)
                 }
             }
