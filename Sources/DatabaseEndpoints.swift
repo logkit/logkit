@@ -124,11 +124,26 @@ public class LXDataBaseEndpoint: LXEndpoint {
     
     public func markingSent() -> Void {
         let managedContext = persistentContainer.viewContext
+        
         if (lastTimeStamp > 0){
-            let updateRequest = NSBatchUpdateRequest(entityName: "Logs")
-            let predicate = NSPredicate(format: "timeStamp < %d", argumentArray: [lastTimeStamp])
-            updateRequest.predicate = predicate
-            updateRequest.propertiesToUpdate = ["sent":true]
+
+            let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
+            fetchRequest.predicate = NSPredicate(format: "timeStamp < %d", argumentArray: [lastTimeStamp])
+            do {
+                let flagDown = try managedContext.fetch(fetchRequest)
+                if (flagDown.count > 0){
+                    for i in 0...flagDown.count - 1{
+                        let objectUpdate = flagDown[i] as! NSManagedObject
+                        objectUpdate.setValue(true, forKey: "sent")
+                    }
+                }
+                else{
+                    NSLog("Failed to change sent flags")
+                }
+            }
+            catch {
+                NSLog("Failed to retrieve data, \(error)")
+            }
             lastTimeStamp = 0
         }
         else{
