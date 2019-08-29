@@ -123,7 +123,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
     }
     
     public func markingSent() -> Void {
-        
+        let managedContext = persistentContainer.viewContext
         if (lastTimeStamp > 0){
             let updateRequest = NSBatchUpdateRequest(entityName: "Logs")
             let predicate = NSPredicate(format: "timeStamp < %d", argumentArray: [lastTimeStamp])
@@ -134,7 +134,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         else{
             NSLog("Failed to update the sent")
         }
-        
+        saveContext(managedContext: managedContext)
         return
     }
     
