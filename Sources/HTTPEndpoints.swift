@@ -309,7 +309,7 @@ public class LXHTTPEndpoint: LXEndpoint {
         }
     }
 
-    public func getLogsFromDatabase() -> Data {
+    public func getLogs() -> Data {
         return NSData() as Data
     }
     

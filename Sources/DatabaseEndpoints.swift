@@ -152,7 +152,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         return
     }
     
-    public func getLogsFromDatabase() -> Data {
+    public func getLogs() -> Data {
         let str = updateData()
         let data = str.data(using: String.Encoding.utf8)
         return data!
@@ -162,11 +162,11 @@ public class LXDataBaseEndpoint: LXEndpoint {
         minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
-        ) {
+    ) {
         self.minimumPriorityLevel = minimumPriorityLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
-        }
+    }
 
     public func write(string: String) {
         guard let data = string.data(using: String.Encoding.utf8) else {

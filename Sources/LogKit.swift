@@ -244,7 +244,7 @@ internal extension NSCalendar {
         LogKit.logger.critical(message: message, functionName: getFunctionInfo())
     }
   
-    @objc static func pushToServer(url: NSURL, completion: @escaping (Bool, String) -> Void) {
+    @objc static func pushToServer(url: NSURL, success: @escaping () -> Void, failure: @escaping (String) -> Void) {
         let resultLogs = LogKit.logger.getLogsData()
         //create the session object
         let session = URLSession.shared
@@ -262,22 +262,22 @@ internal extension NSCalendar {
         let task = session.dataTask(with: request, completionHandler: { data, response, error in
             
             guard error == nil else {
-                completion(false, error as! String)
+                failure(error as! String)
                 return
             }
             
             do {
                 //create json object from data
                 guard let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: Any] else {
-                    completion(false, "invalidJSONTypeError")
+                    failure("invalidJSONTypeError")
                     return
                 }
                 NSLog("\(json)")
                 LogKit.logger.sentSuccessful()
-                completion(true, "Success")
+                success()
             } catch let error {
                 NSLog("\(error.localizedDescription)")
-                completion(false, error as! String)
+                failure(error as! String)
             }
         })
         

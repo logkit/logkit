@@ -38,15 +38,16 @@ public final class LXLogger{
     }
 
     func getLogsData() -> Data {
+        let data = NSMutableData()
         for endpoint in self.endpoints {
-            return endpoint.getLogsFromDatabase()
+            data.append(endpoint.getLogs())
         }
-        return NSData() as Data
+        return data as Data
     }
     
     func sentSuccessful() -> Void {
         for endpoint in self.endpoints {
-            return endpoint.markingSent()
+            endpoint.markingSent()
         }
     }
     /// Delivers Log Entries to Endpoints.

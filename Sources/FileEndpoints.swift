@@ -361,7 +361,7 @@ public class RotatingFileEndpoint: LXEndpoint {
         return self.currentFile?.modificationDate?.timeIntervalSinceReferenceDate
     }
     
-    public func getLogsFromDatabase() -> Data {
+    public func getLogs() -> Data {
         return NSData() as Data
     }
     
