@@ -105,7 +105,7 @@ private class LXLogFile {
     convenience init(URL: NSURL, shouldAppend: Bool) throws {
         try FileManager.default.ensureFile(at: URL)
         guard let handle = try? FileHandle(forWritingTo: URL as URL) else {
-            assertionFailure("Error opening log file at path: \(URL.absoluteString)")
+            assertionFailure("Error opening log file at path: \(URL.absoluteString ?? "emptyPath")")
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorCannotOpenFile, userInfo: [NSURLErrorKey: URL])
         }
         self.init(URL: URL, handle: handle, appending: shouldAppend)
@@ -205,7 +205,7 @@ public class RotatingFileEndpoint: LXEndpoint {
     /// The file currently being written to.
     fileprivate lazy var currentFile: LXLogFile? = { [unowned self] in
         guard let file = try? LXLogFile(URL: self.currentURL, shouldAppend: true) else {
-            assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString)'")
+            assertionFailure("Could not open the log file at URL '\(self.currentURL.absoluteString ?? "emptyPath")'")
             return nil
         }
         file.setExtendedAttribute(name: self.extendedAttributeKey, value: LK_LOGKIT_VERSION)
