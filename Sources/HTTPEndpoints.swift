@@ -217,6 +217,27 @@ public class LXHTTPEndpoint: LXEndpoint {
 
         self.timer.fire()
     }
+    
+    public init (url: NSURL) {
+        let request = NSMutableURLRequest(url: url as URL)
+        let successCodes: Set<Int> = defaultSuccessCodes
+        let sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default
+        let minimumPriorityLevel: LXPriorityLevel = .All
+        let dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter()
+        let entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
+
+        self.minimumPriorityLevel = minimumPriorityLevel
+        self.dateFormatter = dateFormatter
+        self.entryFormatter = entryFormatter
+        
+        self.successCodes = successCodes
+        self.session = URLSession(configuration: sessionConfiguration)
+        self.request = request
+        
+        self.timer.fire()
+
+     }
+
 
     /// Initialize an HTTP Endpoint.
     ///
@@ -288,6 +309,13 @@ public class LXHTTPEndpoint: LXEndpoint {
         }
     }
 
+    public func getLogs() -> Data {
+        return NSData() as Data
+    }
+    
+    public func markingSent() -> Void {
+        return
+    }
 }
 
 

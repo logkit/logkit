@@ -172,7 +172,7 @@ internal extension FileManager {
         assert(URL.isFileURL, "URL must be a file system URL")
 
         guard let dirPath = URL.deletingLastPathComponent?.path, let filePath = URL.path else {
-            assertionFailure("Invalid path: \(URL.absoluteString)")
+            assertionFailure("Invalid path: \(String(describing: URL.absoluteString))")
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadURL, userInfo: [NSURLErrorKey: URL])
         }
 
@@ -218,7 +218,6 @@ internal extension NSCalendar {
 @objc class LogKit: NSObject {
     
     private override init() {}
-    
     static let logger = LXLogger()
     
     @objc static func debug(message: String) {
@@ -244,10 +243,50 @@ internal extension NSCalendar {
     @objc static func critical(message: String) {
         LogKit.logger.critical(message: message, functionName: getFunctionInfo())
     }
+  
+    @objc static func pushToServer(url: NSURL, success: @escaping () -> Void, failure: @escaping (String) -> Void) {
+        let resultLogs = LogKit.logger.getLogsData()
+        //create the session object
+        let session = URLSession.shared
+        
+        //now create the Request object using the url object
+        var request = URLRequest(url: url as URL)
+        request.httpMethod = "POST" //set http method as POST
+        request.httpBody = resultLogs
+        
+        //HTTP Headers
+        request.addValue("text/plain", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        
+        //create dataTask using the session object to send data to the server
+        let task = session.dataTask(with: request, completionHandler: { data, response, error in
+            
+            guard error == nil else {
+                failure(error as! String)
+                return
+            }
+            
+            do {
+                //create json object from data
+                guard let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: Any] else {
+                    failure("invalidJSONTypeError")
+                    return
+                }
+                NSLog("\(json)")
+                LogKit.logger.sentSuccessful()
+                success()
+            } catch let error {
+                NSLog("\(error.localizedDescription)")
+                failure(error as! String)
+            }
+        })
+        
+        task.resume()
+    }
     
     @objc static func getFunctionInfo() -> String {
         
-        let sourceString: String = Thread.callStackSymbols[3] //steps
+        let sourceString: String = Thread.callStackSymbols[3]// 3 stacks prior to current
         let separatorSet :CharacterSet = CharacterSet(charactersIn: " -[]+?.,")
         var array = Array(sourceString.components(separatedBy: separatorSet))
         array = array.filter { $0 != "" }

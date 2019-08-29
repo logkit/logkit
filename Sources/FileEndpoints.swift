@@ -360,7 +360,14 @@ public class RotatingFileEndpoint: LXEndpoint {
     internal func barrier() -> TimeInterval? {
         return self.currentFile?.modificationDate?.timeIntervalSinceReferenceDate
     }
-
+    
+    public func getLogs() -> Data {
+        return NSData() as Data
+    }
+    
+    public func markingSent() -> Void {
+        return
+    }
 }
 
 

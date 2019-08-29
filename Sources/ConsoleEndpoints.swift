@@ -83,6 +83,14 @@ public class LXConsoleEndpoint: LXEndpoint {
         self.writer.writeData(data: data)
     }
 
+    public func getLogs() -> Data {
+        return NSData() as Data
+    }
+    
+    public func markingSent() -> Void {
+        return
+    }
+    
 }
 
 

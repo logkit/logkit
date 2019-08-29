@@ -24,7 +24,7 @@ struct Constants {
 }
 
 public class LXDataBaseEndpoint: LXEndpoint {
-    
+
     /// The minimum Priority Level a Log Entry must meet to be accepted by this Endpoint.
     public var minimumPriorityLevel: LXPriorityLevel
     /// The formatter used by this Endpoint to serialize a Log Entry’s `dateTime` property to a string.
@@ -33,7 +33,8 @@ public class LXDataBaseEndpoint: LXEndpoint {
     public var entryFormatter: LXEntryFormatter
     /// This Endpoint requires a newline character appended to each serialized Log Entry string.
     public let requiresNewlines: Bool = true
-
+    public var lastTimeStamp:Double = 0
+    
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(identifier: "info.logkit.LogKit")
         let modelURL = messageKitBundle!.url(forResource: "LogKit", withExtension: "momd")
@@ -84,7 +85,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
         let log = NSManagedObject(entity: logEntity, insertInto: managedContext)
         let logMsg = String(decoding: data, as: UTF8.self)
-        
+
         log.setValue(currentTime, forKey: "timeStamp")
         log.setValue(logMsg, forKey: "message")
         log.setValue(false, forKey: "sent")
@@ -94,28 +95,74 @@ public class LXDataBaseEndpoint: LXEndpoint {
     }
     
     //changing the sent flag once it's been sent to the server
-    func updateData() {
+    func updateData() -> String {
+        
         let managedContext = persistentContainer.viewContext
         let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
         fetchRequest.predicate = NSPredicate(format: "sent = %@", "false")
-        
+        var resultString = ""
+
         do {
             let flagDown = try managedContext.fetch(fetchRequest)
-            let objectUpdate = flagDown[0] as! NSManagedObject
-            objectUpdate.setValue(true, forKey: "sent")
-            
-            saveContext(managedContext: managedContext)
+            if (flagDown.count > 0){
+                for i in 0...flagDown.count - 1{
+                    let objectUpdate = flagDown[i] as! NSManagedObject
+                    resultString.append("\(objectUpdate.value(forKey: "message") ?? "empty") \n")
+                    lastTimeStamp = (objectUpdate.value(forKey: "timeStamp") as! Double)
+                }
+            }
+            else{
+                return "There is no new logs"
+            }
         }
         catch {
-            NSLog("Fail to update sent flags, \(error)")
+            NSLog("Failed to retrieve data, \(error)")
         }
+        return resultString;
     }
-  
+    
+    public func markingSent() -> Void {
+        let managedContext = persistentContainer.viewContext
+        
+        if (lastTimeStamp > 0){
+
+            let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
+            fetchRequest.predicate = NSPredicate(format: "timeStamp < %d", argumentArray: [lastTimeStamp])
+            do {
+                let flagDown = try managedContext.fetch(fetchRequest)
+                if (flagDown.count > 0){
+                    for i in 0...flagDown.count - 1{
+                        let objectUpdate = flagDown[i] as! NSManagedObject
+                        objectUpdate.setValue(true, forKey: "sent")
+                    }
+                }
+                else{
+                    NSLog("Failed to change sent flags")
+                }
+            }
+            catch {
+                NSLog("Failed to retrieve data, \(error)")
+            }
+            lastTimeStamp = 0
+        }
+        else{
+            NSLog("Failed to update the sent")
+        }
+        saveContext(managedContext: managedContext)
+        return
+    }
+    
+    public func getLogs() -> Data {
+        let str = updateData()
+        let data = str.data(using: String.Encoding.utf8)
+        return data!
+    }
+    
     public init(
         minimumPriorityLevel: LXPriorityLevel = .All,
         dateFormatter: LXDateFormatter = LXDateFormatter.standardFormatter(),
         entryFormatter: LXEntryFormatter = LXEntryFormatter.standardFormatter()
-        ) {
+    ) {
         self.minimumPriorityLevel = minimumPriorityLevel
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
