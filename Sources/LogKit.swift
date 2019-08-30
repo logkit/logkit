@@ -215,36 +215,36 @@ internal extension NSCalendar {
     }
 }
 
-@objc class LogKit: NSObject {
+@objc public class LogKit: NSObject {
     
     private override init() {}
     static let logger = LXLogger()
     
-    @objc static func debug(message: String) {
+    @objc static public func debug(message: String) {
         LogKit.logger.debug(message: message, functionName: getFunctionInfo())
     }
     
-    @objc static func info(message: String) {
+    @objc static public func info(message: String) {
         LogKit.logger.info(message: message, functionName: getFunctionInfo())
     }
     
-    @objc static func notice(message: String) {
+    @objc static public func notice(message: String) {
         LogKit.logger.notice(message: message, functionName: getFunctionInfo())
     }
     
-    @objc static func warning(message: String) {
+    @objc static public func warning(message: String) {
         LogKit.logger.warning(message: message, functionName: getFunctionInfo())
     }
     
-    @objc static func error(message: String) {
+    @objc static public func error(message: String) {
         LogKit.logger.error(message: message, functionName: getFunctionInfo())
     }
     
-    @objc static func critical(message: String) {
+    @objc static public func critical(message: String) {
         LogKit.logger.critical(message: message, functionName: getFunctionInfo())
     }
   
-    @objc static func pushToServer(url: NSURL, success: @escaping () -> Void, failure: @escaping (String) -> Void) {
+    @objc static public func pushToServer(url: NSURL, success: @escaping () -> Void, failure: @escaping (String) -> Void) {
         let resultLogs = LogKit.logger.getLogsData()
         //create the session object
         let session = URLSession.shared
