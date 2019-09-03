@@ -14,8 +14,8 @@
 		D00B8CBE1B2E3BC3003E5FED /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */; };
 		D00B8CD51B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D00B8CD61B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
-		D00B8CDC1B2E9126003E5FED /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D00B8CDD1B2E9126003E5FED /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00B8CDC1B2E9126003E5FED /* HyperLogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00B8CDD1B2E9126003E5FED /* HyperLogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D00B8CE31B2E9457003E5FED /* LogKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CE21B2E9457003E5FED /* LogKitTests.swift */; };
 		D00B8CE41B2E9457003E5FED /* LogKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CE21B2E9457003E5FED /* LogKitTests.swift */; };
 		D0449EA31B4C606900D7E1D3 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA21B4C606900D7E1D3 /* Entries.swift */; };
@@ -33,11 +33,11 @@
 		D0C618231BD01A12008BF5F2 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA21B4C606900D7E1D3 /* Entries.swift */; };
 		D0C618241BD01A14008BF5F2 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
 		D0C618251BD01A17008BF5F2 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA61B4C62B100D7E1D3 /* Levels.swift */; };
-		D0C6182B1BD01A28008BF5F2 /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0C6182B1BD01A28008BF5F2 /* HyperLogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0C6182C1BD01A30008BF5F2 /* LogKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CE21B2E9457003E5FED /* LogKitTests.swift */; };
 		D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
 		D0F8DD311B4B1B9100D0865A /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
-		D0F8DD321B4B1B9600D0865A /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0F8DD321B4B1B9600D0865A /* HyperLogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
 		D0F8DD351B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
 		D0F8DD361B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
@@ -77,7 +77,7 @@
 		D00B8CBD1B2E3BC3003E5FED /* HyperLogKit OSX Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HyperLogKit OSX Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00B8CD41B2E400E003E5FED /* LogKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogKit.swift; sourceTree = "<group>"; };
 		D00B8CD71B2E4157003E5FED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D00B8CDB1B2E9126003E5FED /* LogKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogKit.h; sourceTree = "<group>"; };
+		D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HyperLogKit.h; sourceTree = "<group>"; };
 		D00B8CDF1B2E9367003E5FED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D00B8CE21B2E9457003E5FED /* LogKitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogKitTests.swift; sourceTree = "<group>"; };
 		D0449EA21B4C606900D7E1D3 /* Entries.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entries.swift; sourceTree = "<group>"; };
@@ -209,7 +209,7 @@
 		D00B8CDA1B2E78AD003E5FED /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				D00B8CDB1B2E9126003E5FED /* LogKit.h */,
+				D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */,
 				D00B8CD71B2E4157003E5FED /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -242,7 +242,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D00B8CDC1B2E9126003E5FED /* LogKit.h in Headers */,
+				D00B8CDC1B2E9126003E5FED /* HyperLogKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -250,7 +250,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D00B8CDD1B2E9126003E5FED /* LogKit.h in Headers */,
+				D00B8CDD1B2E9126003E5FED /* HyperLogKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,7 +258,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0C6182B1BD01A28008BF5F2 /* LogKit.h in Headers */,
+				D0C6182B1BD01A28008BF5F2 /* HyperLogKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,7 +266,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0F8DD321B4B1B9600D0865A /* LogKit.h in Headers */,
+				D0F8DD321B4B1B9600D0865A /* HyperLogKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

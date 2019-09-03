@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D0C6180A1BD01917008BF5F2"
-               BuildableName = "LogKit.framework"
+               BuildableName = "HyperLogKit.framework"
                BlueprintName = "HyperLogKit tvOS"
                ReferencedContainer = "container:HyperLogKit.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D0C6180A1BD01917008BF5F2"
-            BuildableName = "LogKit.framework"
+            BuildableName = "HyperLogKit.framework"
             BlueprintName = "HyperLogKit tvOS"
             ReferencedContainer = "container:HyperLogKit.xcodeproj">
          </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D0C6180A1BD01917008BF5F2"
-            BuildableName = "LogKit.framework"
+            BuildableName = "HyperLogKit.framework"
             BlueprintName = "HyperLogKit tvOS"
             ReferencedContainer = "container:HyperLogKit.xcodeproj">
          </BuildableReference>
@@ -83,7 +83,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D0C6180A1BD01917008BF5F2"
-            BuildableName = "LogKit.framework"
+            BuildableName = "HyperLogKit.framework"
             BlueprintName = "HyperLogKit tvOS"
             ReferencedContainer = "container:HyperLogKit.xcodeproj">
          </BuildableReference>
