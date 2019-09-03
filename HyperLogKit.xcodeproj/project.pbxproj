@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		B82107B9230D9CD7000B3572 /* DatabaseEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */; };
 		B82107BF230DB792000B3572 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B82107BE230DB792000B3572 /* CoreData.framework */; };
-		B82107C2230DCAD8000B3572 /* HyperLogKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B82107C0230DCAD8000B3572 /* HyperLogKit.xcdatamodeld */; };
 		B8C29FBC231ED81F004A68E0 /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */; };
+		B8E5BC1C231EED8000926B3B /* HyperLogKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B8E5BC1A231EED8000926B3B /* HyperLogKit.xcdatamodeld */; };
 		D00B8C9E1B2E3B8F003E5FED /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8C921B2E3B8F003E5FED /* HyperLogKit.framework */; };
 		D00B8CD51B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D00B8CD61B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
@@ -70,7 +70,7 @@
 /* Begin PBXFileReference section */
 		B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseEndpoints.swift; sourceTree = "<group>"; };
 		B82107BE230DB792000B3572 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		B82107C1230DCAD8000B3572 /* LogKit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LogKit.xcdatamodel; sourceTree = "<group>"; };
+		B8E5BC1B231EED8000926B3B /* HyperLogKit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HyperLogKit.xcdatamodel; sourceTree = "<group>"; };
 		D00B8C921B2E3B8F003E5FED /* HyperLogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperLogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00B8C9D1B2E3B8F003E5FED /* HyperLogKit iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HyperLogKit iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperLogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -230,7 +230,7 @@
 				D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */,
 				D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */,
 				B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */,
-				B82107C0230DCAD8000B3572 /* HyperLogKit.xcdatamodeld */,
+				B8E5BC1A231EED8000926B3B /* HyperLogKit.xcdatamodeld */,
 			);
 			name = Endpoints;
 			sourceTree = "<group>";
@@ -516,8 +516,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0449EA31B4C606900D7E1D3 /* Entries.swift in Sources */,
-				B82107C2230DCAD8000B3572 /* HyperLogKit.xcdatamodeld in Sources */,
 				D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
+				B8E5BC1C231EED8000926B3B /* HyperLogKit.xcdatamodeld in Sources */,
 				D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */,
 				D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
 				D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */,
@@ -1154,12 +1154,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		B82107C0230DCAD8000B3572 /* HyperLogKit.xcdatamodeld */ = {
+		B8E5BC1A231EED8000926B3B /* HyperLogKit.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				B82107C1230DCAD8000B3572 /* LogKit.xcdatamodel */,
+				B8E5BC1B231EED8000926B3B /* HyperLogKit.xcdatamodel */,
 			);
-			currentVersion = B82107C1230DCAD8000B3572 /* LogKit.xcdatamodel */;
+			currentVersion = B8E5BC1B231EED8000926B3B /* HyperLogKit.xcdatamodel */;
 			path = HyperLogKit.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

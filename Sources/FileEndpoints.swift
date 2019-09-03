@@ -25,7 +25,7 @@ import Foundation
 /// `LXFileEndpointRotationNextURLKey` keys, respectively.
 ///
 /// This notification is send _before_ the rotation occurs.
-public let LXFileEndpointWillRotateFilesNotification: String = "info.logkit.endpoint.fileEndpoint.willRotateFiles"
+public let LXFileEndpointWillRotateFilesNotification: String = "info.hyperlogkit.endpoint.fileEndpoint.willRotateFiles"
 
 /// This notification is posted whenever a FileEndpoint-family Endpoint instance has completed rotating to a new log
 /// file.
@@ -36,16 +36,16 @@ public let LXFileEndpointWillRotateFilesNotification: String = "info.logkit.endp
 ///
 /// This notification is send _after_ the rotation occurs, but _before_ any pending Log Entries have been written to
 /// the new file.
-public let LXFileEndpointDidRotateFilesNotification:  String = "info.logkit.endpoint.fileEndpoint.didRotateFiles"
+public let LXFileEndpointDidRotateFilesNotification:  String = "info.hyperlogkit.endpoint.fileEndpoint.didRotateFiles"
 
 /// The value found at this key is the `NSURL` of the sender's previous log file.
-public let LXFileEndpointRotationPreviousURLKey:      String = "info.logkit.endpoint.fileEndpoint.previousURL"
+public let LXFileEndpointRotationPreviousURLKey:      String = "info.hyperlogkit.endpoint.fileEndpoint.previousURL"
 
 /// The value found at this key is the `NSURL` of the sender's current log file.
-public let LXFileEndpointRotationCurrentURLKey:       String = "info.logkit.endpoint.fileEndpoint.currentURL"
+public let LXFileEndpointRotationCurrentURLKey:       String = "info.hyperlogkit.endpoint.fileEndpoint.currentURL"
 
 /// The value found at this key is the `NSURL` of the sender's next log file.
-public let LXFileEndpointRotationNextURLKey:          String = "info.logkit.endpoint.fileEndpoint.nextURL"
+public let LXFileEndpointRotationNextURLKey:          String = "info.hyperlogkit.endpoint.fileEndpoint.nextURL"
 
 
 /// The default file to use when logging: `log.txt`
@@ -212,7 +212,7 @@ public class RotatingFileEndpoint: LXEndpoint {
         return file
     }()
     /// The name of the extended attribute metadata item used to identify one of this Endpoint's files.
-    private lazy var extendedAttributeKey: String = { [unowned self] in return "info.logkit.endpoint.\(type(of: self))" }()
+    private lazy var extendedAttributeKey: String = { [unowned self] in return "info.hyperlogkit.endpoint.\(type(of: self))" }()
 
     /// Initialize a Rotating File Endpoint.
     ///
