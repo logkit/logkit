@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name = 'HyperLogKit'
-    s.version = '3.0.12'
+    s.version = '3.0.13'
     s.authors = 'SolusGuard HyperLogKit'
     s.license = { :type => 'BSD', :file => 'LICENSE.txt' }
     s.summary = 'An efficient logging library for iOS – written in Swift.'
