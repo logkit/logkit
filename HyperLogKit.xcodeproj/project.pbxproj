@@ -10,8 +10,8 @@
 		B82107B9230D9CD7000B3572 /* DatabaseEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */; };
 		B82107BF230DB792000B3572 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B82107BE230DB792000B3572 /* CoreData.framework */; };
 		B82107C2230DCAD8000B3572 /* HyperLogKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B82107C0230DCAD8000B3572 /* HyperLogKit.xcdatamodeld */; };
+		B8C29FBC231ED81F004A68E0 /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */; };
 		D00B8C9E1B2E3B8F003E5FED /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8C921B2E3B8F003E5FED /* HyperLogKit.framework */; };
-		D00B8CBE1B2E3BC3003E5FED /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */; };
 		D00B8CD51B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D00B8CD61B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D00B8CDC1B2E9126003E5FED /* HyperLogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -121,7 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D00B8CBE1B2E3BC3003E5FED /* HyperLogKit.framework in Frameworks */,
+				B8C29FBC231ED81F004A68E0 /* HyperLogKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -758,7 +758,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = info.logkit.HyperLogKit;
+				PRODUCT_BUNDLE_IDENTIFIER = info.hyperlogkit.HyperLogKit;
 				PRODUCT_NAME = HyperLogKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -789,7 +789,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = info.logkit.HyperLogKit;
+				PRODUCT_BUNDLE_IDENTIFIER = info.hyperlogkit.HyperLogKit;
 				PRODUCT_NAME = HyperLogKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;

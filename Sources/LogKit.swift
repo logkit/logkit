@@ -30,7 +30,7 @@ import WatchKit
 //MARK: Global Constants
 
 /// The version of the LogKit framework currently in use.
-internal let LK_LOGKIT_VERSION = Bundle(identifier: "info.logkit.LogKit")?.infoDictionary?["CFBundleShortVersionString"] as? String ?? "2.3.2"
+internal let LK_LOGKIT_VERSION = Bundle(identifier: "info.hyperlogkit.HyperLogKit")?.infoDictionary?["CFBundleShortVersionString"] as? String ?? "3.0.7"
 
 
 /// The default queue used throughout the framework for background tasks.
@@ -40,7 +40,7 @@ internal let LK_LOGKIT_QUEUE: DispatchQueue = DispatchQueue.global()
 /// The default log file directory; `Application Support/{bundleID}/logs/`.
 internal let LK_DEFAULT_LOG_DIRECTORY: URL? = {
     if let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-        let bundleID = Bundle.main.bundleIdentifier ?? "info.logkit.LogKit"
+        let bundleID = Bundle.main.bundleIdentifier ?? "info.hyperlogkit.HyperLogKit"
         return appSupportURL.appendingPathComponent(bundleID, isDirectory: true).appendingPathComponent("logs", isDirectory: true)
     } else {
         assertionFailure("Unable to build default log file URL from main bundle ID and Application Support directory")
