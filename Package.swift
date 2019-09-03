@@ -19,5 +19,5 @@ import PackageDescription
 
 
 let package = Package(
-    name: "LogKit"
+    name: "HyperLogKit"
 )
