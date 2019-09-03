@@ -57,8 +57,8 @@ class FileEndpointTests: XCTestCase {
 
     var endpoint: LXFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .appendingPathComponent("info.logkit.test", isDirectory: true)!
-        .appendingPathComponent("info.logkit.test.endpoint.file", isDirectory: false)
+        .appendingPathComponent("info.hyperlogkit.test", isDirectory: true)!
+        .appendingPathComponent("info.hyperlogkit.test.endpoint.file", isDirectory: false)
 
     override func setUp() {
         super.setUp()
@@ -87,7 +87,7 @@ class FileEndpointTests: XCTestCase {
 
     #if !os(watchOS) // watchOS 2 does not support extended attributes
     func testXAttr() {
-        let key = "info.logkit.endpoint.FileEndpoint"
+        let key = "info.hyperlogkit.endpoint.FileEndpoint"
         let path = self.endpoint?.currentURL.path
         XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
         XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
@@ -110,8 +110,8 @@ class RotatingFileEndpointTests: XCTestCase {
 
     var endpoint: LXRotatingFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .appendingPathComponent("info.logkit.test", isDirectory: true)!
-        .appendingPathComponent("info.logkit.test.endpoint.rotatingFile", isDirectory: false)
+        .appendingPathComponent("info.hyperlogkit.test", isDirectory: true)!
+        .appendingPathComponent("info.hyperlogkit.test.endpoint.rotatingFile", isDirectory: false)
 
     override func setUp() {
         super.setUp()
@@ -137,7 +137,7 @@ class RotatingFileEndpointTests: XCTestCase {
 
     #if !os(watchOS) // watchOS 2 does not support extended attributes
     func testXAttr() {
-        let key = "info.logkit.endpoint.RotatingFileEndpoint"
+        let key = "info.hyperlogkit.endpoint.RotatingFileEndpoint"
         var path = self.endpoint?.currentURL.path
         XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
         XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
@@ -165,8 +165,8 @@ class DatedFileEndpointTests: XCTestCase {
 
     var endpoint: LXDatedFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .appendingPathComponent("info.logkit.test", isDirectory: true)!
-        .appendingPathComponent("info.logkit.test.endpoint.datedFile", isDirectory: false)
+        .appendingPathComponent("info.hyperlogkit.test", isDirectory: true)!
+        .appendingPathComponent("info.hyperlogkit.test.endpoint.datedFile", isDirectory: false)
 
     override func setUp() {
         super.setUp()
@@ -187,7 +187,7 @@ class DatedFileEndpointTests: XCTestCase {
 
     #if !os(watchOS) // watchOS 2 does not support extended attributes
     func testXAttr() {
-        let key = "info.logkit.endpoint.DatedFileEndpoint"
+        let key = "info.hyperlogkit.endpoint.DatedFileEndpoint"
         let path = self.endpoint?.currentURL.path
         XCTAssertGreaterThanOrEqual(getxattr(path!, key, nil, 0, 0, 0), 0, "The xattr is not present")
         XCTAssertEqual(removexattr(path!, key, 0), 0, "The xattr could not be removed")
@@ -231,8 +231,8 @@ class LoggerTests: XCTestCase {
     var log: LXLogger?
     var fileEndpoint: LXFileEndpoint?
     let endpointURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        .appendingPathComponent("info.logkit.test", isDirectory: true)!
-        .appendingPathComponent("info.logkit.test.logger", isDirectory: false)
+        .appendingPathComponent("info.hyperlogkit.test", isDirectory: true)!
+        .appendingPathComponent("info.hyperlogkit.test.logger", isDirectory: false)
     let entryFormatter = LXEntryFormatter({ e in "[\(e.level.uppercased())] \(e.message)" }) // Nothing variable.
 
     override func setUp() {

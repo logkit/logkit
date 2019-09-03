@@ -1,13 +1,13 @@
 language: objective-c
-osx_image: xcode7.3
+osx_image: xcode10.3
 
 env:
   global:
-    - PROJECT=LogKit.xcodeproj
-    - SCHEME_OSX="LogKit OSX"
-    - SCHEME_IOS="LogKit iOS"
-    - SCHEME_TVOS="LogKit tvOS"
-    - SCHEME_WATCHOS="LogKit watchOS"
+    - PROJECT=HyperLogKit.xcodeproj
+    - SCHEME_OSX="HyperLogKit OSX"
+    - SCHEME_IOS="HyperLogKit iOS"
+    - SCHEME_TVOS="HyperLogKit tvOS"
+    - SCHEME_WATCHOS="HyperLogKit watchOS"
 
   matrix:
     - DEST="arch=x86_64"                    SCHEME="$SCHEME_OSX"     ACTION="test"  TOOL="XCODE"
