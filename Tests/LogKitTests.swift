@@ -17,7 +17,7 @@
 
 import Foundation
 import XCTest
-@testable import LogKit
+@testable import HyperLogKit
 
 
 class PriorityLevelTests: XCTestCase {
