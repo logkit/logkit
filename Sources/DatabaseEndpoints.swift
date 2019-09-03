@@ -36,10 +36,10 @@ public class LXDataBaseEndpoint: LXEndpoint {
     public var lastTimeStamp:Double = 0
     
     lazy var persistentContainer: NSPersistentContainer = {
-        let messageKitBundle = Bundle(identifier: "info.logkit.LogKit")
-        let modelURL = messageKitBundle!.url(forResource: "LogKit", withExtension: "momd")
+        let messageKitBundle = Bundle(identifier: "info.logkit.HyperLogKit")
+        let modelURL = messageKitBundle!.url(forResource: "HyperLogKit", withExtension: "momd")
         let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL!)
-        let container = NSPersistentContainer(name: "LogKit", managedObjectModel: managedObjectModel!)
+        let container = NSPersistentContainer(name: "HyperLogKit", managedObjectModel: managedObjectModel!)
  
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {

@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		B82107B9230D9CD7000B3572 /* DatabaseEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */; };
 		B82107BF230DB792000B3572 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B82107BE230DB792000B3572 /* CoreData.framework */; };
-		B82107C2230DCAD8000B3572 /* LogKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B82107C0230DCAD8000B3572 /* LogKit.xcdatamodeld */; };
-		D00B8C9E1B2E3B8F003E5FED /* LogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8C921B2E3B8F003E5FED /* LogKit.framework */; };
-		D00B8CBE1B2E3BC3003E5FED /* LogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8CB31B2E3BC3003E5FED /* LogKit.framework */; };
+		B82107C2230DCAD8000B3572 /* HyperLogKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B82107C0230DCAD8000B3572 /* HyperLogKit.xcdatamodeld */; };
+		D00B8C9E1B2E3B8F003E5FED /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8C921B2E3B8F003E5FED /* HyperLogKit.framework */; };
+		D00B8CBE1B2E3BC3003E5FED /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */; };
 		D00B8CD51B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D00B8CD61B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D00B8CDC1B2E9126003E5FED /* LogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* LogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -28,7 +28,7 @@
 		D0449EAF1B4C66BC00D7E1D3 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */; };
 		D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
 		D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
-		D0C618151BD01918008BF5F2 /* LogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C6180B1BD01917008BF5F2 /* LogKit.framework */; };
+		D0C618151BD01918008BF5F2 /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C6180B1BD01917008BF5F2 /* HyperLogKit.framework */; };
 		D0C618221BD01A0F008BF5F2 /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
 		D0C618231BD01A12008BF5F2 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA21B4C606900D7E1D3 /* Entries.swift */; };
 		D0C618241BD01A14008BF5F2 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
@@ -71,10 +71,10 @@
 		B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseEndpoints.swift; sourceTree = "<group>"; };
 		B82107BE230DB792000B3572 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		B82107C1230DCAD8000B3572 /* LogKit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LogKit.xcdatamodel; sourceTree = "<group>"; };
-		D00B8C921B2E3B8F003E5FED /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D00B8C9D1B2E3B8F003E5FED /* LogKit iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "LogKit iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D00B8CB31B2E3BC3003E5FED /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D00B8CBD1B2E3BC3003E5FED /* LogKit OSX Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "LogKit OSX Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D00B8C921B2E3B8F003E5FED /* HyperLogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperLogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D00B8C9D1B2E3B8F003E5FED /* HyperLogKit iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HyperLogKit iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperLogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D00B8CBD1B2E3BC3003E5FED /* HyperLogKit OSX Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HyperLogKit OSX Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00B8CD41B2E400E003E5FED /* LogKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogKit.swift; sourceTree = "<group>"; };
 		D00B8CD71B2E4157003E5FED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D00B8CDB1B2E9126003E5FED /* LogKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogKit.h; sourceTree = "<group>"; };
@@ -86,10 +86,10 @@
 		D0449EAE1B4C66BC00D7E1D3 /* Endpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Endpoints.swift; sourceTree = "<group>"; };
 		D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleEndpoints.swift; sourceTree = "<group>"; };
 		D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEndpoints.swift; sourceTree = "<group>"; };
-		D0C6180B1BD01917008BF5F2 /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D0C618141BD01918008BF5F2 /* LogKit tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "LogKit tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0C6180B1BD01917008BF5F2 /* HyperLogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperLogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0C618141BD01918008BF5F2 /* HyperLogKit tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HyperLogKit tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPEndpoints.swift; sourceTree = "<group>"; };
-		D0F8DD291B4B1ADC00D0865A /* LogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0F8DD291B4B1ADC00D0865A /* HyperLogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperLogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0F8DD331B4B253700D0865A /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -106,7 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D00B8C9E1B2E3B8F003E5FED /* LogKit.framework in Frameworks */,
+				D00B8C9E1B2E3B8F003E5FED /* HyperLogKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,7 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D00B8CBE1B2E3BC3003E5FED /* LogKit.framework in Frameworks */,
+				D00B8CBE1B2E3BC3003E5FED /* HyperLogKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,7 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0C618151BD01918008BF5F2 /* LogKit.framework in Frameworks */,
+				D0C618151BD01918008BF5F2 /* HyperLogKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,13 +171,13 @@
 		D00B8C931B2E3B8F003E5FED /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D00B8CB31B2E3BC3003E5FED /* LogKit.framework */,
-				D00B8CBD1B2E3BC3003E5FED /* LogKit OSX Tests.xctest */,
-				D00B8C921B2E3B8F003E5FED /* LogKit.framework */,
-				D00B8C9D1B2E3B8F003E5FED /* LogKit iOS Tests.xctest */,
-				D0C6180B1BD01917008BF5F2 /* LogKit.framework */,
-				D0C618141BD01918008BF5F2 /* LogKit tvOS Tests.xctest */,
-				D0F8DD291B4B1ADC00D0865A /* LogKit.framework */,
+				D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */,
+				D00B8CBD1B2E3BC3003E5FED /* HyperLogKit OSX Tests.xctest */,
+				D00B8C921B2E3B8F003E5FED /* HyperLogKit.framework */,
+				D00B8C9D1B2E3B8F003E5FED /* HyperLogKit iOS Tests.xctest */,
+				D0C6180B1BD01917008BF5F2 /* HyperLogKit.framework */,
+				D0C618141BD01918008BF5F2 /* HyperLogKit tvOS Tests.xctest */,
+				D0F8DD291B4B1ADC00D0865A /* HyperLogKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -230,7 +230,7 @@
 				D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */,
 				D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */,
 				B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */,
-				B82107C0230DCAD8000B3572 /* LogKit.xcdatamodeld */,
+				B82107C0230DCAD8000B3572 /* HyperLogKit.xcdatamodeld */,
 			);
 			name = Endpoints;
 			sourceTree = "<group>";
@@ -273,9 +273,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D00B8C911B2E3B8F003E5FED /* LogKit iOS */ = {
+		D00B8C911B2E3B8F003E5FED /* HyperLogKit iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D00B8CA81B2E3B8F003E5FED /* Build configuration list for PBXNativeTarget "LogKit iOS" */;
+			buildConfigurationList = D00B8CA81B2E3B8F003E5FED /* Build configuration list for PBXNativeTarget "HyperLogKit iOS" */;
 			buildPhases = (
 				D00B8C8D1B2E3B8F003E5FED /* Sources */,
 				D00B8C8E1B2E3B8F003E5FED /* Frameworks */,
@@ -286,14 +286,14 @@
 			);
 			dependencies = (
 			);
-			name = "LogKit iOS";
+			name = "HyperLogKit iOS";
 			productName = LogKit;
-			productReference = D00B8C921B2E3B8F003E5FED /* LogKit.framework */;
+			productReference = D00B8C921B2E3B8F003E5FED /* HyperLogKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		D00B8C9C1B2E3B8F003E5FED /* LogKit iOS Tests */ = {
+		D00B8C9C1B2E3B8F003E5FED /* HyperLogKit iOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D00B8CAB1B2E3B8F003E5FED /* Build configuration list for PBXNativeTarget "LogKit iOS Tests" */;
+			buildConfigurationList = D00B8CAB1B2E3B8F003E5FED /* Build configuration list for PBXNativeTarget "HyperLogKit iOS Tests" */;
 			buildPhases = (
 				D00B8C991B2E3B8F003E5FED /* Sources */,
 				D00B8C9A1B2E3B8F003E5FED /* Frameworks */,
@@ -304,14 +304,14 @@
 			dependencies = (
 				D00B8CA01B2E3B8F003E5FED /* PBXTargetDependency */,
 			);
-			name = "LogKit iOS Tests";
+			name = "HyperLogKit iOS Tests";
 			productName = LogKitTests;
-			productReference = D00B8C9D1B2E3B8F003E5FED /* LogKit iOS Tests.xctest */;
+			productReference = D00B8C9D1B2E3B8F003E5FED /* HyperLogKit iOS Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		D00B8CB21B2E3BC3003E5FED /* LogKit OSX */ = {
+		D00B8CB21B2E3BC3003E5FED /* HyperLogKit OSX */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D00B8CC61B2E3BC3003E5FED /* Build configuration list for PBXNativeTarget "LogKit OSX" */;
+			buildConfigurationList = D00B8CC61B2E3BC3003E5FED /* Build configuration list for PBXNativeTarget "HyperLogKit OSX" */;
 			buildPhases = (
 				D00B8CAE1B2E3BC3003E5FED /* Sources */,
 				D00B8CAF1B2E3BC3003E5FED /* Frameworks */,
@@ -322,14 +322,14 @@
 			);
 			dependencies = (
 			);
-			name = "LogKit OSX";
+			name = "HyperLogKit OSX";
 			productName = "LogKit OSX";
-			productReference = D00B8CB31B2E3BC3003E5FED /* LogKit.framework */;
+			productReference = D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		D00B8CBC1B2E3BC3003E5FED /* LogKit OSX Tests */ = {
+		D00B8CBC1B2E3BC3003E5FED /* HyperLogKit OSX Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D00B8CC91B2E3BC3003E5FED /* Build configuration list for PBXNativeTarget "LogKit OSX Tests" */;
+			buildConfigurationList = D00B8CC91B2E3BC3003E5FED /* Build configuration list for PBXNativeTarget "HyperLogKit OSX Tests" */;
 			buildPhases = (
 				D00B8CB91B2E3BC3003E5FED /* Sources */,
 				D00B8CBA1B2E3BC3003E5FED /* Frameworks */,
@@ -340,14 +340,14 @@
 			dependencies = (
 				D00B8CC01B2E3BC3003E5FED /* PBXTargetDependency */,
 			);
-			name = "LogKit OSX Tests";
+			name = "HyperLogKit OSX Tests";
 			productName = "LogKit OSXTests";
-			productReference = D00B8CBD1B2E3BC3003E5FED /* LogKit OSX Tests.xctest */;
+			productReference = D00B8CBD1B2E3BC3003E5FED /* HyperLogKit OSX Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		D0C6180A1BD01917008BF5F2 /* LogKit tvOS */ = {
+		D0C6180A1BD01917008BF5F2 /* HyperLogKit tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D0C618201BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "LogKit tvOS" */;
+			buildConfigurationList = D0C618201BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "HyperLogKit tvOS" */;
 			buildPhases = (
 				D0C618061BD01917008BF5F2 /* Sources */,
 				D0C618071BD01917008BF5F2 /* Frameworks */,
@@ -358,14 +358,14 @@
 			);
 			dependencies = (
 			);
-			name = "LogKit tvOS";
+			name = "HyperLogKit tvOS";
 			productName = "LogKit tvOS";
-			productReference = D0C6180B1BD01917008BF5F2 /* LogKit.framework */;
+			productReference = D0C6180B1BD01917008BF5F2 /* HyperLogKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		D0C618131BD01918008BF5F2 /* LogKit tvOS Tests */ = {
+		D0C618131BD01918008BF5F2 /* HyperLogKit tvOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D0C618211BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "LogKit tvOS Tests" */;
+			buildConfigurationList = D0C618211BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "HyperLogKit tvOS Tests" */;
 			buildPhases = (
 				D0C618101BD01918008BF5F2 /* Sources */,
 				D0C618111BD01918008BF5F2 /* Frameworks */,
@@ -376,14 +376,14 @@
 			dependencies = (
 				D0C618171BD01918008BF5F2 /* PBXTargetDependency */,
 			);
-			name = "LogKit tvOS Tests";
+			name = "HyperLogKit tvOS Tests";
 			productName = "LogKit tvOSTests";
-			productReference = D0C618141BD01918008BF5F2 /* LogKit tvOS Tests.xctest */;
+			productReference = D0C618141BD01918008BF5F2 /* HyperLogKit tvOS Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		D0F8DD281B4B1ADC00D0865A /* LogKit watchOS */ = {
+		D0F8DD281B4B1ADC00D0865A /* HyperLogKit watchOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "LogKit watchOS" */;
+			buildConfigurationList = D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "HyperLogKit watchOS" */;
 			buildPhases = (
 				D0F8DD241B4B1ADC00D0865A /* Sources */,
 				D0F8DD251B4B1ADC00D0865A /* Frameworks */,
@@ -394,9 +394,9 @@
 			);
 			dependencies = (
 			);
-			name = "LogKit watchOS";
+			name = "HyperLogKit watchOS";
 			productName = "LogKit Watch";
-			productReference = D0F8DD291B4B1ADC00D0865A /* LogKit.framework */;
+			productReference = D0F8DD291B4B1ADC00D0865A /* HyperLogKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -434,7 +434,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D00B8C8C1B2E3B8F003E5FED /* Build configuration list for PBXProject "LogKit" */;
+			buildConfigurationList = D00B8C8C1B2E3B8F003E5FED /* Build configuration list for PBXProject "HyperLogKit" */;
 			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -447,13 +447,13 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D00B8CB21B2E3BC3003E5FED /* LogKit OSX */,
-				D00B8CBC1B2E3BC3003E5FED /* LogKit OSX Tests */,
-				D00B8C911B2E3B8F003E5FED /* LogKit iOS */,
-				D00B8C9C1B2E3B8F003E5FED /* LogKit iOS Tests */,
-				D0C6180A1BD01917008BF5F2 /* LogKit tvOS */,
-				D0C618131BD01918008BF5F2 /* LogKit tvOS Tests */,
-				D0F8DD281B4B1ADC00D0865A /* LogKit watchOS */,
+				D00B8CB21B2E3BC3003E5FED /* HyperLogKit OSX */,
+				D00B8CBC1B2E3BC3003E5FED /* HyperLogKit OSX Tests */,
+				D00B8C911B2E3B8F003E5FED /* HyperLogKit iOS */,
+				D00B8C9C1B2E3B8F003E5FED /* HyperLogKit iOS Tests */,
+				D0C6180A1BD01917008BF5F2 /* HyperLogKit tvOS */,
+				D0C618131BD01918008BF5F2 /* HyperLogKit tvOS Tests */,
+				D0F8DD281B4B1ADC00D0865A /* HyperLogKit watchOS */,
 			);
 		};
 /* End PBXProject section */
@@ -516,7 +516,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0449EA31B4C606900D7E1D3 /* Entries.swift in Sources */,
-				B82107C2230DCAD8000B3572 /* LogKit.xcdatamodeld in Sources */,
+				B82107C2230DCAD8000B3572 /* HyperLogKit.xcdatamodeld in Sources */,
 				D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
 				D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */,
 				D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
@@ -591,17 +591,17 @@
 /* Begin PBXTargetDependency section */
 		D00B8CA01B2E3B8F003E5FED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D00B8C911B2E3B8F003E5FED /* LogKit iOS */;
+			target = D00B8C911B2E3B8F003E5FED /* HyperLogKit iOS */;
 			targetProxy = D00B8C9F1B2E3B8F003E5FED /* PBXContainerItemProxy */;
 		};
 		D00B8CC01B2E3BC3003E5FED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D00B8CB21B2E3BC3003E5FED /* LogKit OSX */;
+			target = D00B8CB21B2E3BC3003E5FED /* HyperLogKit OSX */;
 			targetProxy = D00B8CBF1B2E3BC3003E5FED /* PBXContainerItemProxy */;
 		};
 		D0C618171BD01918008BF5F2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D0C6180A1BD01917008BF5F2 /* LogKit tvOS */;
+			target = D0C6180A1BD01917008BF5F2 /* HyperLogKit tvOS */;
 			targetProxy = D0C618161BD01918008BF5F2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -758,8 +758,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = LogKit;
+				PRODUCT_BUNDLE_IDENTIFIER = info.logkit.HyperLogKit;
+				PRODUCT_NAME = HyperLogKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -789,8 +789,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = LogKit;
+				PRODUCT_BUNDLE_IDENTIFIER = info.logkit.HyperLogKit;
+				PRODUCT_NAME = HyperLogKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -859,7 +859,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = LogKit;
+				PRODUCT_NAME = HyperLogKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -888,7 +888,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = LogKit;
+				PRODUCT_NAME = HyperLogKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -962,7 +962,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = LogKit;
+				PRODUCT_NAME = HyperLogKit;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -987,7 +987,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "info.logkit.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = LogKit;
+				PRODUCT_NAME = HyperLogKit;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -1045,7 +1045,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = info.logkit.LogKit;
-				PRODUCT_NAME = LogKit;
+				PRODUCT_NAME = HyperLogKit;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -1069,7 +1069,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = info.logkit.LogKit;
-				PRODUCT_NAME = LogKit;
+				PRODUCT_NAME = HyperLogKit;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -1079,7 +1079,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D00B8C8C1B2E3B8F003E5FED /* Build configuration list for PBXProject "LogKit" */ = {
+		D00B8C8C1B2E3B8F003E5FED /* Build configuration list for PBXProject "HyperLogKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D00B8CA61B2E3B8F003E5FED /* Debug */,
@@ -1088,7 +1088,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D00B8CA81B2E3B8F003E5FED /* Build configuration list for PBXNativeTarget "LogKit iOS" */ = {
+		D00B8CA81B2E3B8F003E5FED /* Build configuration list for PBXNativeTarget "HyperLogKit iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D00B8CA91B2E3B8F003E5FED /* Debug */,
@@ -1097,7 +1097,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D00B8CAB1B2E3B8F003E5FED /* Build configuration list for PBXNativeTarget "LogKit iOS Tests" */ = {
+		D00B8CAB1B2E3B8F003E5FED /* Build configuration list for PBXNativeTarget "HyperLogKit iOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D00B8CAC1B2E3B8F003E5FED /* Debug */,
@@ -1106,7 +1106,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D00B8CC61B2E3BC3003E5FED /* Build configuration list for PBXNativeTarget "LogKit OSX" */ = {
+		D00B8CC61B2E3BC3003E5FED /* Build configuration list for PBXNativeTarget "HyperLogKit OSX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D00B8CC71B2E3BC3003E5FED /* Debug */,
@@ -1115,7 +1115,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D00B8CC91B2E3BC3003E5FED /* Build configuration list for PBXNativeTarget "LogKit OSX Tests" */ = {
+		D00B8CC91B2E3BC3003E5FED /* Build configuration list for PBXNativeTarget "HyperLogKit OSX Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D00B8CCA1B2E3BC3003E5FED /* Debug */,
@@ -1124,7 +1124,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D0C618201BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "LogKit tvOS" */ = {
+		D0C618201BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "HyperLogKit tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D0C6181C1BD01918008BF5F2 /* Debug */,
@@ -1133,7 +1133,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D0C618211BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "LogKit tvOS Tests" */ = {
+		D0C618211BD01918008BF5F2 /* Build configuration list for PBXNativeTarget "HyperLogKit tvOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D0C6181E1BD01918008BF5F2 /* Debug */,
@@ -1142,7 +1142,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "LogKit watchOS" */ = {
+		D0F8DD301B4B1ADC00D0865A /* Build configuration list for PBXNativeTarget "HyperLogKit watchOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D0F8DD2E1B4B1ADC00D0865A /* Debug */,
@@ -1154,13 +1154,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		B82107C0230DCAD8000B3572 /* LogKit.xcdatamodeld */ = {
+		B82107C0230DCAD8000B3572 /* HyperLogKit.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
 				B82107C1230DCAD8000B3572 /* LogKit.xcdatamodel */,
 			);
 			currentVersion = B82107C1230DCAD8000B3572 /* LogKit.xcdatamodel */;
-			path = LogKit.xcdatamodeld;
+			path = HyperLogKit.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
