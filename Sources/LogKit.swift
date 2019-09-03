@@ -30,7 +30,7 @@ import WatchKit
 //MARK: Global Constants
 
 /// The version of the LogKit framework currently in use.
-internal let LK_LOGKIT_VERSION = Bundle(identifier: "info.hyperlogkit.HyperLogKit")?.infoDictionary?["CFBundleShortVersionString"] as? String ?? "3.0.7"
+internal let LK_LOGKIT_VERSION = Bundle(identifier: "info.hyperlogkit.HyperLogKit")?.infoDictionary?["CFBundleShortVersionString"] as? String ?? "3.0.11"
 
 
 /// The default queue used throughout the framework for background tasks.
