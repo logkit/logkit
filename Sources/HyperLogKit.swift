@@ -215,37 +215,37 @@ internal extension NSCalendar {
     }
 }
 
-@objc public class LogKit: NSObject {
+@objc public class HyperLogKit: NSObject {
     
     private override init() {}
     static let logger = LXLogger()
     
     @objc static public func debug(message: String) {
-        LogKit.logger.debug(message: message, functionName: getFunctionInfo())
+        HyperLogKit.logger.debug(message: message, functionName: getFunctionInfo())
     }
     
     @objc static public func info(message: String) {
-        LogKit.logger.info(message: message, functionName: getFunctionInfo())
+        HyperLogKit.logger.info(message: message, functionName: getFunctionInfo())
     }
     
     @objc static public func notice(message: String) {
-        LogKit.logger.notice(message: message, functionName: getFunctionInfo())
+        HyperLogKit.logger.notice(message: message, functionName: getFunctionInfo())
     }
     
     @objc static public func warning(message: String) {
-        LogKit.logger.warning(message: message, functionName: getFunctionInfo())
+        HyperLogKit.logger.warning(message: message, functionName: getFunctionInfo())
     }
     
     @objc static public func error(message: String) {
-        LogKit.logger.error(message: message, functionName: getFunctionInfo())
+        HyperLogKit.logger.error(message: message, functionName: getFunctionInfo())
     }
     
     @objc static public func critical(message: String) {
-        LogKit.logger.critical(message: message, functionName: getFunctionInfo())
+        HyperLogKit.logger.critical(message: message, functionName: getFunctionInfo())
     }
   
     @objc static public func pushToServer(url: NSURL, success: @escaping () -> Void, failure: @escaping (String) -> Void) {
-        let resultLogs = LogKit.logger.getLogsData()
+        let resultLogs = HyperLogKit.logger.getLogsData()
         //create the session object
         let session = URLSession.shared
         
@@ -273,7 +273,7 @@ internal extension NSCalendar {
                     return
                 }
                 NSLog("\(json)")
-                LogKit.logger.sentSuccessful()
+                HyperLogKit.logger.sentSuccessful()
                 success()
             } catch let error {
                 NSLog("\(error.localizedDescription)")
