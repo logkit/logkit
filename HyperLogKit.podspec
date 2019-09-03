@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
     s.documentation_url = 'https://github.com/solusguard/HyperLogKit/'
 
     s.swift_version = '5.0'
-    s.ios.deployment_target = '10.0'
+    s.ios.deployment_target = '11.0'
 
     s.requires_arc = true
     s.frameworks = 'Foundation'
