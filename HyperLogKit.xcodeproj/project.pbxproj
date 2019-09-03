@@ -12,8 +12,8 @@
 		B8C29FBC231ED81F004A68E0 /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */; };
 		B8E5BC1C231EED8000926B3B /* HyperLogKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B8E5BC1A231EED8000926B3B /* HyperLogKit.xcdatamodeld */; };
 		D00B8C9E1B2E3B8F003E5FED /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8C921B2E3B8F003E5FED /* HyperLogKit.framework */; };
-		D00B8CD51B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
-		D00B8CD61B2E400E003E5FED /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
+		D00B8CD51B2E400E003E5FED /* HyperLogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* HyperLogKit.swift */; };
+		D00B8CD61B2E400E003E5FED /* HyperLogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* HyperLogKit.swift */; };
 		D00B8CDC1B2E9126003E5FED /* HyperLogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D00B8CDD1B2E9126003E5FED /* HyperLogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D00B8CE31B2E9457003E5FED /* LogKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CE21B2E9457003E5FED /* LogKitTests.swift */; };
@@ -29,14 +29,14 @@
 		D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */; };
 		D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */; };
 		D0C618151BD01918008BF5F2 /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C6180B1BD01917008BF5F2 /* HyperLogKit.framework */; };
-		D0C618221BD01A0F008BF5F2 /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
+		D0C618221BD01A0F008BF5F2 /* HyperLogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* HyperLogKit.swift */; };
 		D0C618231BD01A12008BF5F2 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA21B4C606900D7E1D3 /* Entries.swift */; };
 		D0C618241BD01A14008BF5F2 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
 		D0C618251BD01A17008BF5F2 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0449EA61B4C62B100D7E1D3 /* Levels.swift */; };
 		D0C6182B1BD01A28008BF5F2 /* HyperLogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0C6182C1BD01A30008BF5F2 /* LogKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CE21B2E9457003E5FED /* LogKitTests.swift */; };
 		D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */; };
-		D0F8DD311B4B1B9100D0865A /* LogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* LogKit.swift */; };
+		D0F8DD311B4B1B9100D0865A /* HyperLogKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B8CD41B2E400E003E5FED /* HyperLogKit.swift */; };
 		D0F8DD321B4B1B9600D0865A /* HyperLogKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
 		D0F8DD351B4B253700D0865A /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F8DD331B4B253700D0865A /* Formatters.swift */; };
@@ -75,7 +75,7 @@
 		D00B8C9D1B2E3B8F003E5FED /* HyperLogKit iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HyperLogKit iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperLogKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00B8CBD1B2E3BC3003E5FED /* HyperLogKit OSX Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HyperLogKit OSX Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D00B8CD41B2E400E003E5FED /* LogKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogKit.swift; sourceTree = "<group>"; };
+		D00B8CD41B2E400E003E5FED /* HyperLogKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperLogKit.swift; sourceTree = "<group>"; };
 		D00B8CD71B2E4157003E5FED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D00B8CDB1B2E9126003E5FED /* HyperLogKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HyperLogKit.h; sourceTree = "<group>"; };
 		D00B8CDF1B2E9367003E5FED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -185,7 +185,7 @@
 		D00B8CD21B2E3FF2003E5FED /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				D00B8CD41B2E400E003E5FED /* LogKit.swift */,
+				D00B8CD41B2E400E003E5FED /* HyperLogKit.swift */,
 				D0449EA21B4C606900D7E1D3 /* Entries.swift */,
 				D0F8DD331B4B253700D0865A /* Formatters.swift */,
 				D0449EA61B4C62B100D7E1D3 /* Levels.swift */,
@@ -525,7 +525,7 @@
 				D0449EA71B4C62B100D7E1D3 /* Levels.swift in Sources */,
 				B82107B9230D9CD7000B3572 /* DatabaseEndpoints.swift in Sources */,
 				D0449EAF1B4C66BC00D7E1D3 /* Endpoints.swift in Sources */,
-				D00B8CD51B2E400E003E5FED /* LogKit.swift in Sources */,
+				D00B8CD51B2E400E003E5FED /* HyperLogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,7 +544,7 @@
 				D0449EA41B4C606900D7E1D3 /* Entries.swift in Sources */,
 				D0F8DD351B4B253700D0865A /* Formatters.swift in Sources */,
 				D0449EA81B4C62B100D7E1D3 /* Levels.swift in Sources */,
-				D00B8CD61B2E400E003E5FED /* LogKit.swift in Sources */,
+				D00B8CD61B2E400E003E5FED /* HyperLogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -563,7 +563,7 @@
 				D0C618241BD01A14008BF5F2 /* Formatters.swift in Sources */,
 				D0C618231BD01A12008BF5F2 /* Entries.swift in Sources */,
 				D0C618251BD01A17008BF5F2 /* Levels.swift in Sources */,
-				D0C618221BD01A0F008BF5F2 /* LogKit.swift in Sources */,
+				D0C618221BD01A0F008BF5F2 /* HyperLogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,7 +582,7 @@
 				D0449EA51B4C606900D7E1D3 /* Entries.swift in Sources */,
 				D0F8DD361B4B253700D0865A /* Formatters.swift in Sources */,
 				D0449EA91B4C62B100D7E1D3 /* Levels.swift in Sources */,
-				D0F8DD311B4B1B9100D0865A /* LogKit.swift in Sources */,
+				D0F8DD311B4B1B9100D0865A /* HyperLogKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
