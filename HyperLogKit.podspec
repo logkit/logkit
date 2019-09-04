@@ -18,5 +18,5 @@ Pod::Spec.new do |s|
     s.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DLogKitAdvertisingIDDisabled' }
 
     s.source_files = 'Sources/*.swift'
-    s.resource_bundles = {'HyperLogKit' => ['Sources/*.xcdatamodeld']}
+    s.resource = "Sources/*.xcdatamodeld"
 end

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14492.1" systemVersion="18G87" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Logs" representedClassName="Logs" isAbstract="YES" syncable="YES" codeGenerationType="class">
+    <entity name="Logs" representedClassName="Logs" syncable="YES" codeGenerationType="class">
         <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sent" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="timeStamp" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
