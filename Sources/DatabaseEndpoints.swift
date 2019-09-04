@@ -36,8 +36,8 @@ public class LXDataBaseEndpoint: LXEndpoint {
     public var lastTimeStamp:Double = 0
     
     lazy var persistentContainer: NSPersistentContainer = {
-        let messageKitBundle = Bundle(identifier: "info.hyperlogkit.HyperLogKit")
-        let modelURL = messageKitBundle!.url(forResource: "HyperLogKit", withExtension: "momd")
+        let messageKitBundle = Bundle(for: LXDataBaseEndpoint.self)
+        let modelURL = messageKitBundle.url(forResource: "HyperLogKit", withExtension: "momd")
         let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL!)
         let container = NSPersistentContainer(name: "HyperLogKit", managedObjectModel: managedObjectModel!)
  
