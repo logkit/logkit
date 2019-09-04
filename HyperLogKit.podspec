@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name = 'HyperLogKit'
-    s.version = '3.0.13'
+    s.version = '3.0.14'
     s.authors = 'SolusGuard HyperLogKit'
     s.license = { :type => 'BSD', :file => 'LICENSE.txt' }
     s.summary = 'An efficient logging library for iOS – written in Swift.'
@@ -14,8 +14,9 @@ Pod::Spec.new do |s|
 
     s.requires_arc = true
     s.frameworks = 'Foundation'
+    s.frameworks = 'CoreData'
     s.pod_target_xcconfig = { 'OTHER_SWIFT_FLAGS' => '-DLogKitAdvertisingIDDisabled' }
 
     s.source_files = 'Sources/*.swift'
-    s.resource_bundles = {'LogKit' => ['Sources/*.xcdatamodeld']}
+    s.resource_bundles = {'HyperLogKit' => ['Sources/*.xcdatamodeld']}
 end
