@@ -79,7 +79,6 @@ public class LXDataBaseEndpoint: LXEndpoint {
         catch {
             NSLog("Failed to delete old data")
         }
-        saveContext(managedContext: managedContext)
         
         //Inserting new log into DB
         let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
