@@ -79,10 +79,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         catch {
             NSLog("Failed to delete old data")
         }
-        
-        LK_LOGKIT_QUEUE.async {
-            self.saveContext(managedContext: managedContext)
-        }
+        saveContext(managedContext: managedContext)
         
         //Inserting new log into DB
         let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
@@ -92,11 +89,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         log.setValue(currentTime, forKey: "timeStamp")
         log.setValue(logMsg, forKey: "message")
         log.setValue(false, forKey: "sent")
-
-        LK_LOGKIT_QUEUE.async {
-            self.saveContext(managedContext: managedContext)
-        }
-
+        saveContext(managedContext: managedContext)
     }
     
     //changing the sent flag once it's been sent to the server
@@ -153,9 +146,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
         else{
             NSLog("Failed to update the sent")
         }
-        LK_LOGKIT_QUEUE.async {
-            self.saveContext(managedContext: managedContext)
-        }
+        saveContext(managedContext: managedContext)
         return
     }
     
