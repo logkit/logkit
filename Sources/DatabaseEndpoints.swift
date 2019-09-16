@@ -50,13 +50,16 @@ public class LXDataBaseEndpoint: LXEndpoint {
     }()
     
     func saveContext(managedContext: NSManagedObjectContext) {
-
-        if managedContext.hasChanges {
-            do {
-                try managedContext.save()
-            } catch {
-                let nserror = error as NSError
-                NSLog("Unresolved error \(nserror), \(nserror.userInfo)")
+        managedContext.performAndWait {
+            if managedContext.hasChanges {
+                do {
+                    try managedContext.save()
+                } catch {
+                    let nserror = error as NSError
+                    NSLog("Unresolved error \(nserror), \(nserror.userInfo)")
+                    print("Error: \(error)\nCould not save Core Data context.")
+                }
+                managedContext.reset() // It will reset the context to clean up the cache and lower the memory.
             }
         }
     }
@@ -80,9 +83,13 @@ public class LXDataBaseEndpoint: LXEndpoint {
             NSLog("Failed to delete old data")
         }
         
-        //Inserting new log into DB
-        let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
-        let log = NSManagedObject(entity: logEntity, insertInto: managedContext)
+//        //Inserting new log into DB
+        guard let logs = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext) else {
+            print("Error: Failed to create a new object!")
+            return
+        }
+        
+        let log = NSManagedObject(entity: logs, insertInto: managedContext)
         let logMsg = String(decoding: data, as: UTF8.self)
 
         log.setValue(currentTime, forKey: "timeStamp")
