@@ -33,126 +33,15 @@ public class LXDataBaseEndpoint: LXEndpoint {
     public var entryFormatter: LXEntryFormatter
     /// This Endpoint requires a newline character appended to each serialized Log Entry string.
     public let requiresNewlines: Bool = true
-    public var lastTimeStamp:Double = 0
-    
-    lazy var persistentContainer: NSPersistentContainer = {
-        let messageKitBundle = Bundle(for: LXDataBaseEndpoint.self)
-        let modelURL = messageKitBundle.url(forResource: "HyperLogKit", withExtension: "momd")
-        let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL!)
-        let container = NSPersistentContainer(name: "HyperLogKit", managedObjectModel: managedObjectModel!)
- 
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-                NSLog("Unresolved error \(error), \(error.userInfo)")
-            }
-        })
-        return container
-    }()
-    
-    func saveContext(managedContext: NSManagedObjectContext) {
-
-        if managedContext.hasChanges {
-            do {
-                try managedContext.save()
-            } catch {
-                let nserror = error as NSError
-                NSLog("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-        }
-    }
-    
-    func createData(data: Data){
-        let managedContext = persistentContainer.viewContext
-
-        //Trimming DB if it has older than "predicatedTimeStamp"
-        let currentTime = round(NSDate().timeIntervalSince1970 * 1000)
-        let predicatedTimeStamp:Double = currentTime - Constants.daysToSaveInMil
-        let requestDel = NSFetchRequest<NSFetchRequestResult>(entityName: "Logs")
-        let predicateDel = NSPredicate(format: "timeStamp < %d", argumentArray: [predicatedTimeStamp])
-        requestDel.predicate = predicateDel
-       
-        let DelAllReqVar = NSBatchDeleteRequest(fetchRequest:requestDel)
-
-        do {
-            try managedContext.execute(DelAllReqVar)
-        }
-        catch {
-            NSLog("Failed to delete old data")
-        }
-        
-        //Inserting new log into DB
-        let logEntity = NSEntityDescription.entity(forEntityName: "Logs", in: managedContext)!
-        let log = NSManagedObject(entity: logEntity, insertInto: managedContext)
-        let logMsg = String(decoding: data, as: UTF8.self)
-
-        log.setValue(currentTime, forKey: "timeStamp")
-        log.setValue(logMsg, forKey: "message")
-        log.setValue(false, forKey: "sent")
-        saveContext(managedContext: managedContext)
-    }
-    
-    //changing the sent flag once it's been sent to the server
-    func updateData() -> String {
-        
-        let managedContext = persistentContainer.viewContext
-        let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
-        fetchRequest.predicate = NSPredicate(format: "sent = %@", "false")
-        var resultString = ""
-
-        do {
-            let flagDown = try managedContext.fetch(fetchRequest)
-            if (flagDown.count > 0){
-                for i in 0...flagDown.count - 1{
-                    let objectUpdate = flagDown[i] as! NSManagedObject
-                    resultString.append("\(objectUpdate.value(forKey: "message") ?? "empty") \n")
-                    lastTimeStamp = (objectUpdate.value(forKey: "timeStamp") as! Double)
-                }
-            }
-            else{
-                return "There is no new logs"
-            }
-        }
-        catch {
-            NSLog("Failed to retrieve data, \(error)")
-        }
-        return resultString;
-    }
-    
-    public func markingSent() -> Void {
-        let managedContext = persistentContainer.viewContext
-        
-        if (lastTimeStamp > 0){
-
-            let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Logs")
-            fetchRequest.predicate = NSPredicate(format: "timeStamp < %d", argumentArray: [lastTimeStamp])
-            do {
-                let flagDown = try managedContext.fetch(fetchRequest)
-                if (flagDown.count > 0){
-                    for i in 0...flagDown.count - 1{
-                        let objectUpdate = flagDown[i] as! NSManagedObject
-                        objectUpdate.setValue(true, forKey: "sent")
-                    }
-                }
-                else{
-                    NSLog("Failed to change sent flags")
-                }
-            }
-            catch {
-                NSLog("Failed to retrieve data, \(error)")
-            }
-            lastTimeStamp = 0
-        }
-        else{
-            NSLog("Failed to update the sent")
-        }
-        saveContext(managedContext: managedContext)
-        return
-    }
     
     public func getLogs() -> Data {
-        let str = updateData()
+        let str = PersistenceService.updateData()
         let data = str.data(using: String.Encoding.utf8)
         return data!
+    }
+    
+    public func markingSent() {
+        PersistenceService.markingSent()
     }
     
     public init(
@@ -171,7 +60,7 @@ public class LXDataBaseEndpoint: LXEndpoint {
             return
         }
         LK_LOGKIT_QUEUE.async {
-            self.createData(data: data)
+            PersistenceService.addLogs(data: data)
         }
     }
 }
