@@ -770,6 +770,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 3.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = info.hyperlogkit.HyperLogKit;
 				PRODUCT_NAME = HyperLogKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -801,6 +802,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 3.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = info.hyperlogkit.HyperLogKit;
 				PRODUCT_NAME = HyperLogKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
