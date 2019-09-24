@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		176BA1182339BC2100881EC2 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176BA11623397EC700881EC2 /* PersistenceService.swift */; };
+		176BA161233A5EB500881EC2 /* Logs+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176BA15B2339D9C600881EC2 /* Logs+CoreDataClass.swift */; };
+		176BA162233A5EB500881EC2 /* Logs+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176BA15F2339DA1400881EC2 /* Logs+CoreDataProperties.swift */; };
 		B82107B9230D9CD7000B3572 /* DatabaseEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */; };
 		B82107BF230DB792000B3572 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B82107BE230DB792000B3572 /* CoreData.framework */; };
 		B8C29FBC231ED81F004A68E0 /* HyperLogKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00B8CB31B2E3BC3003E5FED /* HyperLogKit.framework */; };
@@ -68,6 +71,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		176BA11623397EC700881EC2 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
+		176BA15B2339D9C600881EC2 /* Logs+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logs+CoreDataClass.swift"; sourceTree = "<group>"; };
+		176BA15F2339DA1400881EC2 /* Logs+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logs+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseEndpoints.swift; sourceTree = "<group>"; };
 		B82107BE230DB792000B3572 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		B8E5BC1B231EED8000926B3B /* HyperLogKit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HyperLogKit.xcdatamodel; sourceTree = "<group>"; };
@@ -229,6 +235,9 @@
 				D0449EB31B4DB7B000D7E1D3 /* ConsoleEndpoints.swift */,
 				D0449EB71B4DC1F300D7E1D3 /* FileEndpoints.swift */,
 				D0C6C8E51B64610100BD87B5 /* HTTPEndpoints.swift */,
+				176BA15F2339DA1400881EC2 /* Logs+CoreDataProperties.swift */,
+				176BA15B2339D9C600881EC2 /* Logs+CoreDataClass.swift */,
+				176BA11623397EC700881EC2 /* PersistenceService.swift */,
 				B82107B8230D9CD7000B3572 /* DatabaseEndpoints.swift */,
 				B8E5BC1A231EED8000926B3B /* HyperLogKit.xcdatamodeld */,
 			);
@@ -516,9 +525,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0449EA31B4C606900D7E1D3 /* Entries.swift in Sources */,
+				176BA1182339BC2100881EC2 /* PersistenceService.swift in Sources */,
 				D0449EB41B4DB7B000D7E1D3 /* ConsoleEndpoints.swift in Sources */,
+				176BA161233A5EB500881EC2 /* Logs+CoreDataClass.swift in Sources */,
 				B8E5BC1C231EED8000926B3B /* HyperLogKit.xcdatamodeld in Sources */,
 				D0C6C8E61B64610100BD87B5 /* HTTPEndpoints.swift in Sources */,
+				176BA162233A5EB500881EC2 /* Logs+CoreDataProperties.swift in Sources */,
 				D0449EB81B4DC1F300D7E1D3 /* FileEndpoints.swift in Sources */,
 				D0F8DD341B4B253700D0865A /* Formatters.swift in Sources */,
 				D0449EAB1B4C65B200D7E1D3 /* Loggers.swift in Sources */,
