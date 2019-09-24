@@ -91,14 +91,14 @@ public class PersistenceService {
         catch {
             NSLog("Failed to delete old data")
         }
-       let logMsg = String(decoding: data, as: UTF8.self)
-        //Creating Logs entity
-       let logs = Logs(context: PersistenceService.viewContext)
-       logs.message = logMsg
-       logs.sent = false
-       logs.timeStamp = NSTimeIntervalSince1970
-        
-       PersistenceService.saveChanges()
+
+        let logMsg = String(decoding: data, as: UTF8.self)
+        let logs = Logs(context: PersistenceService.viewContext)
+        logs.message = logMsg
+        logs.sent = false
+        logs.timeStamp = currentTime
+            
+        PersistenceService.saveChanges()
     }
     
     static func updateData() -> String {
