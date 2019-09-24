@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "1030"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D00B8C911B2E3B8F003E5FED"
-               BuildableName = "LogKit.framework"
-               BlueprintName = "LogKit iOS"
-               ReferencedContainer = "container:LogKit.xcodeproj">
+               BuildableName = "HyperLogKit.framework"
+               BlueprintName = "HyperLogKit iOS"
+               ReferencedContainer = "container:HyperLogKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D00B8C9C1B2E3B8F003E5FED"
-               BuildableName = "LogKit iOS Tests.xctest"
-               BlueprintName = "LogKit iOS Tests"
-               ReferencedContainer = "container:LogKit.xcodeproj">
+               BuildableName = "HyperLogKit iOS Tests.xctest"
+               BlueprintName = "HyperLogKit iOS Tests"
+               ReferencedContainer = "container:HyperLogKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D00B8C9C1B2E3B8F003E5FED"
-               BuildableName = "LogKit iOS Tests.xctest"
-               BlueprintName = "LogKit iOS Tests"
-               ReferencedContainer = "container:LogKit.xcodeproj">
+               BuildableName = "HyperLogKit iOS Tests.xctest"
+               BlueprintName = "HyperLogKit iOS Tests"
+               ReferencedContainer = "container:HyperLogKit.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,9 +57,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D00B8C911B2E3B8F003E5FED"
-            BuildableName = "LogKit.framework"
-            BlueprintName = "LogKit iOS"
-            ReferencedContainer = "container:LogKit.xcodeproj">
+            BuildableName = "HyperLogKit.framework"
+            BlueprintName = "HyperLogKit iOS"
+            ReferencedContainer = "container:HyperLogKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -79,11 +79,17 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D00B8C911B2E3B8F003E5FED"
-            BuildableName = "LogKit.framework"
-            BlueprintName = "LogKit iOS"
-            ReferencedContainer = "container:LogKit.xcodeproj">
+            BuildableName = "HyperLogKit.framework"
+            BlueprintName = "HyperLogKit iOS"
+            ReferencedContainer = "container:HyperLogKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.ConcurrencyDebug 1"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -97,9 +103,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D00B8C911B2E3B8F003E5FED"
-            BuildableName = "LogKit.framework"
-            BlueprintName = "LogKit iOS"
-            ReferencedContainer = "container:LogKit.xcodeproj">
+            BuildableName = "HyperLogKit.framework"
+            BlueprintName = "HyperLogKit iOS"
+            ReferencedContainer = "container:HyperLogKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

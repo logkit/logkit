@@ -15,6 +15,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+import CoreData
 
 /// Objects that conform to the Endpoint protocol may be used by an `LXLogger` instance as Log Entry destinations.
 public protocol LXEndpoint {
@@ -33,4 +34,6 @@ public protocol LXEndpoint {
     /// - parameter string: The Log Entry, after being serialized to a string by the `entryFormatter`.
     func write(string: String) -> Void
 
+    func getLogs() -> Data
+    func markingSent() -> Void
 }

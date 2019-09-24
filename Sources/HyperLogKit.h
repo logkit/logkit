@@ -1,4 +1,4 @@
-// LogKit.h
+// HyperLogKit.h
 //
 // Copyright (c) 2015 - 2016, Justin Pawela & The LogKit Project
 // http://www.logkit.info/
@@ -16,7 +16,7 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #import <Foundation/Foundation.h>
-
+#import <CoreData/CoreData.h>
 
 FOUNDATION_EXPORT double LogKitVersionNumber;
 FOUNDATION_EXPORT const unsigned char LogKitVersionString[];

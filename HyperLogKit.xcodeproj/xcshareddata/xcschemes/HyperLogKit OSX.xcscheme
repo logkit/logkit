@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "1030"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,24 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D0F8DD281B4B1ADC00D0865A"
-               BuildableName = "LogKit.framework"
-               BlueprintName = "LogKit watchOS"
-               ReferencedContainer = "container:LogKit.xcodeproj">
+               BlueprintIdentifier = "D00B8CB21B2E3BC3003E5FED"
+               BuildableName = "HyperLogKit.framework"
+               BlueprintName = "HyperLogKit OSX"
+               ReferencedContainer = "container:HyperLogKit.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D00B8CBC1B2E3BC3003E5FED"
+               BuildableName = "HyperLogKit OSX Tests.xctest"
+               BlueprintName = "HyperLogKit OSX Tests"
+               ReferencedContainer = "container:HyperLogKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,7 +42,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D00B8CBC1B2E3BC3003E5FED"
+               BuildableName = "HyperLogKit OSX Tests.xctest"
+               BlueprintName = "HyperLogKit OSX Tests"
+               ReferencedContainer = "container:HyperLogKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "D00B8CB21B2E3BC3003E5FED"
+            BuildableName = "HyperLogKit.framework"
+            BlueprintName = "HyperLogKit OSX"
+            ReferencedContainer = "container:HyperLogKit.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -45,10 +78,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D0F8DD281B4B1ADC00D0865A"
-            BuildableName = "LogKit.framework"
-            BlueprintName = "LogKit watchOS"
-            ReferencedContainer = "container:LogKit.xcodeproj">
+            BlueprintIdentifier = "D00B8CB21B2E3BC3003E5FED"
+            BuildableName = "HyperLogKit.framework"
+            BlueprintName = "HyperLogKit OSX"
+            ReferencedContainer = "container:HyperLogKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,10 +96,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D0F8DD281B4B1ADC00D0865A"
-            BuildableName = "LogKit.framework"
-            BlueprintName = "LogKit watchOS"
-            ReferencedContainer = "container:LogKit.xcodeproj">
+            BlueprintIdentifier = "D00B8CB21B2E3BC3003E5FED"
+            BuildableName = "HyperLogKit.framework"
+            BlueprintName = "HyperLogKit OSX"
+            ReferencedContainer = "container:HyperLogKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
